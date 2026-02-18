@@ -1917,11 +1917,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus.test\\18plus.test.csproj",
+      "projectUniqueName": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus.test\\18plus.test.csproj",
       "projectName": "18plus.test",
-      "projectPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus.test\\18plus.test.csproj",
+      "projectPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus.test\\18plus.test.csproj",
       "packagesPath": "C:\\Users\\Mansour\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus.test\\obj\\",
+      "outputPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus.test\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mansour\\AppData\\Roaming\\NuGet\\NuGet.Config"

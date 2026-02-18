@@ -551,11 +551,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus\\18plus.csproj",
+      "projectUniqueName": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus.csproj",
       "projectName": "18plus",
-      "projectPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus\\18plus.csproj",
+      "projectPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus.csproj",
       "packagesPath": "C:\\Users\\Mansour\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\18plus\\obj\\",
+      "outputPath": "C:\\Users\\Mansour\\Desktop\\18plus\\18plus\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mansour\\AppData\\Roaming\\NuGet\\NuGet.Config"
