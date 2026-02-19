@@ -38,9 +38,6 @@ package "User" as P_User #FFDBE6 {
         +E-MailAddress: string <<nn>> <<unique>>
     }
     class Admin << (C,#AFD3B4) Entity >> {
-        +FirstName: string <<nn>>
-        +LastName: string <<nn>>
-        +E-MailAddress: string <<nn>> <<unique>>
         +Password: string <<nn>>
         --
         -CreateTeacher(FirstName, LastName, E-MailAddress)
@@ -48,18 +45,12 @@ package "User" as P_User #FFDBE6 {
         -CreateGroup(Name, JoinCode, Students)
     }
     class Teacher << (C,#AFD3B4) Entity >> {
-        +FirstName: string <<nn>>
-        +LastName: string <<nn>>
-        +E-MailAddress: string <<nn>> <<unique>>
         +Password: string <<nn>>
         --
         -CreateGroup(Name, JoinCode, Students)
         -ViewWorkingStatusOfStudent(Student): WorkingStatus
     }
     class Student << (C,#AFD3B4) Entity >> {
-        +FirstName: string <<nn>>
-        +LastName: string <<nn>>
-        +E-MailAddress: string <<nn>> <<unique>>
         +Group: Group?  
         --
         -JoinGroup(Group) 
