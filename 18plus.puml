@@ -1,0 +1,139 @@
+﻿@startuml
+' ---- Layout & Stil ----
+hide empty methods
+' ---- Legende ----
+legend right
+<<RichType>>: Stark typisierte Primitive
+<<ValueObject>>: Value Objects
+<<entity>>: Persistente Entität
+<<unique>>: Eindeutige Einschränkung auf Spaltenebene
+<<nn>>: Not null
+endlegend
+' ===================== Packages =====================
+    class EntityBase << (A,#A9DCDF) Entity >> {
+        +ID: int
+        +CreatedAt: DateTime
+        +CreatedBy: int
+        +UpdatedAt: DateTime
+        +UpdatedBy: int   
+    }
+  
+    class EighteenplusException << (C,#AFD3B4)  >> {  
+    }
+  
+    class Exception << (C,#AFD3B4)  >> {
+    
+    }
+  
+    class Group <<(C,#AFD3B4) Entity >> {
+        +Name: ClassNumber <<nn>>
+        +JoinCode: int <<nn>> <<unique>>
+        +Students: List<Student>
+        +Teacher: Teacher <<nn>>
+    }
+package "User" as P_User #FFDBE6 {
+    class UserBase << (A,#A9DCDF) Entity >> {
+        +FirstName: string <<nn>>
+        +LastName: string <<nn>>
+        +E-MailAddress: EMailAddress <<nn>> <<unique>>
+        +Role: Role <<nn>>
+    }
+    class Admin << (C,#AFD3B4) Entity >> {
+        +PasswordHash: PasswordHash <<nn>>
+    }
+    class Teacher << (C,#AFD3B4) Entity >> {
+        +PasswordHash: PasswordHash <<nn>>
+
+    }
+    class Student << (C,#AFD3B4) Entity >> {
+        +Group: Group?  
+
+    }
+}
+    class OneTimeCode << (C, #AFD3B4) Entity>> {
+        +Code: string <<nn>>
+        +ExpiresAt: DateTime <<nn>>
+        +Student: Student <<nn>>
+    }
+
+ 
+    class Result << (C, #AFD3B4) Entity >> {
+        +AnswersJson: string <<nn>>
+        +SubmittedAt: DateTime?
+        +Student: Student <<nn>>
+        +Worksheet: Worksheet <<nn>>
+        +Status: WorkingStatus
+    }
+    
+
+ 
+
+    
+    class Worksheet << (C, #AFD3B4) Entity >> {
+        +Name: string <<nn>>
+        +Description: string <<nn>>
+    }
+    
+    class GroupWorksheet <<Entity>> {
+        +Group: Group <<nn>>
+        +Worksheet: Worksheet <<nn>>
+        +IsEnabled: bool <<nn>>
+        +EnabledAt: DateTime 
+    }
+    
+
+   
+  
+package "RichType" as P_RichType #BFC6C4 {
+
+    class EMailAddress << (R,#FF746C ) RichType>> {
+        + E-MailAddress: string
+        }  
+        
+    class PasswordHash << (R,#FF746C ) RichType>> {
+        + PasswordHash: string
+        }  
+
+    class ClassNumber << (R,#FF746C) RichType >> {
+        +Name: string <<nn>>
+    }
+        
+}
+package "Enum" as P_Enum #EEEEEE {
+
+    class Role <<(E, #F5F4D6) Enum>> {
+        admin
+        teacher
+        student        
+    }
+    class WorkingStatus << (E, #F5F4D6) Enum >> {
+        draft
+        submitted
+        in_progress
+        cancelled
+    }
+}
+  
+    UserBase --|> EntityBase
+    Admin --|> UserBase
+    Teacher --|> UserBase
+    Student --|> UserBase
+    EighteenplusException --|> Exception
+    Student "0..*"-->"0..1" Group
+    Group "1" o-- "1" ClassNumber
+    Teacher "1"-->"0..*" Group
+    Group --|> EntityBase
+    Result --|> EntityBase
+    Result --> WorkingStatus
+    Student "1" --> "0..*" Result
+    Worksheet "1" --> "0..*" Result
+    OneTimeCode --|> EntityBase
+    Student "1" --> "0..*" OneTimeCode
+    Group "1" --> "0..+"GroupWorksheet
+    Worksheet "1" --> "0..*" GroupWorksheet
+    UserBase --|> Role
+    UserBase "1"--"1" EMailAddress
+    Teacher "1"--"1" PasswordHash
+    Admin "1"--"1" PasswordHash
+ 
+@enduml
