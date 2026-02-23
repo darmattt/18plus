@@ -2,5 +2,5 @@
 
 public class Teacher : UserBase
 {
-    public passwordHash PasswordHash { get; set; }
+    public Password Password { get; set; }
 }

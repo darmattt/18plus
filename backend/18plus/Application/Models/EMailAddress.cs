@@ -2,5 +2,5 @@
 
 public record EMailAddress
 {
-    public string EMailAddress {get; init;}
+    public string Email {get; init;}
 }

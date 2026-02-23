@@ -2,5 +2,5 @@
 
 public class Student : UserBase
 {
-    public Group? Group { get; set; };
+    public Group? Group { get; set; }
 }

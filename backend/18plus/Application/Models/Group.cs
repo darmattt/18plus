@@ -7,6 +7,6 @@ public class Group : EntityBase
     public ClassNumber Name {get; init;}
     public int JoinCode {get; init;}
     public Teacher Teacher {get; init;}
-    private List<Student> _students = [];
-    public IEnumerable<Student> Students => Students.AsReadOnly();
+    private readonly List<Student> _students = [];
+    public IReadOnlyCollection<Student> Students => _students.AsReadOnly();
 }
