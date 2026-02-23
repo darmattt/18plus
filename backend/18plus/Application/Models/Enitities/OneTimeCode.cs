@@ -1,4 +1,6 @@
-﻿namespace Application.Models;
+﻿using Application.Models.Users;
+
+namespace Application.Models.Enitities;
 
 public class OneTimeCode
 {

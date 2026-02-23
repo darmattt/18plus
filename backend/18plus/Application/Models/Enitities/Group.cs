@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Application.Models.Records;
+using Application.Models.Users;
 
-namespace Application.Models;
+namespace Application.Models.Enitities;
 
-public class Group : EntityBase
+public  class Group : EntityBase
 {
     public ClassNumber Name {get; init;}
     public int JoinCode {get; init;}

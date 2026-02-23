@@ -1,4 +1,4 @@
-﻿namespace Application.Models;
+﻿namespace Application.Models.Enitities;
 
 public class GroupWorksheet
 {

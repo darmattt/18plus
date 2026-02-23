@@ -1,4 +1,7 @@
-﻿namespace Application.Models;
+﻿using Application.Models.Enums;
+using Application.Models.Users;
+
+namespace Application.Models.Enitities;
 
 public class Result : EntityBase
 {
