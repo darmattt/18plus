@@ -1,5 +1,5 @@
-﻿using Application.Models.Records;
-using Application.Models.Users;
+﻿using Application.Models.Users;
+using Application.Models.ValueObjects;
 
 namespace Application.Models.Enitities;
 
