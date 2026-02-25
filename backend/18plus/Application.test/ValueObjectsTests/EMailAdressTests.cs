@@ -1,10 +1,7 @@
 ﻿namespace Application.test.ValueObjectsTests;
 using Xunit;
 using Models.ValueObjects;
-using Application.Models.Exception;
 
-public class EMailAdressTests
-{
     public class EMailAddressTests
     {
         [Fact]
@@ -49,9 +46,9 @@ public class EMailAdressTests
         [InlineData("test@")] // keine domain
         [InlineData("test@domain")] // kein Punkt in Domain (TopLevelDomains = false)
         [InlineData("test@@domain.com")] // doppeltes @
-        public void Constructor_Should_Throw_InvalidEmailException_When_Email_Format_Is_Invalid(string input)
+        public void Constructor_Should_Throw_ArgumentException_When_Email_Format_Is_Invalid(string input)
         {
-            Assert.Throws<InvalidEmailException>(() => new EMailAddress(input));
+            Assert.Throws<ArgumentException>(() => new EMailAddress(input));
         }
 
         [Theory]
@@ -60,7 +57,7 @@ public class EMailAdressTests
         [InlineData("postmaster@dk")]
         public void Constructor_Should_Reject_Single_Label_Domains(string input)
         {
-            Assert.Throws<InvalidEmailException>(() => new EMailAddress(input));
+            Assert.Throws<ArgumentException>(() => new EMailAddress(input));
         }
 
         [Theory]
@@ -68,7 +65,7 @@ public class EMailAdressTests
         [InlineData("用户@例子.公司")]
         public void Constructor_Should_Reject_International_Emails_When_Not_Allowed(string input)
         {
-            Assert.Throws<InvalidEmailException>(() => new EMailAddress(input));
+            Assert.Throws<ArgumentException>(() => new EMailAddress(input));
         }
 
         [Fact]
@@ -101,4 +98,3 @@ public class EMailAdressTests
         }
 
     }
-}

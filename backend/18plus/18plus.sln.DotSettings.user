@@ -6,5 +6,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fbe7a00a_002Dd774_002D4e5d_002D90de_002Daa9e4ba85488/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.EMailAdressTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.ClassNumberTests.Constructor_Should_Create_Object_When_ClassNumber_Is_Valid&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.ClassNumberTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

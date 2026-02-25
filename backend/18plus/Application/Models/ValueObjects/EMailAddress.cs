@@ -17,10 +17,10 @@ public sealed record EMailAddress
          if(!EmailValidator.Validate(
                 email,
                 false, //Domain muss mindestens einen Punkt enthalten
-                false //Keine Umlaute und 
+                false //Keine Umlaute und keine andere Sprachen
                 )
             )
-             throw new InvalidEmailException("Invalid email address");
+             throw new ArgumentException("Invalid email address");
          
         Email = email;
     }

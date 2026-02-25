@@ -4,17 +4,16 @@ namespace Application.Models.ValueObjects;
 public sealed record ClassNumber
 {
     private static readonly Regex ValidPattern =
-        new(@"^[a-zA-Z0-9]+$", RegexOptions.Compiled);
-    
+        new(@"^[0-9][A-Z0-9]*$", RegexOptions.Compiled);
     public string Value {get;}
 
     public ClassNumber(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
 
-        value = value.Trim();
+        value = value.Trim().ToUpperInvariant();
 
-        if (value.Length >= 7)
+        if (value.Length >= 10)
             throw new ArgumentException("ClassNumber must be less than 7 characters.");
 
         if (!ValidPattern.IsMatch(value))
