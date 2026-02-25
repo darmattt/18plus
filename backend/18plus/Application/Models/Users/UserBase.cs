@@ -25,29 +25,23 @@ public class UserBase : EntityBase
         ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
         ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
         ArgumentNullException.ThrowIfNull(email);
-        ArgumentNullException.ThrowIfNull(role);
 
         if (!ValidPattern.IsMatch(firstName))
-            throw new ArgumentException("First name should cobtain letters only");
+            throw new ArgumentException("First name should contain letters only", nameof(firstName));
         if(!ValidPattern.IsMatch(lastName))
-            throw new ArgumentException("Last name should contain letters only");
+            throw new ArgumentException("Last name should contain letters only", nameof(lastName));
 
         if (firstName.Length is > 100 or < 1 )
-            throw new ArgumentException("First name should be between 1 and 100 letters");
+            throw new ArgumentException("First name should be between 1 and 100 letters", nameof(firstName));
         if ( lastName.Length is > 100 or < 1 )
-            throw new ArgumentException("Last name should be between 1 and 100 letters");
-
+            throw new ArgumentException("Last name should be between 1 and 100 letters", nameof(lastName));
+     
+        if(!Enum.IsDefined(typeof(Role), role))
+            throw new ArgumentException("Role should be a valid role", nameof(role));
 
         FirstName = firstName.Trim();
         LastName = lastName.Trim();
         Email = email;
         Role = role;
-
-       
-        
     }
-    
-    
-    
-
 }
