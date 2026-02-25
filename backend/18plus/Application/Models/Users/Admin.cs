@@ -1,10 +1,12 @@
-﻿using Application.Models.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.Models.Enums;
+using Application.Models.ValueObjects;
 
 namespace Application.Models.Users;
 
 public class Admin : UserBase
 {
-    public Admin(string firstName, string lastName, string email, Role role, PasswordHash password) : base(firstName, lastName, email, role)
+    public Admin(string firstName, string lastName,EMailAddress email, Role role, PasswordHash password) : base(firstName, lastName, email, role)
     {
         Password = password;
     }

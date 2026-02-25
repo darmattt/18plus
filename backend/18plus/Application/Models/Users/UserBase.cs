@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 public class UserBase : EntityBase
 {
-    
     private static readonly Regex ValidPattern =
         new(@"^[a-zA-Z]+$", RegexOptions.Compiled);
     public string FirstName { get; set; }
