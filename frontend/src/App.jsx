@@ -16,12 +16,12 @@ export default function LandingHero() {
                 </div>
 
                 <nav className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
-                    <Link className="hover:text-slate-900" to="/features">
+                    <Link className="hover:text-slate-900" to="/arbeitsblaetter">
                         Arbeitsblätter
                     </Link>
-                    <a className="hover:text-slate-900" href="#">
+                    <Link className="hover:text-slate-900" to="/gruppe">
                         Gruppe beitreten
-                    </a>
+                    </Link>
                     <a className="hover:text-slate-900" href="#">
                         über 18plus
                     </a>

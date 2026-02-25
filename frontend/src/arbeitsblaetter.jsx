@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-export default function Features() {
+export default function Arbeitsblaetter() {
     return (
         <div className="p-10">
             <h1 className="text-3xl font-bold">Arbeitsblätter</h1>
