@@ -12,14 +12,9 @@ export default function Login() {
                     className="w-full mb-4 p-2 border rounded-md"
                 />
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-full mb-6 p-2 border rounded-md"
-                />
 
                 <button className="w-full bg-blue-600 text-white p-2 rounded-md">
-                    Sign In
+                    get verification code
                 </button>
             </div>
         </div>
