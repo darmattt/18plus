@@ -55,7 +55,7 @@ export default function LandingHero() {
                     <div className="mt-10">
                         <Button
                             size="lg"
-                            className="rounded-2xl bg-lime-300 px-7 py-6 text-slate-900 hover:bg-lime-300/90"
+                            className="rounded-2xl bg-lime-300 px-7 py-6 text-slate-900 hover:bg-red-300/90"
                         >
                             Jetzt starten <ArrowRight className="ml-2 h-5 w-5" />
                         </Button>
