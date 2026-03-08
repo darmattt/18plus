@@ -6,6 +6,7 @@ namespace Application.Models.Enitities;
 
 public  class Group : EntityBase
 {
+    public int Id { get; protected set; }
     public ClassNumber Name {get; protected set; }
     public string JoinCode {get; protected set;}
     public Teacher Teacher {get; protected set;}
@@ -18,6 +19,7 @@ public  class Group : EntityBase
         
         Name = name;
         Teacher = teacher;
+        JoinCode = GenerateJoinCode();
     }
 
     private static string GenerateJoinCode()

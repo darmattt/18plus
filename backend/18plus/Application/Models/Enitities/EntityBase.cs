@@ -1,12 +1,28 @@
 ﻿namespace Application.Models.Enitities;
 
-public abstract class EntityBase
+public abstract class EntityBase : IEquatable<EntityBase>
 {
-    public int Id { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public int CreatedBy { get; set; }
-    public int UpdatedBy { get; set; }
-    
-    
+    public int Id { get; protected set; }
+    public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; protected set; }
+    public int? CreatedBy { get; protected set; }
+    public int? UpdatedBy { get; protected set; }
+
+    protected EntityBase() { }
+
+    public void MarkUpdated(int? updatedBy = null)
+    {
+        UpdatedAt = DateTime.UtcNow;
+        UpdatedBy = updatedBy;
+    }
+
+    public override bool Equals(object? obj) =>
+        obj is EntityBase other && Equals(other);
+
+    public bool Equals(EntityBase? other) =>
+        ReferenceEquals(this, other) ||
+        (other is not null && Id != 0 && other.Id == Id);
+
+    public override int GetHashCode() =>
+        Id.GetHashCode();
 }
