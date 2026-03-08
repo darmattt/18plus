@@ -14,7 +14,7 @@ public sealed record ClassNumber
         value = value.Trim().ToUpperInvariant();
 
         if (value.Length >= 10)
-            throw new ArgumentException("ClassNumber must be less than 7 characters.");
+            throw new ArgumentException("ClassNumber must be less than 10 characters.");
 
         if (!ValidPattern.IsMatch(value))
             throw new ArgumentException("ClassNumber must contain only letters and numbers.");

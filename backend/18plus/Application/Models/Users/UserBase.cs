@@ -1,46 +1,47 @@
-﻿using Application.Models.Enitities;
+﻿using System.Text.RegularExpressions;
+using Application.Models.Enitities;
 using Application.Models.Enums;
 using Application.Models.ValueObjects;
 
 namespace Application.Models.Users;
 
-using System.Text.RegularExpressions;
-
-public class UserBase : EntityBase
+public abstract class UserBase : EntityBase
 {
     private static readonly Regex ValidPattern =
-        new(@"^[a-zA-Z]+$", RegexOptions.Compiled);
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public EMailAddress Email { get; set; }
-    public Role Role { get; set; }
+        new(@"^(?=.{1,50}$)[\p{L}]+(?:[ '-][\p{L}]+)*$", RegexOptions.Compiled);
 
-    public UserBase(string firstName, string lastName, EMailAddress email, Role role)
+    public string FirstName { get; protected set; } = null!;
+    public string LastName { get; protected set; } = null!;
+    public EMailAddress Email { get; protected set; } = null!;
+    public Role Role { get; protected set; }
+    public PasswordHash PasswordHash { get; protected set; } = null!;
+
+    protected UserBase() { }
+
+    protected UserBase(string firstName, string lastName, EMailAddress email)
     {
-
-        firstName = firstName.Trim();
-        lastName = lastName.Trim();
-
         ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
         ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
         ArgumentNullException.ThrowIfNull(email);
 
+        firstName = firstName.Trim();
+        lastName = lastName.Trim();
+
         if (!ValidPattern.IsMatch(firstName))
-            throw new ArgumentException("First name should contain letters only", nameof(firstName));
-        if(!ValidPattern.IsMatch(lastName))
-            throw new ArgumentException("Last name should contain letters only", nameof(lastName));
+            throw new ArgumentException("Invalid first name.", nameof(firstName));
 
-        if (firstName.Length is > 100 or < 1 )
-            throw new ArgumentException("First name should be between 1 and 100 letters", nameof(firstName));
-        if ( lastName.Length is > 100 or < 1 )
-            throw new ArgumentException("Last name should be between 1 and 100 letters", nameof(lastName));
-     
-        if(!Enum.IsDefined(typeof(Role), role))
-            throw new ArgumentException("Role should be a valid role", nameof(role));
+        if (!ValidPattern.IsMatch(lastName))
+            throw new ArgumentException("Invalid last name.", nameof(lastName));
 
-        FirstName = firstName.Trim();
-        LastName = lastName.Trim();
+        FirstName = firstName;
+        LastName = lastName;
         Email = email;
-        Role = role;
+    }
+
+    protected UserBase(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash)
+        : this(firstName, lastName, email)
+    {
+        ArgumentNullException.ThrowIfNull(passwordHash);
+        PasswordHash = passwordHash;
     }
 }

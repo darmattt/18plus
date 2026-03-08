@@ -17,6 +17,7 @@ endlegend
         +UpdatedAt: DateTime
         +UpdatedBy: int   
     }
+    
   
     class EighteenplusException << (C,#AFD3B4)  >> {  
     }
@@ -28,7 +29,6 @@ endlegend
     class Group <<(C,#AFD3B4) Entity >> {
         +Name: ClassNumber <<nn>>
         +JoinCode: int <<nn>> <<unique>>
-        +Students: List<Student>
         +Teacher: Teacher <<nn>>
     }
 package "User" as P_User #FFDBE6 {
@@ -37,16 +37,17 @@ package "User" as P_User #FFDBE6 {
         +LastName: string <<nn>>
         +E-MailAddress: EMailAddress <<nn>> <<unique>>
         +Role: Role <<nn>>
+        +PasswordHash: PasswordHash
     }
+    
     class Admin << (C,#AFD3B4) Entity >> {
-        +PasswordHash: PasswordHash <<nn>>
     }
-    class Teacher << (C,#AFD3B4) Entity >> {
-        +PasswordHash: PasswordHash <<nn>>
 
+    class Teacher << (C,#AFD3B4) Entity >> {
+        +PhoneNumber: PhoneNumber
     }
     class Student << (C,#AFD3B4) Entity >> {
-        +Group: Group?  
+        +Group: Group  
 
     }
 }
@@ -59,7 +60,7 @@ package "User" as P_User #FFDBE6 {
  
     class Result << (C, #AFD3B4) Entity >> {
         +AnswersJson: string <<nn>>
-        +SubmittedAt: DateTime?
+        +SubmittedAt: DateTimey 
         +Student: Student <<nn>>
         +Worksheet: Worksheet <<nn>>
         +Status: WorkingStatus
@@ -97,6 +98,10 @@ package "RichType" as P_RichType #BFC6C4 {
     class ClassNumber << (R,#FF746C) RichType >> {
         +Name: string <<nn>>
     }
+    
+    class PhoneNumber << (R,#FF746C) RichType >> {
+        +Name: string <<nn>>
+    }
         
 }
 package "Enum" as P_Enum #EEEEEE {
@@ -115,7 +120,6 @@ package "Enum" as P_Enum #EEEEEE {
 }
   
     UserBase --|> EntityBase
-    Admin --|> UserBase
     Teacher --|> UserBase
     Student --|> UserBase
     EighteenplusException --|> Exception
@@ -133,7 +137,9 @@ package "Enum" as P_Enum #EEEEEE {
     Worksheet "1" --> "0..*" GroupWorksheet
     UserBase --|> Role
     UserBase "1"--"1" EMailAddress
-    Teacher "1"--"1" PasswordHash
+    UserBase "1"--"1" PasswordHash
+    PhoneNumber "1" -- "1" Teacher
+    Admin --|> UserBase
     Admin "1"--"1" PasswordHash
  
 @enduml
