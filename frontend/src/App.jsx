@@ -25,6 +25,9 @@ export default function LandingHero() {
                     <a className="hover:text-slate-900" href="#">
                         über 18plus
                     </a>
+                    <Link className="hover:text-slate-900" to="/OffeneFragen">
+                                            OffeneFragen
+                     </Link>
                 </nav>
 
                 <Link to="/login">
