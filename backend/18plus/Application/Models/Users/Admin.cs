@@ -6,11 +6,9 @@ namespace Application.Models.Users;
 
 public class Admin : UserBase
 {
-    public Admin(string firstName, string lastName,EMailAddress email, Role role, PasswordHash password) : base(firstName, lastName, email, role)
+    protected Admin() { }
+    public Admin(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash) : base(firstName, lastName, email, passwordHash)
     {
-        Password = password;
+        Role = Role.Admin;
     }
-
-    public PasswordHash Password { get; set; }
-    
 }

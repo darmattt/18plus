@@ -5,10 +5,12 @@ namespace Application.Models.Users;
 
 public class Teacher : UserBase
 {
-    public Teacher(string firstName, string lastName, EMailAddress email, Role role, PasswordHash password) : base(firstName, lastName, email, role)
+    public PhoneNumber? PhoneNumber {get; protected set;}
+    protected Teacher(){}
+    public Teacher(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash, PhoneNumber phoneNumber) : base(firstName, lastName, email, passwordHash)
     {
-        Password = password;
+        PhoneNumber = phoneNumber;
+        Role =  Role.Teacher;
     }
-
-    public PasswordHash Password { get; set; }
+    
 }

@@ -8,5 +8,19 @@
     &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.EMailAdressTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.ClassNumberTests.Constructor_Should_Create_Object_When_ClassNumber_Is_Valid&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.ClassNumberTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.PhoneNumberTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ServicesTests.PasswordHasherServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.UsersTests.AdminTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.UsersTests.StudentTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.UsersTests.TeacherTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.EntitiesTests.OneTimeCodeTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.EntitiesTests.EntityBaseTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.EntitiesTests.GroupTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.EntitiesTests.GroupWorksheetTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.EntitiesTests.ResultTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.EntitiesTests.WorksheetTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.EMailAddressTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ValueObjectsTests.PasswordHashTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::7B771642-AC6D-44B9-B286-2F004671FD14::net10.0::Application.test.ApplicationDbContextTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

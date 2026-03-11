@@ -6,10 +6,13 @@ namespace Application.Models.Users;
 
 public class Student : UserBase
 {
-    public Student(string firstName, string lastName, EMailAddress email, Role role, Group? group) : base(firstName, lastName, email, role)
+    public Group? Group { get; protected set; }
+    protected Student() { }
+    
+    public Student(string firstName, string lastName, EMailAddress email) : base(firstName, lastName, email)
     {
-        Group = group;
+        Role = Role.Student;
     }
 
-    public Group? Group { get; set; }
+
 }
