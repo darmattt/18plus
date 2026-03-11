@@ -10,7 +10,7 @@ public class OneTimeCode
     public string Code { get; protected set; }
     public DateTime ExpiresAt { get; protected set; }
     public bool IsUsed { get; protected set; }
-    public Student Student { get; protected set; }
+   // public Student Student { get; protected set; }
 
     protected OneTimeCode() { }
 
@@ -20,7 +20,7 @@ public class OneTimeCode
 
         Code = GenerateCode();
         ExpiresAt = DateTime.UtcNow.AddMinutes(10);
-        Student = student;
+        //Student = student;
         IsUsed = false;
     }
 

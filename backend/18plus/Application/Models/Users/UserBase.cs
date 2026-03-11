@@ -9,13 +9,12 @@ public abstract class UserBase : EntityBase
 {
     private static readonly Regex ValidPattern =
         new(@"^(?=.{1,50}$)[\p{L}]+(?:[ '-][\p{L}]+)*$", RegexOptions.Compiled);
-
     public string FirstName { get; protected set; } = null!;
     public string LastName { get; protected set; } = null!;
     public EMailAddress Email { get; protected set; } = null!;
     public Role Role { get; protected set; }
     public PasswordHash PasswordHash { get; protected set; } = null!;
-
+    public PhoneNumber? PhoneNumber { get; protected set; } = null!;
     protected UserBase() { }
 
     protected UserBase(string firstName, string lastName, EMailAddress email)
@@ -37,11 +36,18 @@ public abstract class UserBase : EntityBase
         LastName = lastName;
         Email = email;
     }
-
+    
     protected UserBase(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash)
         : this(firstName, lastName, email)
     {
         ArgumentNullException.ThrowIfNull(passwordHash);
         PasswordHash = passwordHash;
     }
-}
+    protected UserBase(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash, PhoneNumber? phoneNumber = null)
+        : this(firstName, lastName, email)
+    {
+        ArgumentNullException.ThrowIfNull(passwordHash);
+        ArgumentNullException.ThrowIfNull(phoneNumber);
+        PasswordHash = passwordHash;
+        PhoneNumber = phoneNumber;
+    }}

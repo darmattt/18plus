@@ -5,25 +5,26 @@ namespace Application.Models.ValueObjects;
 
 public sealed record EMailAddress
 {
-    public string Email {get;}
+    public string Value {get;}
  
-    public EMailAddress(string email)
+    protected EMailAddress() {}
+    public EMailAddress(string value)
     {
         
-        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
         
-        email = email.Trim();
+        value = value.Trim();
     
          if(!EmailValidator.Validate(
-                email,
+                value,
                 false, //Domain muss mindestens einen Punkt enthalten
                 false //Keine Umlaute und keine andere Sprachen
                 )
             )
              throw new ArgumentException("Invalid email address");
          
-        Email = email;
+        Value = value;
     }
 
-    public override string ToString() => Email;
+    public override string ToString() => Value;
 }

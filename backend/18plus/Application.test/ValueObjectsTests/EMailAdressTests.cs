@@ -11,7 +11,7 @@ using Models.ValueObjects;
 
             var result = new EMailAddress(email);
 
-            Assert.Equal(email, result.Email);
+            Assert.Equal(email, result.Value);
         }
 
         [Fact]
@@ -19,7 +19,7 @@ using Models.ValueObjects;
         {
             var result = new EMailAddress("  test@gmail.com  ");
 
-            Assert.Equal("test@gmail.com", result.Email);
+            Assert.Equal("test@gmail.com", result.Value);
         }
 
         [Fact]

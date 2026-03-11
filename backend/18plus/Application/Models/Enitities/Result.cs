@@ -8,7 +8,7 @@ public class Result : EntityBase
     public int Id { get; protected set; }
     public string AnswersJson { get; protected set; }
     public DateTime? SubmittedAt { get; protected set; }
-    public Student Student { get; protected set; }
+//    public Student Student { get; protected set; }
     public Worksheet Worksheet { get; protected set; }
     public WorkingStatus Status { get; protected set; }
 
@@ -21,7 +21,7 @@ public class Result : EntityBase
         ArgumentNullException.ThrowIfNull(worksheet);
 
         AnswersJson = answersJson.Trim();
-        Student = student;
+//        Student = student;
         Worksheet = worksheet;
         Status = WorkingStatus.InProgress;
     }

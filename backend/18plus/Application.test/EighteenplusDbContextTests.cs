@@ -6,20 +6,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.test;
 
-public class ApplicationDbContextTests
+public class EighteenplusDbContextTests
 {
-    private ApplicationDbContext GetDatabase()
+    private EighteenplusDbContext GetDatabase()
     {
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();
 
-        var opt = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var opt = new DbContextOptionsBuilder<EighteenplusDbContext>()
             .UseSqlite(connection)
             .LogTo(message => Debug.WriteLine(message), LogLevel.Information)
             .EnableSensitiveDataLogging()
             .Options;
 
-        var db = new ApplicationDbContext(opt);
+        var db = new EighteenplusDbContext(opt);
 
         db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
