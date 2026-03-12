@@ -2,6 +2,8 @@
 import Interview from "@/components/worksheets/Interview"
 import Kreise from "@/components/worksheets/Kreise"
 import Tabelle from "@/components/worksheets/Tabelle"
+import Kontaktform  from "@/components/worksheets/Kontaktform"
+import Checkliste from "@/components/worksheets/Checkliste"
 
 export default function WorksheetRenderer({ worksheetId }) {
   switch (worksheetId) {
@@ -16,6 +18,12 @@ export default function WorksheetRenderer({ worksheetId }) {
 
     case "ws-tabelle":
       return <Tabelle />
+
+      case "ws-kontaktform":
+          return <Kontaktform />
+
+          case "ws-checkliste":
+              return <Checkliste />
 
     default:
       return (

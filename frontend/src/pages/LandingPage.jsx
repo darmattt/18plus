@@ -30,6 +30,11 @@ export default function LandingPage() {
             Gruppe beitreten
           </Link>
 
+
+          <Link className="hover:text-slate-900" to="/CoursePage">
+                      Gruppe beitreten
+                    </Link>
+
           <a className="hover:text-slate-900" href="#">
             über 18plus
           </a>
