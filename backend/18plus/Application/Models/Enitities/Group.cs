@@ -7,7 +7,7 @@ namespace Application.Models.Enitities;
 public  class Group : EntityBase
 {
     public int Id { get; protected set; }
-    public ClassNumber Name {get; protected set; }
+    public ClassNumber Name {get; protected set; } 
     public string JoinCode {get; protected set;}
     public Teacher Teacher {get; protected set;}
     private static readonly Random Random = new();
@@ -22,6 +22,7 @@ public  class Group : EntityBase
         JoinCode = GenerateJoinCode();
     }
 
+    protected Group(){}
     private static string GenerateJoinCode()
     {
         int number = RandomNumberGenerator.GetInt32(0, 1000000);

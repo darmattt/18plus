@@ -17,7 +17,7 @@ public class EighteenplusDbContext(DbContextOptions<EighteenplusDbContext> optio
     // public DbSet<Worksheet> Worksheets => Set<Worksheet>();
     // public DbSet<GroupWorksheet> GroupWorksheets => Set<GroupWorksheet>();
     // public DbSet<Result> Results => Set<Result>();
-    // public DbSet<OneTimeCode> OneTimeCodes => Set<OneTimeCode>();
+    public DbSet<OneTimeCode> OneTimeCodes => Set<OneTimeCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {   //EF Core Standardkonfiguration holen.

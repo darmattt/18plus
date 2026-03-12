@@ -12,32 +12,12 @@ public class OneTimeCodeTests
     {
         var student = CreateStudent();
 
-        var code = new OneTimeCode(student);
+        var code = new OneTimeCode(student, "123456");
 
         Assert.NotNull(code);
-      //  Assert.Equal(student, code.Student);
+        Assert.Equal(student, code.Student);
         Assert.False(code.IsUsed);
-        Assert.NotNull(code.Code);
-    }
-
-    [Fact]
-    public void Constructor_Should_Generate_6_Digit_Code()
-    {
-        var student = CreateStudent();
-
-        var code = new OneTimeCode(student);
-
-        Assert.Equal(6, code.Code.Length);
-    }
-
-    [Fact]
-    public void Constructor_Should_Generate_Code_With_Only_Digits()
-    {
-        var student = CreateStudent();
-
-        var code = new OneTimeCode(student);
-
-        Assert.Matches(@"^\d{6}$", code.Code);
+        Assert.NotNull(code.CodeHash);
     }
 
     [Fact]
@@ -45,7 +25,7 @@ public class OneTimeCodeTests
     {
         var student = CreateStudent();
 
-        var code = new OneTimeCode(student);
+        var code = new OneTimeCode(student, "123456");
 
         Assert.True(code.ExpiresAt > DateTime.UtcNow);
     }
@@ -54,30 +34,62 @@ public class OneTimeCodeTests
     public void Constructor_Should_Throw_Exception_When_Student_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new OneTimeCode(null!));
+            new OneTimeCode(null!, "123456"));
+    }
+
+    [Fact]
+    public void Constructor_Should_Throw_Exception_When_Code_Is_Empty()
+    {
+        var student = CreateStudent();
+
+        Assert.Throws<ArgumentException>(() =>
+            new OneTimeCode(student, ""));
     }
 
     [Fact]
     public void MarkAsUsed_Should_Set_IsUsed_To_True()
     {
         var student = CreateStudent();
-        var code = new OneTimeCode(student);
+        var code = new OneTimeCode(student, "123456");
 
         code.MarkAsUsed();
 
         Assert.True(code.IsUsed);
+        Assert.NotNull(code.UsedAt);
     }
 
     [Fact]
     public void MarkAsUsed_Should_Throw_Exception_When_Code_Already_Used()
     {
         var student = CreateStudent();
-        var code = new OneTimeCode(student);
+        var code = new OneTimeCode(student, "123456");
 
         code.MarkAsUsed();
 
         Assert.Throws<InvalidOperationException>(() =>
             code.MarkAsUsed());
+    }
+
+    [Fact]
+    public void VerifyCode_Should_Return_True_When_Code_Is_Correct()
+    {
+        var student = CreateStudent();
+        var code = new OneTimeCode(student, "123456");
+
+        var result = code.VerifyCode("123456");
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void VerifyCode_Should_Return_False_When_Code_Is_Wrong()
+    {
+        var student = CreateStudent();
+        var code = new OneTimeCode(student, "123456");
+
+        var result = code.VerifyCode("654321");
+
+        Assert.False(result);
     }
 
     private static Student CreateStudent()

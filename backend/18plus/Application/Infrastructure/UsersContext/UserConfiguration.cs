@@ -11,7 +11,8 @@ public class UserConfiguration : IEntityTypeConfiguration<UserBase>
     {
         builder.ToTable("Users");
         builder.UseTptMappingStrategy();
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.Id)
+            .HasName("UserId");
         //First Name Property
         builder.Property(x => x.FirstName)
             .IsRequired()
@@ -30,29 +31,26 @@ public class UserConfiguration : IEntityTypeConfiguration<UserBase>
                 .IsUnique();
         });
         //PasswordHash Property
-        builder.OwnsOne(x => x.PasswordHash)
-            .HasIndex(x => x.Value)
-            .IsUnique();
+        builder.OwnsOne(x => x.PasswordHash, hash =>
+        {
+            hash.Property(x => x.Value)
+                .HasColumnName("PasswordHash")
+                .IsRequired();
+            hash.HasIndex(x => x.Value)
+                .IsUnique();
+        });
         //Phone number Property
-        builder.OwnsOne(x => x.PhoneNumber)
-            .HasIndex(x => x.Value)
-            .IsUnique();
+        builder.OwnsOne(x => x.PhoneNumber, number =>
+        {
+            number.Property(x => x.Value)
+                .HasColumnName("PhoneNumber")
+                .IsRequired();
+            number.HasIndex(x => x.Value)
+                .IsUnique();
+        });
         //Role Property
         builder.Property(x => x.Role)
             .HasConversion<string>()
             .IsRequired();
-        //Created by Property
-        builder.Property(x => x.CreatedBy)
-            .IsRequired(false);
-        //Created at Property
-        builder.Property(x => x.CreatedAt)
-            .IsRequired();
-        //Updated at Property
-        builder.Property(x => x.UpdatedAt)
-            .IsRequired(false);
-        //Updated by Property
-        builder.Property(x =>  x.UpdatedBy)
-            .IsRequired(false);
-        
     }
 }
