@@ -1,3 +1,6 @@
+
+import { Link } from "react-router-dom"
+
 import React, { useEffect, useState } from "react";
 import { BookOpen, ChevronRight, Lightbulb } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

@@ -4,6 +4,12 @@ import Kreise from "@/components/worksheets/Kreise"
 import Tabelle from "@/components/worksheets/Tabelle"
 import Kontaktform  from "@/components/worksheets/Kontaktform"
 import Checkliste from "@/components/worksheets/Checkliste"
+import FragenTabellen from "@/components/worksheets/FragenTabellen"
+import Informationstext from "@/components/worksheets/Informationstext"
+
+
+
+
 
 export default function WorksheetRenderer({ worksheetId }) {
   switch (worksheetId) {
@@ -24,6 +30,12 @@ export default function WorksheetRenderer({ worksheetId }) {
 
           case "ws-checkliste":
               return <Checkliste />
+
+                 case "ws-fragen-tabelle":
+                        return <FragenTabellen />
+
+                        case "ws-text":
+                            return <Informationstext />
 
     default:
       return (

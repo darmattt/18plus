@@ -1,9 +1,14 @@
+import { Link } from "react-router-dom"
+
+
 import React, { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, FileText, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+
+
 
 const initialSkills = [
   { name: "Teamfähigkeit", level: 0 },
@@ -13,7 +18,7 @@ const initialSkills = [
   { name: "Analytisches Denken", level: 0 },
 ];
 
-export default function FragenUndTabelle() {
+export default function FragenTabelle() {
   const [openAnswer, setOpenAnswer] = useState("");
   const [skills, setSkills] = useState(initialSkills);
   const [showMotivation, setShowMotivation] = useState(false);
