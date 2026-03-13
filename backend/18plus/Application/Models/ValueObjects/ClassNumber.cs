@@ -7,6 +7,7 @@ public sealed record ClassNumber
         new(@"^[0-9][A-Z0-9]*$", RegexOptions.Compiled);
     public string Value {get;}
 
+    protected ClassNumber(){}
     public ClassNumber(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);

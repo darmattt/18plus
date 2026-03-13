@@ -4,7 +4,6 @@ namespace Application.Models.Enitities;
 
 public class Worksheet : EntityBase
 {
-    public int Id { get; protected set; }
     public string Name { get; protected set; }
     public string Description { get; protected set; }
 

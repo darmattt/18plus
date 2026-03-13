@@ -1,12 +1,27 @@
 ﻿using Application.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
 
 namespace Application.Infrastructure.UsersContext;
 
 public class UserConfiguration : IEntityTypeConfiguration<UserBase>
 {
+    
+    // CREATE TABLE "Users" (
+    // "Id" INTEGER NOT NULL CONSTRAINT "UserId" PRIMARY KEY,
+    // "FirstName" TEXT NOT NULL,
+    // *LastName" TEXT NOT NULL,
+    // "Email" TEXT NOT NULL,
+    // "Role" TEXT NOT NULL,
+    // "PasswordHash" TEXT NOT NULL,
+    // "PhoneNumber" TEXT NULL,
+    // "PublicId" TEXT NOT NULL,
+    // "UpdatedAt" TEXT NULL,
+    // "CreatedBy" INTEGER NULL,
+    // "UpdatedBy" INTEGER NULL,
+    // *CreatedAt" TEXT NOT NULL
+    // );
+    
     public void Configure(EntityTypeBuilder<UserBase> builder)
     {
         builder.ToTable("Users");
@@ -36,8 +51,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserBase>
             hash.Property(x => x.Value)
                 .HasColumnName("PasswordHash")
                 .IsRequired();
-            hash.HasIndex(x => x.Value)
-                .IsUnique();
+            hash.HasIndex(x => x.Value);
         });
         //Phone number Property
         builder.OwnsOne(x => x.PhoneNumber, number =>
@@ -45,8 +59,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserBase>
             number.Property(x => x.Value)
                 .HasColumnName("PhoneNumber")
                 .IsRequired();
-            number.HasIndex(x => x.Value)
-                .IsUnique();
+            number.HasIndex(x => x.Value);
         });
         //Role Property
         builder.Property(x => x.Role)

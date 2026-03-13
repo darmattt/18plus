@@ -12,11 +12,10 @@ public class EighteenplusDbContext(DbContextOptions<EighteenplusDbContext> optio
     //Wir sagen dem 
     public DbSet<UserBase> Users => Set<UserBase>();
     public DbSet<Student> Students => Set<Student>();
-    // public DbSet<Admin> Admins => Set<Admin>();
-    // public DbSet<Group> Groups => Set<Group>();
-    // public DbSet<Worksheet> Worksheets => Set<Worksheet>();
-    // public DbSet<GroupWorksheet> GroupWorksheets => Set<GroupWorksheet>();
-    // public DbSet<Result> Results => Set<Result>();
+    public DbSet<Group> Groups => Set<Group>();
+    public DbSet<Worksheet> Worksheets => Set<Worksheet>();
+    public DbSet<GroupWorksheet> GroupWorksheets => Set<GroupWorksheet>();
+    public DbSet<Result> Results => Set<Result>();
     public DbSet<OneTimeCode> OneTimeCodes => Set<OneTimeCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

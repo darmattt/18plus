@@ -11,11 +11,12 @@ legend right
 endlegend
 ' ===================== Packages =====================
     class EntityBase << (A,#A9DCDF) Entity >> {
-        +ID: int
+        +PublicId: Guid 
+        +Id: int
         +CreatedAt: DateTime
-        +CreatedBy: int
-        +UpdatedAt: DateTime
-        +UpdatedBy: int   
+        +CreatedBy?: int
+        +UpdatedAt?: DateTime
+        +UpdatedBy?: int   
     }
     
   
@@ -29,7 +30,7 @@ endlegend
     class Group <<(C,#AFD3B4) Entity >> {
         +Name: ClassNumber <<nn>>
         +JoinCode: int <<nn>> <<unique>>
-        +Teacher: Teacher <<nn>>
+        +UserBase: Teacher <<nn>>
     }
 package "User" as P_User #FFDBE6 {
     class UserBase << (A,#A9DCDF) Entity >> {
@@ -38,7 +39,7 @@ package "User" as P_User #FFDBE6 {
         +E-MailAddress: EMailAddress <<nn>> <<unique>>
         +Role: Role <<nn>>
         +PasswordHash: PasswordHash
-        +PhoneNumber: PhoneNumber
+        +PhoneNumber?: PhoneNumber
     }
     
     class Admin << (C,#AFD3B4) Entity >> {
@@ -60,15 +61,11 @@ package "User" as P_User #FFDBE6 {
  
     class Result << (C, #AFD3B4) Entity >> {
         +AnswersJson: string <<nn>>
-        +SubmittedAt: DateTime 
+        +SubmittedAt?: DateTime 
         +Student: Student <<nn>>
         +Worksheet: Worksheet <<nn>>
         +Status: WorkingStatus
     }
-    
-
- 
-
     
     class Worksheet << (C, #AFD3B4) Entity >> {
         +Name: string <<nn>>
@@ -79,7 +76,7 @@ package "User" as P_User #FFDBE6 {
         +Group: Group <<nn>>
         +Worksheet: Worksheet <<nn>>
         +IsEnabled: bool <<nn>>
-        +EnabledAt: DateTime 
+        +EnabledAt?: DateTime 
     }
     
 
@@ -119,15 +116,16 @@ package "Enum" as P_Enum #EEEEEE {
     }
 }
   
-    UserBase --|> EntityBase
+    UserBase ---|> EntityBase
     Teacher --|> UserBase
     Student --|> UserBase
     EighteenplusException --|> Exception
+    InvalidEmailException --|> Exception
     Student "0..*"-->"0..1" Group
     Group "1" o-- "1" ClassNumber
-    Teacher "1"-->"0..*" Group
-    Group --|> EntityBase
-    Result --|> EntityBase
+    UserBase "1"-->"0..*" Group
+    Group ---|> EntityBase
+    Result ---|> EntityBase
     Result --> WorkingStatus
     Student "1" --> "0..*" Result
     Worksheet "1" --> "0..*" Result
@@ -140,6 +138,5 @@ package "Enum" as P_Enum #EEEEEE {
     UserBase "1"--"1" PasswordHash
     PhoneNumber "1" -- "1" UserBase
     Admin --|> UserBase
-    Admin "1"--"1" PasswordHash
  
 @enduml

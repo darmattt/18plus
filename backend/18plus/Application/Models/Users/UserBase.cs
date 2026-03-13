@@ -14,7 +14,7 @@ public abstract class UserBase : EntityBase
     public EMailAddress Email { get; protected set; } = null!;
     public Role Role { get; protected set; }
     public PasswordHash PasswordHash { get; protected set; } = null!;
-    public PhoneNumber? PhoneNumber { get; protected set; } = null!;
+    public PhoneNumber? PhoneNumber { get; protected set; }
     protected UserBase() { }
 
     protected UserBase(string firstName, string lastName, EMailAddress email)
@@ -37,17 +37,10 @@ public abstract class UserBase : EntityBase
         Email = email;
     }
     
-    protected UserBase(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash)
-        : this(firstName, lastName, email)
-    {
-        ArgumentNullException.ThrowIfNull(passwordHash);
-        PasswordHash = passwordHash;
-    }
     protected UserBase(string firstName, string lastName, EMailAddress email, PasswordHash passwordHash, PhoneNumber? phoneNumber = null)
         : this(firstName, lastName, email)
     {
         ArgumentNullException.ThrowIfNull(passwordHash);
-        ArgumentNullException.ThrowIfNull(phoneNumber);
         PasswordHash = passwordHash;
         PhoneNumber = phoneNumber;
     }}
