@@ -1,5 +1,6 @@
 ﻿using Application.Infrastructure;
 using Application.Models.Services;
+using Application.ViewModels.Converters;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application;
@@ -9,12 +10,16 @@ using Scalar.AspNetCore;
 
 // --- 1. Builder Phase ---
 // WHY: Register Services and configure the WebApplicationBuilder (DI, logging, config, Kestrel, etc.)
-public class Programm
+public class Program
 {
     public static void Main(string[] args)
     {
 // Creates a WebApplicationBuilder with default config (appsettings.json, env variables, logging, Kestrel)
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddControllers().AddJsonOptions(options =>
+            options.JsonSerializerOptions.Converters.Add(new EmailConverter())
+        );
 
 // Registers controller services (incl. model binding, routing)
         builder.Services.AddControllers();

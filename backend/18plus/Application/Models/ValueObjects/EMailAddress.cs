@@ -5,7 +5,7 @@ namespace Application.Models.ValueObjects;
 
 public sealed record EMailAddress
 {
-    public string Value {get;}
+    public string Value {get; init; }
  
     protected EMailAddress() {}
     public EMailAddress(string value)
@@ -26,5 +26,4 @@ public sealed record EMailAddress
         Value = value;
     }
 
-    public override string ToString() => Value;
 }

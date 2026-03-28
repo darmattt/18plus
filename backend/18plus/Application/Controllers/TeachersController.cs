@@ -15,9 +15,9 @@ public class TeachersController(EighteenplusDbContext db, ILogger<TeachersContro
     public async Task<ActionResult<Teacher>> CreateNewTeacher([FromBody] CreateTeacherDto request)
     {
         var teacher = new Teacher(
-            request.FirstName,c
+            request.FirstName,
             request.LastName,
-            new EMailAddress(request.Email),
+            request.Email,
             passwordHasher.Hash(request.Password),
             new PhoneNumber(request.PhoneNumber)
         );
