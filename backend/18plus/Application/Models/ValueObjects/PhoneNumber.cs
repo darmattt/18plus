@@ -7,7 +7,7 @@ public class PhoneNumber
     private static readonly Regex ValidPattern =
         new(@"^(?:\+43|0)\s?[1-9](?:[\s]?\d){6,13}$", RegexOptions.Compiled);
 
-    public string Value { get; }
+    public string? Value { get; }
 
     public PhoneNumber(string value)
     {

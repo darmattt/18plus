@@ -1,0 +1,11 @@
+###
+POST http://localhost:5000/api/Teachers
+Content-Type: application/json
+
+{
+    "firstName" : "Mansour",
+    "lastName" : "Khawari",
+    "email" : "mansourkhawar@gmail.com",
+    "password" : "Pa$$w0rd",
+    "phonenumber": "+4312345678910"
+}

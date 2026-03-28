@@ -10,6 +10,7 @@ public  class Group : EntityBase
     public ClassNumber Name {get; protected set; } 
     public string JoinCode {get; protected set;}
     public UserBase Teacher {get; protected set;}
+    
     private static readonly Random Random = new();
 
     public Group(ClassNumber name, UserBase teacher)
