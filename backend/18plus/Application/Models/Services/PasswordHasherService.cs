@@ -4,7 +4,7 @@ using Application.Models.ValueObjects;
 
 namespace Application.Models.Services;
 
-public class PasswordHasherService
+public class PasswordHasherService : IPasswordHasherService
 {
     private readonly IPasswordHasher<Object> _hasher;
 

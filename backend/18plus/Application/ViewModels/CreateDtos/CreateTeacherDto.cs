@@ -1,12 +1,24 @@
-﻿using Application.Models.ValueObjects;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.Models.ValueObjects;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Application.ViewModels;
+namespace Application.ViewModels.CreateDtos;
 
-public class CreateTeacherDto
+public record CreateTeacherDto
 {
-    public required string FirstName { get; set; } 
-    public required string LastName { get;  set; } 
-    public required EMailAddress Email { get;  set; }
-    public required string Password { get; set; }
-    public required string PhoneNumber { get; set; } = null!;
+    [Required]
+    [StringLength(50, MinimumLength = 1)]
+    public string FirstName { get; init; } = string.Empty;
+
+    [Required]
+    [StringLength(50, MinimumLength = 1)] 
+    public string LastName { get; init; } =  string.Empty;
+
+    [Required] 
+    public EMailAddress Email { get; init; } = default!;
+
+    [Required]
+    [MinLength(8)]
+    public string Password { get; init; } = string.Empty;
+    public PhoneNumber? PhoneNumber { get; init; } 
 }

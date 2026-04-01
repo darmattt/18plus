@@ -9,12 +9,12 @@ public abstract class UserBase : EntityBase
 {
     private static readonly Regex ValidPattern =
         new(@"^(?=.{1,50}$)[\p{L}]+(?:[ '-][\p{L}]+)*$", RegexOptions.Compiled);
-    public string FirstName { get; protected set; } = null!;
-    public string LastName { get; protected set; } = null!;
-    public EMailAddress Email { get; protected set; } = null!;
+    public string FirstName { get; protected internal set; } = null!;
+    public string LastName { get; protected internal set; } = null!;
+    public EMailAddress Email { get; protected internal set; } = null!;
     public Role Role { get; protected set; }
-    public PasswordHash PasswordHash { get; protected set; } = null!;
-    public PhoneNumber? PhoneNumber { get; protected set; }
+    public PasswordHash PasswordHash { get; protected internal set; } = null!;
+    public PhoneNumber? PhoneNumber { get; internal protected set; }
     protected UserBase() { }
 
     protected UserBase(string firstName, string lastName, EMailAddress email)

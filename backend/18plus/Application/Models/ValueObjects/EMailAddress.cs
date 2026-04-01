@@ -21,7 +21,7 @@ public sealed record EMailAddress
                 false //Keine Umlaute und keine andere Sprachen
                 )
             )
-             throw new ArgumentException("Invalid email address");
+             throw new ArgumentException("Please enter a valid email address.");
          
         Value = value;
     }

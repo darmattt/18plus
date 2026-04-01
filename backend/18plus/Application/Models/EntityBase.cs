@@ -4,7 +4,7 @@ public abstract class EntityBase : IEquatable<EntityBase>
 {
     public int Id { get; protected set; }              // DB Primary Key
     public Guid PublicId { get; protected set; } = Guid.NewGuid(); // öffen    public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; protected set; }
+    public DateTime? UpdatedAt { get; protected internal set; }
     public int? CreatedBy { get; protected set; }
     public int? UpdatedBy { get; protected set; }
     public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;

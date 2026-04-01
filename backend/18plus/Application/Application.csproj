@@ -16,7 +16,6 @@
 
     <ItemGroup>
       <Folder Include="Infrastructure\EntitiesContext\" />
-      <Folder Include="ViewModels\UpdateDtos\" />
     </ItemGroup>
 
 </Project>
