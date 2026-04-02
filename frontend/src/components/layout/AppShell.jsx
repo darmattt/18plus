@@ -13,6 +13,7 @@ export default function AppShell() {
   const [expandedModules, setExpandedModules] = useState([
     "Modul 1: Berufsorientierung - Arbeitsblätter",
   ])
+    
   const [chatOpen, setChatOpen] = useState(false)
 
   const toggleModule = (title) => {

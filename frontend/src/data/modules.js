@@ -12,4 +12,12 @@
       { id: "ws-kontaktform", title: "Arbeitsblatt 8: Kontaktformular" },
     ],
   },
+    {
+        title: "Modul 2: Selbstreflexion zu Stärken, Werten, Zielen\n",
+        sheets: [
+            { id: "ws-selbstbild", title: "Arbeitsblatt 1: Selbstbild „So sehe ich mich selbst“"},
+            { id: "ws-fremdbild", title: "Arbeitsblatt 2: Fremdbild „So sehen mich die anderen“" },
+            { id: "ws-vorstellungsgespraech", title: "Arbeitsblatt 3: Vorstellungsgespräch" },
+        ],
+    },
 ]

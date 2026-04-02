@@ -6,6 +6,8 @@ import Kontaktform  from "@/components/worksheets/Kontaktform"
 import Checkliste from "@/components/worksheets/Checkliste"
 import FragenTabellen from "@/components/worksheets/FragenTabellen"
 import Informationstext from "@/components/worksheets/Informationstext"
+import Selbstbild from "@/components/worksheets/Selbstbild.jsx";
+import Fremdbild from "@/components/worksheets/Fremdbild.jsx";
 
 
 
@@ -36,6 +38,12 @@ export default function WorksheetRenderer({ worksheetId }) {
 
                         case "ws-text":
                             return <Informationstext />
+      
+                              case "ws-selbstbild":
+                                  return <Selbstbild />
+      
+                                      case "ws-fremdbild":
+                                          return <Fremdbild />
 
     default:
       return (
