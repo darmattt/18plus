@@ -27,23 +27,23 @@ export default function WorksheetRenderer({ worksheetId }) {
     case "ws-tabelle":
       return <Tabelle />
 
-      case "ws-kontaktform":
-          return <Kontaktform />
+    case "ws-kontaktform":
+      return <Kontaktform />
 
-          case "ws-checkliste":
-              return <Checkliste />
+    case "ws-checkliste":
+      return <Checkliste />
 
-                 case "ws-fragen-tabelle":
-                        return <FragenTabellen />
+    case "ws-fragen-tabelle":
+        return <FragenTabellen />
 
-                        case "ws-text":
-                            return <Informationstext />
+    case "ws-text":
+        return <Informationstext />
       
-                              case "ws-selbstbild":
-                                  return <Selbstbild />
+    case "ws-selbstbild":
+        return <Selbstbild />
       
-                                      case "ws-fremdbild":
-                                          return <Fremdbild />
+    case "ws-fremdbild":
+        return <Fremdbild />
 
     default:
       return (
