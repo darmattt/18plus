@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Application.Models.Enitities;
 using Application.Models.Enums;
+using Application.Models.Exception;
 using Application.Models.ValueObjects;
 
 namespace Application.Models.Users;
@@ -13,8 +14,8 @@ public abstract class UserBase : EntityBase
     public string LastName { get; protected internal set; } = null!;
     public EMailAddress Email { get; protected internal set; } = null!;
     public Role Role { get; protected set; }
-    public PasswordHash PasswordHash { get; protected internal set; } = null!;
-    public PhoneNumber? PhoneNumber { get; internal protected set; }
+    public PasswordHash? PasswordHash { get; protected internal set; } = null!;
+    public PhoneNumber? PhoneNumber { get; protected internal set; } = null!;
     protected UserBase() { }
 
     protected UserBase(string firstName, string lastName, EMailAddress email)
@@ -27,10 +28,10 @@ public abstract class UserBase : EntityBase
         lastName = lastName.Trim();
 
         if (!ValidPattern.IsMatch(firstName))
-            throw new ArgumentException("Invalid first name.", nameof(firstName));
+            throw new DomainBusinessValidationException($"Invalid first name: {firstName}");
 
         if (!ValidPattern.IsMatch(lastName))
-            throw new ArgumentException("Invalid last name.", nameof(lastName));
+            throw new DomainBusinessValidationException($"Invalid last name: {lastName}");
 
         FirstName = firstName;
         LastName = lastName;

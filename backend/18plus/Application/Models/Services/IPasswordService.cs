@@ -3,7 +3,7 @@ using Application.Models.ValueObjects;
 
 namespace Application.Models.Services;
 
-public interface IPassowrdService
+public interface IPasswordService
 {
     
     PasswordHash Hash(string plainPassword);

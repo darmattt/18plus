@@ -5,7 +5,7 @@
 
     namespace Application.Models.Services;
 
-    public class PassowrdService(PasswordHasher<UserBase> passwordHasher) : IPassowrdService
+    public class PasswordService(PasswordHasher<UserBase> passwordHasher) : IPasswordService
     { 
         public PasswordHash Hash(string plainPassword)
         {

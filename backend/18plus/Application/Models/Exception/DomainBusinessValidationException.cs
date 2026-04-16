@@ -1,3 +1,11 @@
-﻿namespace Application.Models.Exception;
+﻿using System.Runtime.Serialization;
 
-public class DomainBuisnessValidationException(string? message) : System.Exception(message);
+namespace Application.Models.Exception;
+
+public class DomainBusinessValidationException : System.Exception
+{ 
+    public DomainBusinessValidationException(string? message) : base(message)
+    {
+    }
+    
+}

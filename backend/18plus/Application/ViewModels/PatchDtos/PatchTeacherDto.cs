@@ -18,4 +18,7 @@ public record PatchTeacherDto
     public string? Password { get; init; }
 
     public PhoneNumber? PhoneNumber { get; init; } 
+    
+    public ClassNumber? ClassNumber { get; init; }
+    
 }

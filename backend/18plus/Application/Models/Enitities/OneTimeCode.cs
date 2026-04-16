@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Application.Models.Exception;
 using Application.Models.Users;
 
 namespace Application.Models.Enitities;
@@ -7,54 +8,47 @@ public class OneTimeCode : EntityBase
 {
     public string CodeHash { get; protected set; }
     public DateTime ExpiresAt { get; protected set; }
-    public DateTime? UsedAt{ get; protected set; }
+    public DateTime? UsedAt { get; protected set; }
     public Student Student { get; protected set; }
 
     protected OneTimeCode() { }
 
-    public OneTimeCode(Student student, string plainCode)
+    public OneTimeCode(Student student, string codeHash)
     {
         ArgumentNullException.ThrowIfNull(student);
-        ArgumentException.ThrowIfNullOrEmpty(plainCode);
+        ArgumentException.ThrowIfNullOrWhiteSpace(codeHash);
 
-        CodeHash = HashCodeValue(plainCode.Trim());
-        ExpiresAt = DateTime.UtcNow.AddMinutes(10);
         Student = student;
+        CodeHash = codeHash;
+        ExpiresAt = DateTime.Now.AddMinutes(5);
     }
 
     public bool IsUsed => UsedAt is not null;
+    public bool IsExpired => DateTime.UtcNow > ExpiresAt;
 
     public void MarkAsUsed()
     {
-        if(IsUsed)
-            throw new InvalidOperationException("Already used");
+        if (IsUsed)
+            throw new DomainBusinessValidationException("Code already used.");
+
         UsedAt = DateTime.UtcNow;
     }
 
-    public bool VerifyCode(string plainCode)
+    public bool VerifyHash(string computedHash)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(plainCode);
-     
-        if(IsUsed)
-            return false;
-        
-        if(ExpiresAt < DateTime.UtcNow)
-            return false;
-        
-        var hash = HashCodeValue(plainCode);
-        return hash == CodeHash;
-    }
+        ArgumentException.ThrowIfNullOrWhiteSpace(computedHash);
 
-    private static string HashCodeValue(string code)
-    {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(code);
-        var hash =  SHA256.HashData(bytes);
-        return Convert.ToHexString(hash);
+        if (IsUsed || IsExpired)
+            return false;
+
+        var isValid = CryptographicOperations.FixedTimeEquals(
+            Convert.FromHexString(CodeHash),
+            Convert.FromHexString(computedHash)
+        );
+
+        if (isValid)
+            UsedAt = DateTime.UtcNow;
+
+        return isValid;
     }
-    private static string GenerateCode()
-    {
-        int number = RandomNumberGenerator.GetInt32(0, 1000000);
-        return number.ToString("D6");
-    }
-    
 }

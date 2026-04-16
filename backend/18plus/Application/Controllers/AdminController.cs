@@ -8,48 +8,113 @@ namespace Application.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TeachersController(ITeacherService teacherService) : ControllerBase
+public class AdminController(IAdminService adminService) : ControllerBase
 {
-    [HttpGet("{id}")]
-    public async Task<ActionResult<TeacherResponse>> GetOneTeacherAsync([FromRoute] int id)
+    [HttpGet("teacher/{id}")]
+    public async Task<ActionResult<TeacherResponse>> GetTeacherByIdAsync([FromRoute] int id)
     {
-        return Ok(await teacherService.GetOneTeacherAsync(id));
+        return Ok(await adminService.GetTeacherByIdAsync(id));
     }
 
-    [HttpGet]
+    [HttpGet("teacher/search/{lastname}")]
+    public async Task<ActionResult<List<TeacherResponse>>> SearchTeachersByLastnameAsync([FromRoute] string lastname)
+    {
+        return Ok(await adminService.SearchTeachersByNameAsync(lastname));
+    }
+    
+    [HttpGet("teacher")]
     public async Task<ActionResult<List<TeacherResponse>>> GetAllTeachersAsync()
     {
-        return Ok(await teacherService.GetAllTeachersAsync());
+        return Ok(await adminService.GetAllTeachersAsync());
     }
-
-    [HttpPost]
-    public async Task<ActionResult<TeacherResponse>> CreateTeacherAsync(
-        [FromBody] CreateTeacherDto request)
+    [HttpPost("teacher")]
+    public async Task<ActionResult<TeacherResponse>> CreateTeacherAsync([FromBody] CreateTeacherDto request)
     {
-        var teacher = await teacherService.CreateTeacherAsync(request);
-        return CreatedAtAction("GetOneTeacher", new { id = teacher.Id }, teacher);
-    }
+        var teacher = await adminService.CreateTeacherAsync(request);
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<TeacherResponse>> UpdateTeacherAsync(
-        [FromRoute] int id,
-        [FromBody] CreateTeacherDto request)
+        return CreatedAtAction(
+            "GetTeacherById",
+            new { id = teacher.Id },
+            teacher
+        );
+    }
+    
+    [HttpDelete("teacher/{id}")]
+    public async Task<IActionResult> DeleteTeacherAsync([FromRoute] int id)
     {
-        return Ok(await teacherService.UpdateTeacherAsync(request, id));
+        await adminService.DeleteTeacherAsync(id);
+        return NoContent();
     }
 
-    [HttpPatch("{id}")]
+    [HttpPatch("teacher/{id}")]
     public async Task<ActionResult<TeacherResponse>> PatchTeacherAsync(
         [FromRoute] int id,
         [FromBody] PatchTeacherDto request)
     {
-        return Ok(await teacherService.PatchTeacherAsync(request, id));
+        return Ok(await adminService.PatchTeacherAsync(request, id));
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTeacherAsync([FromRoute] int id)
+    [HttpGet("group/{groupName}")]
+    public async Task<ActionResult<List<TeacherResponse>>> GetGroupByNameAsync([FromRoute] string groupName)
     {
-        await teacherService.DeleteTeacherAsync(id);
-        return NoContent();
+        return Ok(await adminService.GetGroupByNameAsync(groupName));
     }
+    
+    [HttpPost("group/{id}")]
+    public async Task<ActionResult<TeacherResponse>> CreateGroupAsync([FromBody] CreateGroupDto request,[FromRoute] int id)
+    {
+        var group = await adminService.CreateGroupAsync(id, request);
+
+        return CreatedAtAction("GetGroupByName", new { id = group.Id }, group);
+    }
+
+
+    //
+    // [HttpGet("student")]
+    // public async Task<ActionResult<List<StudentResponse>>> GetAllStudentsAsync()
+    // {
+    //     return Ok(await adminService.GetAllStudentsAsync());
+    // }
+    //
+    // [HttpGet("student/{id}")]
+    // public async Task<ActionResult<StudentResponse>> GetOneStudentAsync([FromRoute] int id)
+    // {
+    //     return Ok(await adminService.GetOneStudentAsync(id));
+    // }
+    //
+    // [HttpPost("student")]
+    // public async Task<ActionResult<StudentResponse>> CreateStudentAsync(
+    //     [FromBody] CreateStudentDto request)
+    // {
+    //     var student = await adminService.CreateStudentAsync(request);
+    //     return CreatedAtAction(nameof(GetOneStudentAsync), new { id = student.id }, student);
+    // }
+    //
+    // [HttpPut("student/{id}")]
+    // public async Task<ActionResult<StudentResponse>> UpdateStudentAsync(
+    //     [FromRoute] int id,
+    //     [FromBody] CreateStudentDto request)
+    // {
+    //     return Ok(await adminService.UpdateStudentAsync(request, id));
+    // }
+    //
+    // [HttpPatch("student/{id}")]
+    // public async Task<ActionResult<StudentResponse>> PatchStudentAsync(
+    //     [FromRoute] int id,
+    //     [FromBody] PatchStudentDto request)
+    // {
+    //     return Ok(await adminService.PatchStudentAsync(request, id));
+    // }
+    //
+    // [HttpDelete("student/{id}")]
+    // public async Task<IActionResult> DeleteStudentAsync([FromRoute] int id)
+    // {
+    //     await adminService.DeleteStudentAsync(id);
+    //     return NoContent();
+    // }
+    //
+    // //kurse anlegen + verwalten 
+    // //worksheet anlegen + verwalten
+    // //
+    //
 }

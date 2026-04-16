@@ -7,7 +7,6 @@ public sealed record EMailAddress
 {
     public string Value {get; init; }
  
-    protected EMailAddress() {}
     public EMailAddress(string value)
     {
         
@@ -21,7 +20,7 @@ public sealed record EMailAddress
                 false //Keine Umlaute und keine andere Sprachen
                 )
             )
-             throw new ArgumentException("Please enter a valid email address.");
+             throw new DomainBusinessValidationException($"Please enter a valid email address: {value}");
          
         Value = value;
     }

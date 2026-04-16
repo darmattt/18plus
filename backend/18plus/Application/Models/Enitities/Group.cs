@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using Application.Models.Enums;
+using Application.Models.Exception;
 using Application.Models.Users;
 using Application.Models.ValueObjects;
 
@@ -7,7 +8,7 @@ namespace Application.Models.Enitities;
 
 public  class Group : EntityBase
 {
-    public ClassNumber Name {get; protected set; } 
+    public ClassNumber Name {get; set; } 
     public string JoinCode {get; protected set;}
     public UserBase Teacher {get; protected set;}
     
@@ -19,7 +20,7 @@ public  class Group : EntityBase
         ArgumentNullException.ThrowIfNull(teacher);
         
         if(teacher.Role != Role.Teacher)
-            throw new ArgumentException("User must be teacher", nameof(teacher));
+            throw new DomainBusinessValidationException($"User must be teacher.");
         
         Name = name;
         Teacher = teacher;

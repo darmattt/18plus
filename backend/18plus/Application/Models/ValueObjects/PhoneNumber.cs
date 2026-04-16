@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Application.Models.Exception;
 
 namespace Application.Models.ValueObjects;
 
@@ -16,7 +17,7 @@ public class PhoneNumber
         value = value.Trim();
 
         if (!ValidPattern.IsMatch(value))
-            throw new ArgumentException("Invalid Austrian phone number format.", nameof(value));
+            throw new DomainBusinessValidationException($"Invalid Austrian phone number format: {value}" );
 
         Value = Regex.Replace(value, @"\s+", "");
     }

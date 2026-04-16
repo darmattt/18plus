@@ -6,7 +6,7 @@ namespace Application.Models.Users;
 
 public class Student : UserBase
 {
-    public Group? Group { get; protected set; }
+    public Group? Group { get; protected internal set; }
     protected Student() { }
     
     public Student(string firstName, string lastName, EMailAddress email) : base(firstName, lastName, email)

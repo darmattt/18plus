@@ -1,4 +1,6 @@
-﻿namespace Application.Models.Enitities;
+﻿using Application.Models.Exception;
+
+namespace Application.Models.Enitities;
 
 public class GroupWorksheet
 {
@@ -23,7 +25,7 @@ public class GroupWorksheet
     public void Enable()
     {
         if (IsEnabled)
-            throw new InvalidOperationException("Worksheet is already enabled for this group.");
+            throw new DomainBusinessValidationException("Worksheet is already enabled for this group.");
 
         IsEnabled = true;
         EnabledAt = DateTime.UtcNow;
@@ -32,7 +34,7 @@ public class GroupWorksheet
     public void Disable()
     {
         if (!IsEnabled)
-            throw new InvalidOperationException("Worksheet is already disabled for this group.");
+            throw new DomainBusinessValidationException("Worksheet is already disabled for this group.");
 
         IsEnabled = false;
     }

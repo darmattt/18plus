@@ -1,45 +1,52 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using SpengerbiteApi.Exceptions;
+using SpengerbiteApi.Extensions;
+
 namespace Application.Models.Exception;
 
-public class GlobalExceptionHandler : IExceptionHandler
+public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-
-    public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
-        System.Exception exception,
-        CancellationToken cancellationToken
-    )
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, System.Exception exception, CancellationToken cancellationToken)
     {
-        var statusCode = exception switch
+        // Map: exception to HTTP status code + client safe message
+        var (statusCode, detail) = exception switch
         {
-            KeyNotFoundException => StatusCodes.Status404NotFound,
-            EighteenplusException => StatusCodes.Status400BadRequest,
-            InvalidEmailException => StatusCodes.Status400BadRequest,
-            ArgumentException => StatusCodes.Status400BadRequest,
-            _ => StatusCodes.Status500InternalServerError
+            ServiceApplicationException ex => 
+                (ex.StatusCode, ex.Message),
+    
+            DomainBusinessValidationException ex => 
+                (400, ex.Message),
+
+            ArgumentException ex => 
+                (400, ex.Message),
+
+            DbUpdateException ex when ex.IsUniqueConstraintViolation() => 
+                (409, "A conflicting record already exists."),
+
+            DbUpdateException 
+                => (500, "A database error occurred."),
+
+            _ => (500, "An unexpected error occurred.")
         };
-        
-        // Return RFC 9457 Problem Details response
-        var problem = new ProblemDetails()
+
+        // Log: warnings for client errors (4xx), errors for server errors (5xx)
+        var logLevel = statusCode >= 500 ? LogLevel.Error : LogLevel.Warning;
+
+        logger.Log(logLevel, exception, "{StatusCode} {Path}", statusCode, httpContext.Request.Path);
+
+        // Return: RFC 9457 ProblemDetails JSON
+        httpContext.Response.StatusCode = statusCode;
+        var problem = new ProblemDetails
         {
-            Detail = exception.Message,
-            Status = StatusCodes.Status400BadRequest,
-
+            Status = statusCode,
+            Title = ReasonPhrases.GetReasonPhrase(statusCode),
+            Detail = detail
         };
-            
-        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-
         await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
 
-        return true;
-        
+        return true; // true= exception was handled
     }
-    private static string GetTitle(int statusCode) => statusCode switch
-    {
-        StatusCodes.Status400BadRequest => "Bad Request",
-        StatusCodes.Status404NotFound => "Not Found",
-        StatusCodes.Status500InternalServerError => "Internal Server Error",
-        _ => "Error"
-    };
 }

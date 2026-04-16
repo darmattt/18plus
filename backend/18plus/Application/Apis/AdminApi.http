@@ -1,34 +1,32 @@
-POST http://localhost:5000/api/Teachers
+POST http://localhost:5000/api/Admin/teacher
 Content-Type: application/json
 
 {
   "firstName" : "Antonescu",
   "lastName" : "Margareth",
   "email" : "AntonescuMargareth@gmail.com",
-  "password" : "Pa$$w0rd",
+  "password" : "<T0oj9H4KLptcK(26mC35c",
   "phonenumber": "+4312345678910"
 }
-
 ###
-GET http://localhost:5000/api/Teachers/1
-
+GET http://localhost:5000/api/Admin/teacher/11
 ###
-GET http://localhost:5000/api/Teachers
-
+GET http://localhost:5000/api/Admin/teacher/search/a
 ###
-DELETE http://localhost:5000/api/Teachers/1
-
-
+GET http://localhost:5000/api/Admin/teacher
 ###
-PATCH http://localhost:5000/api/Teachers/1
+DELETE http://localhost:5000/api/Admin/teacher/11
+###
+PATCH http://localhost:5000/api/Admin/teacher/13
 Content-Type: application/json
 
 {
     "firstName" : "Margareth",
-    "lastName" : "Antonescu"
+    "lastName" : "Antonescu",
+    "classNumber": "6BAIF"
 }
 ###
-PUT http://localhost:5000/api/Teachers/1
+PUT http://localhost:5000/api/Admin/teacher/1
 Content-Type: application/json
 
 {

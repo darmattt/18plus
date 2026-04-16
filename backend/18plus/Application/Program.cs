@@ -1,6 +1,7 @@
 ﻿using Application.Infrastructure;
 using Application.Models.Exception;
 using Application.Models.Services;
+using Application.Models.Users;
 using Application.ViewModels.Converters;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,35 +16,34 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        
-        // Creates a WebApplicationBuilder with default config (appsettings.json, env variables, logging, Kestrel)
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         
-        
         builder.Services.AddControllers().AddJsonOptions(options =>
-            options.JsonSerializerOptions.Converters.Add(new EmailConverter())
-        );
+        {
+            options.JsonSerializerOptions.Converters.Add(new EmailConverter());
+            options.JsonSerializerOptions.Converters.Add(new PhoneNumberConverter());
+            options.JsonSerializerOptions.Converters.Add(new ClassNumberConverter());
+        });
 
-        builder.Services.AddControllers().AddJsonOptions(options =>
-            options.JsonSerializerOptions.Converters.Add(new PhoneNumberConverter())
-        );
-
-        // Registers controller services (incl. model binding, routing)
         builder.Services.AddControllers();
         builder.Services.AddProblemDetails();
         
-        // Registers EighteenplusContext
         builder.Services.AddDbContext<EighteenplusDbContext>(options =>
             options.UseSqlite("DataSource=eighteenplus.db"));
 
 
         builder.Logging.AddConsole();
 
-        builder.Services.AddTransient<IPasswordHasher<object>, PasswordHasher<object>>();
-        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>();
-        builder.Services.AddTransient<ITeacherService, TeacherService>();
+        builder.Services.AddSingleton<PasswordHasher<UserBase>>();
+        builder.Services.AddSingleton<IOneTimeCodeService, OneTimeCodeService>();
+        builder.Services.AddSingleton<IPasswordService, PasswordService>();
+        builder.Services.Configure<PasswordHasherOptions>(options =>
+        {
+            options.IterationCount = 600_000;
+        });
+        builder.Services.AddTransient<IAdminService, AdminService>();
         builder.Services.AddScoped<EighteenplusDbContext>();
         // Registers OpenAPI
         //builder.Services.AddOpenApi();
@@ -59,8 +59,11 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<EighteenplusDbContext>();
+            var passwordHasher = scope.ServiceProvider.GetRequiredService<PasswordHasher<UserBase>>();
+            var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
+            DatabaseSeeder.Seed(db, passwordHasher, passwordService);
         }
 
 

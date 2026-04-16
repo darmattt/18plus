@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.Models.ValueObjects;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Application.ViewModels.CreateDtos;
 

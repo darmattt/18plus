@@ -15,10 +15,9 @@ public class Worksheet : EntityBase
         
         description = description?.Trim() ?? "";
         
-        if(name.Length > 100)
-            throw new EighteenplusException("Worksheet name cannot be longer than 100 characters.");
-        if(description.Length > 1000)
-            throw new EighteenplusException("Description cannot be longer than 1000 characters.");
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(name.Length, 100);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(description.Length, 1000);
+
         Name = name;
         Description = description;
     }

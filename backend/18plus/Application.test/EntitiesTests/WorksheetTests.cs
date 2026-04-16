@@ -53,7 +53,7 @@ public class WorksheetTests
     {
         var name = new string('A', 101);
 
-        Assert.Throws<EighteenplusException>(() => new Worksheet(name, "Beschreibung"));
+        Assert.Throws<DomainBusinessValidationException>(() => new Worksheet(name, "Beschreibung"));
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class WorksheetTests
     {
         var description = new string('A', 1001);
 
-        Assert.Throws<EighteenplusException>(() => new Worksheet("Mathe Blatt 1", description));
+        Assert.Throws<DomainBusinessValidationException>(() => new Worksheet("Mathe Blatt 1", description));
     }
 
     [Fact]
