@@ -10,9 +10,6 @@ import Selbstbild from "@/components/worksheets/Selbstbild.jsx";
 import Fremdbild from "@/components/worksheets/Fremdbild.jsx";
 
 
-
-
-
 export default function WorksheetRenderer({ worksheetId }) {
   switch (worksheetId) {
     case "ws-offene-fragen":
