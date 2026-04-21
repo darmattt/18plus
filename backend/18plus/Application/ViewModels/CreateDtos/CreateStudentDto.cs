@@ -4,7 +4,7 @@ using Application.Models.ValueObjects;
 
 namespace Application.ViewModels.CreateDtos;
 
-public class record
+public record CreateStudentDto
 {
     [Required]
     [StringLength(50, MinimumLength = 1)]

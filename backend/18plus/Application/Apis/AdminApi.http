@@ -8,6 +8,16 @@ Content-Type: application/json
   "password" : "<T0oj9H4KLptcK(26mC35c",
   "phonenumber": "+4312345678910"
 }
+
+###
+POST http://localhost:5000/api/Admin/login
+Content-Type: application/json
+
+{
+    "emailAddress": "admin@18plus.local",
+    "password": "Hashed-Admin-Password"
+}
+
 ###
 GET http://localhost:5000/api/Admin/teacher/11
 ###

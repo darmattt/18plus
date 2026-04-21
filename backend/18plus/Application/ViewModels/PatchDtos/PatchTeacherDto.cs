@@ -12,6 +12,8 @@ public record PatchTeacherDto
     public string? LastName { get; init; } 
     
     public EMailAddress? Email { get; init; } 
+    
+    public string? OldPassword { get; init; }
 
     // optional beim Update!
     [MinLength(8)]

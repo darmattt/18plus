@@ -1,12 +1,14 @@
 ﻿using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
+using Application.ViewModels.LoginDtos;
 using Application.ViewModels.PatchDtos;
 
 namespace Application.Models.Services;
 
 public interface IAdminService
 {
-    Task<AdminResponse> CreateAdminAsync(CreateAdminDto adminDto); 
+    Task<AdminResponse> CreateAdminAsync(CreateAdminDto adminDto);
+    Task<AdminResponse> AdminLoginAsync(LoginAdminDto adminDto);
     Task<List<TeacherResponse>> GetAllTeachersAsync();
     Task<List<TeacherResponse>> GetTeacherByIdAsync(int id);
     Task<List<TeacherResponse>> SearchTeachersByNameAsync(string lastName);
@@ -16,6 +18,7 @@ public interface IAdminService
 
     Task<TeacherResponse> CreateGroupAsync(int id, CreateGroupDto groupDto);
     Task <List<TeacherResponse>> GetGroupByNameAsync(string groupName);
+    Task DeleteGroupAsync(int id);
 //     Task<List<StudentResponse>> GetAllStudentsAsync();
 //     Task<StudentResponse> GetOneStudentAsync(int id);
 //     Task<StudentResponse?> CreateStudentAsync(CreateStudentDto request);

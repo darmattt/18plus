@@ -114,7 +114,7 @@ public class EighteenplusDbContext(DbContextOptions<EighteenplusDbContext> optio
     {
         builder.HasKey(x => x.Id).HasName("WorksheetId");
         builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
-        builder.Property(x => x.Description).HasColumnName("Description").IsRequired();
+        builder.Property(x => x.Type).HasColumnName("Description").IsRequired();
     }
     private static void ConfigureStudent(EntityTypeBuilder<Student> builder)
     {

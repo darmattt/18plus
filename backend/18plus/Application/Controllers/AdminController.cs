@@ -1,6 +1,7 @@
 ﻿using Application.Models.Services;
 using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
+using Application.ViewModels.LoginDtos;
 using Application.ViewModels.PatchDtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,13 @@ namespace Application.Controllers;
 [Route("api/[controller]")]
 public class AdminController(IAdminService adminService) : ControllerBase
 {
+    [HttpPost("login")]
+    public async Task<ActionResult> Login([FromBody] LoginAdminDto dto)
+    {
+        var result = await adminService.AdminLoginAsync(dto);
+        return Ok(result);
+    }
+
     [HttpGet("teacher/{id}")]
     public async Task<ActionResult<TeacherResponse>> GetTeacherByIdAsync([FromRoute] int id)
     {
@@ -21,12 +29,13 @@ public class AdminController(IAdminService adminService) : ControllerBase
     {
         return Ok(await adminService.SearchTeachersByNameAsync(lastname));
     }
-    
+
     [HttpGet("teacher")]
     public async Task<ActionResult<List<TeacherResponse>>> GetAllTeachersAsync()
     {
         return Ok(await adminService.GetAllTeachersAsync());
     }
+
     [HttpPost("teacher")]
     public async Task<ActionResult<TeacherResponse>> CreateTeacherAsync([FromBody] CreateTeacherDto request)
     {
@@ -38,7 +47,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
             teacher
         );
     }
-    
+
     [HttpDelete("teacher/{id}")]
     public async Task<IActionResult> DeleteTeacherAsync([FromRoute] int id)
     {
@@ -59,9 +68,10 @@ public class AdminController(IAdminService adminService) : ControllerBase
     {
         return Ok(await adminService.GetGroupByNameAsync(groupName));
     }
-    
+
     [HttpPost("group/{id}")]
-    public async Task<ActionResult<TeacherResponse>> CreateGroupAsync([FromBody] CreateGroupDto request,[FromRoute] int id)
+    public async Task<ActionResult<TeacherResponse>> CreateGroupAsync([FromBody] CreateGroupDto request,
+        [FromRoute] int id)
     {
         var group = await adminService.CreateGroupAsync(id, request);
 

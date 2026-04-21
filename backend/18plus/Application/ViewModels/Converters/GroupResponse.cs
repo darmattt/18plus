@@ -1,6 +1,7 @@
-﻿namespace Application.ViewModels.Converters;
+﻿using Application.Models.ValueObjects;
 
-public class GroupResponse
-{
-    
-}
+namespace Application.ViewModels.Converters;
+
+public record GroupResponse
+(   int Id,
+    ClassNumber Name);

@@ -1,9 +1,12 @@
-﻿using Application.Infrastructure;
+﻿using System.Text;
+using Application.Infrastructure;
 using Application.Models.Exception;
 using Application.Models.Services;
 using Application.Models.Users;
 using Application.ViewModels.Converters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application;
 
@@ -39,6 +42,9 @@ public class Program
         builder.Services.AddSingleton<PasswordHasher<UserBase>>();
         builder.Services.AddSingleton<IOneTimeCodeService, OneTimeCodeService>();
         builder.Services.AddSingleton<IPasswordService, PasswordService>();
+        builder.Services.AddSingleton<ITokenService, TokenService>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
         builder.Services.Configure<PasswordHasherOptions>(options =>
         {
             options.IterationCount = 600_000;
@@ -49,7 +55,23 @@ public class Program
         //builder.Services.AddOpenApi();
 
         // Builds the WebApplication
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         var app = builder.Build();
+
+// Middleware
+        app.UseHttpsRedirection();
+
+        app.UseCors("FrontendPolicy");
 
 
         // --- 2. Initialization Phase ---
@@ -70,9 +92,24 @@ public class Program
         // --- 3. Middleware Phase ---
         // WHY: Configure the Order of Middleware (e.g. routing, auth, error handling) and map endpoints before starting the server.
         app.UseExceptionHandler();
-        // TODO: Enable later when auth is implemented
-        // app.UseAuthentication();
-        // app.UseAuthorization();
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                    )
+                };
+            });
+        app.UseAuthentication();
+        app.UseAuthorization();
         // Exposes the OpenAPI spec at /openapi/v1.json
         //app.MapOpenApi();
         // Serves the Scalar UI at /scalar/v1 (interactive API docs)

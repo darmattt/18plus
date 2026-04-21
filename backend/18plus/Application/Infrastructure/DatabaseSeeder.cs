@@ -135,22 +135,22 @@ public static class DatabaseSeeder
         // =========================================================
         var worksheet1 = new Worksheet(
             name: "Alkohol Grundlagen",
-            description: "Basiswissen zu Alkohol, Wirkung und Risiken"
+            type: "Basiswissen zu Alkohol, Wirkung und Risiken"
         );
 
         var worksheet2 = new Worksheet(
             name: "Suchtprävention",
-            description: "Prävention, Warnsignale und Unterstützungsangebote"
+            type: "Prävention, Warnsignale und Unterstützungsangebote"
         );
 
         var worksheet3 = new Worksheet(
             name: "Recht und Verantwortung",
-            description: "Jugendschutz, Verantwortung und rechtliche Grundlagen"
+            type: "Jugendschutz, Verantwortung und rechtliche Grundlagen"
         );
 
         var worksheet4 = new Worksheet(
             name: "Gesundheit und Konsum",
-            description: "Langzeitfolgen, Gesundheit und verantwortungsvoller Umgang"
+            type: "Langzeitfolgen, Gesundheit und verantwortungsvoller Umgang"
         );
 
         db.Worksheets.AddRange(worksheet1, worksheet2, worksheet3, worksheet4);

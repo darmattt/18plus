@@ -13,7 +13,7 @@ public class WorksheetTests
 
         Assert.NotNull(worksheet);
         Assert.Equal("Mathe Blatt 1", worksheet.Name);
-        Assert.Equal("Addition und Subtraktion", worksheet.Description);
+        Assert.Equal("Addition und Subtraktion", worksheet.Type);
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class WorksheetTests
         var worksheet = new Worksheet("  Mathe Blatt 1  ", "  Addition und Subtraktion  ");
 
         Assert.Equal("Mathe Blatt 1", worksheet.Name);
-        Assert.Equal("Addition und Subtraktion", worksheet.Description);
+        Assert.Equal("Addition und Subtraktion", worksheet.Type);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class WorksheetTests
         var worksheet = new Worksheet("Mathe Blatt 1", null!);
 
         Assert.Equal("Mathe Blatt 1", worksheet.Name);
-        Assert.Equal(string.Empty, worksheet.Description);
+        Assert.Equal(string.Empty, worksheet.Type);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class WorksheetTests
         var worksheet = new Worksheet("Mathe Blatt 1", "");
 
         Assert.Equal("Mathe Blatt 1", worksheet.Name);
-        Assert.Equal(string.Empty, worksheet.Description);
+        Assert.Equal(string.Empty, worksheet.Type);
     }
 
     [Fact]
@@ -79,6 +79,6 @@ public class WorksheetTests
         var worksheet = new Worksheet("Mathe Blatt 1", "   ");
 
         Assert.Equal("Mathe Blatt 1", worksheet.Name);
-        Assert.Equal(string.Empty, worksheet.Description);
+        Assert.Equal(string.Empty, worksheet.Type);
     }
 }
