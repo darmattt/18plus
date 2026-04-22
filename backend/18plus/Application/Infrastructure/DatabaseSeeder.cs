@@ -47,8 +47,8 @@ public static class DatabaseSeeder
         
 
         var teacher2 = new Teacher(
-            firstName: "Pühringer",
-            lastName: "Michael",
+            firstName: "Michael",
+            lastName: "Pühringer",
             email: new EMailAddress("puehringer.Michael@18plus.local"),
             passwordHash: passwordService.Hash("Hashed-Teacher3-Password"),
             phoneNumber: new PhoneNumber("+436609876543")

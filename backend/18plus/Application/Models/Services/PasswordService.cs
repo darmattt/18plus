@@ -10,10 +10,10 @@
         public PasswordHash Hash(string plainPassword)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(plainPassword);
-
             var result = Zxcvbn.Core.EvaluatePassword(plainPassword);
             if (result.Score < 3)
                 throw ServiceApplicationException.BadRequest($"Password is too weak: {plainPassword}");
+            
             var passwordHash = passwordHasher.HashPassword(null!,plainPassword);
             return new PasswordHash(passwordHash);
         }

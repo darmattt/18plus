@@ -17,7 +17,7 @@ public class TeacherService(
     ICurrentUserService currentUserService
 ) : ITeacherService
 {
-    public async Task<TeacherLoginResponse> LoginTeacher(LoginAdminDto dto)
+    public async Task<TeacherLoginResponse> LoginTeacherAsync(LoginAdminDto dto)
     {
         logger.LogDebug("Teacher login attempt for email {Email}", dto.EmailAddress);
         var teacher = await db.Teachers
@@ -33,25 +33,31 @@ public class TeacherService(
         
         logger.LogInformation("Teacher logged in successfully with id {Teacher}", teacher.Id);
         
-        return new TeacherLoginResponse(token,teacher.FirstName, teacher.LastName, teacher.Email);
+        return new TeacherLoginResponse(
+            token,teacher.FirstName,
+            teacher.LastName,
+            teacher.Email);
     }
 
     public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
     {
-        var teacherId = currentUserService.UserId
-                        ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+       var teacherGuid = currentUserService.UserId 
+            ?? throw ServiceApplicationException.Forbidden("User not authenticated");
 
         var teacher = await db.Teachers
-                          .FirstOrDefaultAsync(t => t.Id == teacherId)
-                      ?? throw ServiceApplicationException.NotFound("Teacher not found");
+            .FirstOrDefaultAsync(t => t.PublicId == teacherGuid)
+            ?? throw ServiceApplicationException.NotFound("Teacher not found");
 
-        var groupExists = await db.Groups.AnyAsync(g => g.Name == dto.ClassNumber);
+        var groupExists = await db.Groups.AnyAsync(g => g.Name.Value == dto.ClassNumber.Value);
         if (groupExists)
             throw ServiceApplicationException.Forbidden($"Class Already Exists: {dto.ClassNumber}");
 
         var group = new Group(dto.ClassNumber, teacher);
 
-        group.CreatedBy = teacherId;
+        group.CreatedBy = await db.Teachers
+            .Where(t => t.PublicId == teacherGuid )
+            .Select(t => t.Id )
+            .FirstOrDefaultAsync();
 
         await db.Groups.AddAsync(group);
         await db.SaveChangesAsync();
@@ -65,19 +71,23 @@ public class TeacherService(
     }
 
 
-    public async Task<GroupResponse> PatchGroupAsync( PatchGroupDto dto)
+    public async Task<GroupResponse> PatchGroupAsync(int groupId, PatchGroupDto dto)
     {
-        var teacherId = currentUserService.UserId 
+        var teacherGuid = currentUserService.UserId 
             ?? throw ServiceApplicationException.Forbidden("User not authenticated");
         var group = await db.Groups.Include(group => group.Name)
                         .Include(group => group.Teacher)
-                        .FirstOrDefaultAsync(g => g.Name == dto.ClassNumber)
+                        .FirstOrDefaultAsync(g => g.Id == groupId)
             ??  throw ServiceApplicationException.NotFound("Class not found");
-        if (group.Teacher.Id != teacherId)
+        if (group.Teacher.PublicId != teacherGuid)
             throw ServiceApplicationException.Forbidden("You cannot edit this class");
-        if (dto.ClassNumber != null)
+        if (dto.ClassNumber is not null)
             group.Name = dto.ClassNumber;
-        group.UpdatedBy = teacherId;
+        group.UpdatedBy = await db.Teachers
+            .Where(t => t.PublicId == teacherGuid )
+            .Select(teacher => teacher.Id )
+            .FirstOrDefaultAsync();
+
         group.UpdatedAt =  DateTime.UtcNow;
         await db.SaveChangesAsync();
         return new GroupResponse(group.Id, group.Name);
@@ -86,12 +96,12 @@ public class TeacherService(
     
     public async Task<List<StudentResponse>> GetMyGroupsMembers()
     {
-        var teacherId = currentUserService.UserId
-                        ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+        var teacherGuid = currentUserService.UserId
+            ?? throw ServiceApplicationException.Forbidden("User not authenticated");
 
         var students = await db.Students
             .AsNoTracking()
-            .Where(s => s.Group != null && s.Group.Teacher.Id == teacherId)
+            .Where(s => s.Group != null && s.Group.Teacher.PublicId == teacherGuid)
             .Select(s => new StudentResponse(
                 s.Id,
                 s.FirstName,
@@ -103,37 +113,38 @@ public class TeacherService(
         return students;
     }
 
-    public async Task DeleteGroup(PatchGroupDto groupName)
+    public async Task DeleteGroupAsync(int groupId)
     {
-        var teacherId = currentUserService.UserId
+        var teacherGuid = currentUserService.UserId
                         ?? throw ServiceApplicationException.Forbidden("User not authenticated");
 
         var group = await db.Groups
             .Include(g => g.Teacher)
-            .FirstOrDefaultAsync(g => g.Name == groupName.ClassNumber) 
+            .FirstOrDefaultAsync(g => g.Id == groupId) 
             ?? throw ServiceApplicationException.NotFound("Class not found");
         
-        if (group.Teacher.Id != teacherId)
+        if (group.Teacher.PublicId != teacherGuid)
             throw ServiceApplicationException.Forbidden("You cannot delete this class");
 
         db.Groups.Remove(group);
         await db.SaveChangesAsync();
     }
-    
+
+
 
     public async Task<TeacherResponse> PatchMyProfileAsync(PatchTeacherDto dto)
     {
-        var teacherId = currentUserService.UserId
+        var teacherGuid = currentUserService.UserId
                         ?? throw ServiceApplicationException.Forbidden("User not authenticated");
 
         var teacher = await db.Teachers
-                          .FirstOrDefaultAsync(t => t.Id == teacherId)
+                          .FirstOrDefaultAsync(t => t.PublicId == teacherGuid)
                       ?? throw ServiceApplicationException.NotFound("Teacher not found");
 
         if (dto.Email is not null)
         {
             var emailTaken = await db.Teachers
-                .AnyAsync(t => t.Email == dto.Email && t.Id != teacherId);
+                .AnyAsync(t => t.Email == dto.Email && t.PublicId != teacherGuid);
 
             if (emailTaken)
                 throw ServiceApplicationException.Conflict(
@@ -165,7 +176,11 @@ public class TeacherService(
         }
 
         teacher.UpdatedAt = DateTime.UtcNow;
-        teacher.UpdatedBy = teacherId;
+        teacher.UpdatedBy = await db.Teachers
+            .Where(t => t.PublicId == teacherGuid )
+            .Select(t => t.Id )
+            .FirstOrDefaultAsync();
+
 
         await db.SaveChangesAsync();
 
@@ -177,14 +192,14 @@ public class TeacherService(
         );
     }
 
-    public async Task<StudentResponse> AddStudentToGroup(int studentId)
+    public async Task<StudentResponse> AddStudentToGroupAsync(int studentId)
     {
-        var teacherId = currentUserService.UserId
+        var teacherGuid = currentUserService.UserId
             ?? throw ServiceApplicationException.Forbidden("User not authenticated");
         
         var group = await db.Groups
                         .Include(g => g.Teacher).Include(group => group.Name)
-                        .FirstOrDefaultAsync(g => g.Teacher.Id == teacherId)
+                        .FirstOrDefaultAsync(g => g.Teacher.PublicId == teacherGuid)
             ?? throw ServiceApplicationException.NotFound("Teacher not found");
         
         var student = await db.Students.Include(s => s.Group)
@@ -196,7 +211,11 @@ public class TeacherService(
         student.Group = group;
         
         student.UpdatedAt = DateTime.UtcNow;
-        student.UpdatedBy = teacherId;
+        student.UpdatedBy = await db.Teachers
+            .Where(t => t.PublicId == teacherGuid )
+            .Select(teacher => teacher.Id )
+            .FirstOrDefaultAsync();
+
         
         await db.SaveChangesAsync();
 
@@ -206,40 +225,37 @@ public class TeacherService(
             student.LastName,
             group.Name);
     }
-
-    public async Task RemoveStudentFromGroup(int studentId)
+    
+    public async Task RemoveStudentFromGroupAsync(int studentId)
     {
-        var teacherId = currentUserService.UserId
+        var teacherGuid = currentUserService.UserId
                         ?? throw ServiceApplicationException.Forbidden("User not authenticated");
-        
-        var group = await db.Groups
-                        .Include(g => g.Teacher).Include(group => group.Name)
-                        .FirstOrDefaultAsync(g => g.Teacher.Id == teacherId)
-                    ?? throw ServiceApplicationException.NotFound("Teacher not found");
         
         var student = await db.Students.Include(s => s.Group)
                           .FirstOrDefaultAsync(s => s.Id == studentId)
                       ?? throw ServiceApplicationException.NotFound("Student not found");
         if (student.Group is null)
-            throw ServiceApplicationException.Conflict("Student is already assigned to a group");
+            throw ServiceApplicationException.Conflict("Student is not assigned to a group");
 
         student.Group = null;
         
         student.UpdatedAt = DateTime.UtcNow;
-        student.UpdatedBy = teacherId;
+        student.UpdatedBy = await db.Teachers
+            .Where(t => t.PublicId == teacherGuid )
+            .Select(teacher => teacher.Id )
+            .FirstOrDefaultAsync();
         
         await db.SaveChangesAsync();
-        
     }
 
-    public async Task<List<ResultResponse>> GetStudentResults()
+    public async Task<List<ResultResponse>> GetStudentResultsAsync()
     {
-        var teacherId = currentUserService.UserId
+        var teacherGuid = currentUserService.UserId
                         ?? throw ServiceApplicationException.Forbidden("User not authenticated");
 
         var results = await db.Results
             .AsNoTracking()
-            .Where(r => r.Student.Group != null && r.Student.Group.Teacher.Id == teacherId)
+            .Where(r => r.Student.Group != null && r.Student.Group.Teacher.PublicId == teacherGuid)
             .Select(r => new ResultResponse(
                 r.Student.FirstName,
                 r.Student.LastName,

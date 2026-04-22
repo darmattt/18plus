@@ -19,8 +19,10 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+                
 
+        var builder = WebApplication.CreateBuilder(args);
+        
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         
         builder.Services.AddControllers().AddJsonOptions(options =>
@@ -29,9 +31,9 @@ public class Program
             options.JsonSerializerOptions.Converters.Add(new PhoneNumberConverter());
             options.JsonSerializerOptions.Converters.Add(new ClassNumberConverter());
         });
-
-        builder.Services.AddControllers();
+        
         builder.Services.AddProblemDetails();
+        
         
         builder.Services.AddDbContext<EighteenplusDbContext>(options =>
             options.UseSqlite("DataSource=eighteenplus.db"));
@@ -39,18 +41,19 @@ public class Program
 
         builder.Logging.AddConsole();
 
+        builder.Services.Configure<PasswordHasherOptions>(options =>
+        {
+            options.IterationCount = 600_000;
+        });
         builder.Services.AddSingleton<PasswordHasher<UserBase>>();
         builder.Services.AddSingleton<IOneTimeCodeService, OneTimeCodeService>();
         builder.Services.AddSingleton<IPasswordService, PasswordService>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-        builder.Services.Configure<PasswordHasherOptions>(options =>
-        {
-            options.IterationCount = 600_000;
-        });
         builder.Services.AddTransient<IAdminService, AdminService>();
-        builder.Services.AddScoped<EighteenplusDbContext>();
+        builder.Services.AddSingleton<ITeacherService, TeacherService>();
+
         // Registers OpenAPI
         //builder.Services.AddOpenApi();
 
@@ -65,14 +68,35 @@ public class Program
                     .AllowAnyMethod();
             });
         });
+        
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = builder.Configuration["Tokens:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey
+                        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true
+                    
+                };
+            });
+        
+        builder.Services.AddAuthorization();
 
+        
         var app = builder.Build();
 
 // Middleware
+        app.UseExceptionHandler();
         app.UseHttpsRedirection();
-
         app.UseCors("FrontendPolicy");
-
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         // --- 2. Initialization Phase ---
         // WHY: Perform app initialization tasks (e.g. database setup) before handling requests.
@@ -91,25 +115,7 @@ public class Program
 
         // --- 3. Middleware Phase ---
         // WHY: Configure the Order of Middleware (e.g. routing, auth, error handling) and map endpoints before starting the server.
-        app.UseExceptionHandler();
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-                    )
-                };
-            });
-        app.UseAuthentication();
-        app.UseAuthorization();
+
         // Exposes the OpenAPI spec at /openapi/v1.json
         //app.MapOpenApi();
         // Serves the Scalar UI at /scalar/v1 (interactive API docs)

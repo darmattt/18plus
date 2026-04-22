@@ -8,6 +8,9 @@ namespace Application.Models.Services;
 
 public class TokenService : ITokenService
 {
+    //IConfiguration ist ein Objekt, mit dem man Einstellungen
+    //(z.B. appsettings.json) aus einer Konfigurationsdatei
+    //oder Umgebung auslesen kann.
     private readonly IConfiguration _config;
 
     public TokenService(IConfiguration config)
@@ -19,7 +22,7 @@ public class TokenService : ITokenService
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.PublicId.ToString()),
             new Claim(ClaimTypes.Email, user.Email.Value),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };

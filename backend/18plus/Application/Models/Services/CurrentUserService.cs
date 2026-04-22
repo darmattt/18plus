@@ -1,19 +1,19 @@
-﻿using System.Security.Claims;
-using Application.Models.Services;
+﻿    using System.Security.Claims;
+    using Application.Models.Services;
 
-public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
-{
-    public int? UserId
+    public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
     {
-        get
+        public Guid? UserId
         {
-            var userId = httpContextAccessor.HttpContext?.User?
-                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            get
+            {
+                var context = httpContextAccessor.HttpContext;
+                if (context is null) return null;  // expliziter Guard
 
-            if (int.TryParse(userId, out var id))
-                return id;
-
-            return null;
+                var userId = context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                return Guid.TryParse(userId, out var id) ? id : null;
+            }
         }
+        public bool IsAuthenticated => UserId.HasValue;
+
     }
-}

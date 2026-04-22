@@ -1,4 +1,5 @@
-﻿using Application.ViewModels.Converters;
+﻿using Application.Models.Users;
+using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
 using Application.ViewModels.LoginDtos;
 using Application.ViewModels.PatchDtos;
@@ -7,14 +8,14 @@ namespace Application.Models.Services;
 
 public interface ITeacherService
 {
-    Task<TeacherLoginResponse> LoginTeacher(LoginAdminDto dto);
+    Task<TeacherLoginResponse> LoginTeacherAsync(LoginAdminDto dto);
     Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto);
-    Task<List<GroupResponse>> PatchGroupAsync(int id, PatchGroupDto dto);
-    Task<List<StudentResponse>> GetMyGroupsMembers(int id);
-    Task<List<TeacherResponse>> PatchTeacherAsync(int id, PatchTeacherDto dto);
-    Task DeleteGroupAsync();
-    Task<StudentResponse> AddStudentToGroup(int id);
-    Task RemoveStudentFromGroup(int id);
-    Task<List<ResultResponse>> GetStudentResults();
+    Task<GroupResponse> PatchGroupAsync(int groupId, PatchGroupDto dto);
+    Task<List<StudentResponse>> GetMyGroupsMembers();
+    Task DeleteGroupAsync(int groupId);
+    Task<TeacherResponse> PatchMyProfileAsync(PatchTeacherDto dto);
+    Task<StudentResponse> AddStudentToGroupAsync(int studentId);
+    Task RemoveStudentFromGroupAsync(int studentId);
+    Task<List<ResultResponse>> GetStudentResultsAsync();
 
 }
