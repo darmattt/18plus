@@ -4,23 +4,28 @@ import { Card, CardContent } from "@/components/ui/card"
 import { GraduationCap, Trophy, ArrowRight } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { LoginBox } from "./LoginPage.jsx"
+import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false)
   const navigate = useNavigate()
 
-  const handleLogin = (email, password) => {
-    if (email === "betreuer@gmail.com" && password === "12345") {
+  const handleLogin = async (email, password) => {
+    try {
+      const result = await loginTeacher(email, password)
+
+      const token = result.token || result.jwt || result.accessToken
+
+      if (!token) {
+        console.log("Login response:", result)
+        throw new Error("Kein Token in der Antwort gefunden")
+      }
+
+      setTeacherToken(token)
       setShowLogin(false)
       navigate("/TeacherView")
-    } else if (email === "student@gmail.com" && password === "676767") {
-      setShowLogin(false)
-      navigate("/arbeitsblaetter")
-    } else if (email === "admin@gmail.com" && password === "12345") {
-      setShowLogin(false)
-      navigate("/adminlogin")
-    } else {
-      alert("Falsche Login-Daten")
+    } catch (error) {
+      alert(error.message)
     }
   }
 
@@ -32,10 +37,7 @@ export default function LandingPage() {
         </div>
 
         <nav className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
-          <button
-            className="hover:text-slate-900"
-            onClick={() => setShowLogin(true)}
-          >
+          <button className="hover:text-slate-900" onClick={() => setShowLogin(true)}>
             Arbeitsblätter
           </button>
 
@@ -43,7 +45,7 @@ export default function LandingPage() {
             Gruppe beitreten
           </Link>
 
-          <a className="hover:text-slate-900" href="https://www.18plus.at/">
+          <a className="hover:text-slate-900" href="#">
             über 18plus
           </a>
         </nav>

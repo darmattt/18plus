@@ -10,7 +10,7 @@ import AppShell from "@/components/layout/AppShell"
 
 // OPTIONAL: if you later have these
 // import AdminView from "./pages/AdminView"
-import { TeacherView } from "./pages/TeacherView"
+import TeacherView from "./pages/TeacherView"
 
 export default function App() {
   /*const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -35,36 +35,11 @@ export default function App() {
 */
   return (
     <Routes>
-
-      {/* Landing */}
-      <Route path="/" element={<LandingPage />} />
-
-      {/* Worksheet Plattform */}
-      <Route path="/arbeitsblaetter/*" element={<AppShell />} />
-
-      {/* TeacherView */}
-        <Route path="/TeacherView/*" element={<TeacherView />} />
-
-
-      {/* Auth / Pages */}{/*
-      <Route
-        path="/LoginPage"
-        element={<LoginBox
-                   onClose={() => setShowLogin(false)}
-                   onLogin={handleLogin}
-                 />} // 🔵 KEEP: LoginPage
-      /> */}
-
-      <Route
-        path="/GruppePage"
-        element={<GruppePage />} // 🔵 KEEP: GruppePage
-      />
-
-      <Route
-        path="/adminlogin"
-        element={<AdminLogIn />} // 🔵 KEEP: AdminLogIn
-      />
-
-    </Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/arbeitsblaetter/*" element={<AppShell />} />
+          <Route path="/GruppePage" element={<GruppePage />} />
+          <Route path="/adminlogin" element={<AdminLogIn />} />
+          <Route path="/TeacherView" element={<TeacherView />} />
+        </Routes>
   )
 }
