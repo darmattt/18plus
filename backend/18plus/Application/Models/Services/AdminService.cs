@@ -46,7 +46,7 @@ public class AdminService(
     {
         logger.LogDebug("Admin login attempt for email {Email}", adminDto.EmailAddress);
         var admin = await db.Admins
-            .FirstOrDefaultAsync(a => a.Email.Value ==  adminDto.EmailAddress.Value)
+            .FirstOrDefaultAsync(a => a.Email.Value.ToLower() == adminDto.EmailAddress.Value)
             ?? throw ServiceApplicationException.NotFound("Admin not found");
 
         var validPassword = passwordService.Verify(admin, adminDto.Password);

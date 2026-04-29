@@ -22,6 +22,7 @@ public class Program
                 
 
         var builder = WebApplication.CreateBuilder(args);
+        builder.Configuration.AddUserSecrets<Program>(optional: true);
         
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         
@@ -52,7 +53,7 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
         builder.Services.AddTransient<IAdminService, AdminService>();
-        builder.Services.AddSingleton<ITeacherService, TeacherService>();
+        builder.Services.AddScoped<ITeacherService, TeacherService>();
 
         // Registers OpenAPI
         //builder.Services.AddOpenApi();
@@ -69,15 +70,22 @@ public class Program
             });
         });
         
+        var jwtKey = builder.Configuration["Jwt:Key"]
+                     ?? throw new InvalidOperationException("Jwt:Key is missing. For local development, set it with: dotnet user-secrets set \"Jwt:Key\" \"<secret>\"");
+        var jwtIssuer = builder.Configuration["Jwt:Issuer"]
+                        ?? throw new InvalidOperationException("Jwt:Issuer is missing.");
+        var jwtAudience = builder.Configuration["Jwt:Audience"]
+                          ?? throw new InvalidOperationException("Jwt:Audience is missing.");
+        
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = builder.Configuration["Tokens:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
                     IssuerSigningKey = new SymmetricSecurityKey
-                        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                        (Encoding.UTF8.GetBytes(jwtKey)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,

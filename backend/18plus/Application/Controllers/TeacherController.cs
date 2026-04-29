@@ -1,4 +1,6 @@
 ﻿using Application.Models.Services;
+using Application.Models.ValueObjects;
+using Application.ViewModels.AddDtos;
 using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
 using Application.ViewModels.LoginDtos;
@@ -61,10 +63,12 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
     }
 
     [Authorize(Roles = "Teacher")]
-    [HttpPost("group/student/{studentId:int}")]
-    public async Task<ActionResult<StudentResponse>> AddStudentToGroup(int studentId)
+    [HttpPost("groups/{groupId:int}/students")]
+    public async Task<ActionResult<StudentResponse>> AddStudentToGroup(
+        int groupId,
+        [FromBody] AddStudentToMyGroupDto dto)
     {
-        var result = await teacherService.AddStudentToGroupAsync(studentId);
+        var result = await teacherService.AddStudentToGroupAsync(groupId, dto);
         return Ok(result);
     }
 
@@ -81,6 +85,14 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
     public async Task<ActionResult<List<ResultResponse>>> GetStudentResults()
     {
         var result = await teacherService.GetStudentResultsAsync();
+        return Ok(result);
+    }
+    
+    [Authorize(Roles = "Teacher")]
+    [HttpGet("groups")]
+    public async Task<ActionResult<List<GroupWithStudentsResponse>>> GetMyGroups()
+    {
+        var result = await teacherService.GetMyGroupsAsync();
         return Ok(result);
     }
 }

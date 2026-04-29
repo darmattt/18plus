@@ -13,6 +13,7 @@ public sealed record EMailAddress
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
         
         value = value.Trim();
+        value = value.ToLowerInvariant();
     
          if(!EmailValidator.Validate(
                 value,

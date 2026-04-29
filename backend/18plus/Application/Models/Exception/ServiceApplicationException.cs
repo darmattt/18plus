@@ -20,4 +20,8 @@ public class ServiceApplicationException : Exception
 
     public static ServiceApplicationException BadRequest(string message) => 
         new(StatusCodes.Status400BadRequest, message);
+    
+    public static ServiceApplicationException InternalServerError(string message) =>
+        new (StatusCodes.Status500InternalServerError, message);
+    
 }

@@ -1,4 +1,6 @@
 ﻿using Application.Models.Users;
+using Application.Models.ValueObjects;
+using Application.ViewModels.AddDtos;
 using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
 using Application.ViewModels.LoginDtos;
@@ -14,8 +16,8 @@ public interface ITeacherService
     Task<List<StudentResponse>> GetMyGroupsMembers();
     Task DeleteGroupAsync(int groupId);
     Task<TeacherResponse> PatchMyProfileAsync(PatchTeacherDto dto);
-    Task<StudentResponse> AddStudentToGroupAsync(int studentId);
+    Task<StudentResponse> AddStudentToGroupAsync(int groupId, AddStudentToMyGroupDto dto);
     Task RemoveStudentFromGroupAsync(int studentId);
     Task<List<ResultResponse>> GetStudentResultsAsync();
-
+    Task<List<GroupWithStudentsResponse>> GetMyGroupsAsync();
 }

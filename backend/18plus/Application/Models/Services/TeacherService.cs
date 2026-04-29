@@ -1,5 +1,7 @@
 ﻿using Application.Infrastructure;
 using Application.Models.Enitities;
+using Application.Models.ValueObjects;
+using Application.ViewModels.AddDtos;
 using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
 using Application.ViewModels.LoginDtos;
@@ -22,7 +24,7 @@ public class TeacherService(
         logger.LogDebug("Teacher login attempt for email {Email}", dto.EmailAddress);
         var teacher = await db.Teachers
                           .Include(userBase => userBase.Email)
-                          .FirstOrDefaultAsync(a => a.Email.Value ==  dto.EmailAddress.Value)
+                          .FirstOrDefaultAsync(a => a.Email.Value.ToLower() == dto.EmailAddress.Value)
                     ?? throw ServiceApplicationException.NotFound("Admin not found");
 
         var validPassword = passwordService.Verify(teacher, dto.Password);
@@ -192,38 +194,41 @@ public class TeacherService(
         );
     }
 
-    public async Task<StudentResponse> AddStudentToGroupAsync(int studentId)
+    public async Task<StudentResponse> AddStudentToGroupAsync(int groupId, AddStudentToMyGroupDto dto)
     {
         var teacherGuid = currentUserService.UserId
-            ?? throw ServiceApplicationException.Forbidden("User not authenticated");
-        
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
         var group = await db.Groups
                         .Include(g => g.Teacher).Include(group => group.Name)
-                        .FirstOrDefaultAsync(g => g.Teacher.PublicId == teacherGuid)
-            ?? throw ServiceApplicationException.NotFound("Teacher not found");
-        
-        var student = await db.Students.Include(s => s.Group)
-            .FirstOrDefaultAsync(s => s.Id == studentId)
-            ?? throw ServiceApplicationException.NotFound("Student not found");
+                        .FirstOrDefaultAsync(g =>
+                            g.Id == groupId &&
+                            g.Teacher.PublicId == teacherGuid)
+                    ?? throw ServiceApplicationException.NotFound("Group not found");
+
+        var student = await db.Students
+                          .Include(s => s.Group)
+                          .FirstOrDefaultAsync(s => s.Email.Value.ToLower() == dto.EMailAddress.Value)
+                      ?? throw ServiceApplicationException.NotFound("Student doesn't exist");
+
         if (student.Group != null)
             throw ServiceApplicationException.Conflict("Student is already assigned to a group");
 
         student.Group = group;
-        
         student.UpdatedAt = DateTime.UtcNow;
         student.UpdatedBy = await db.Teachers
-            .Where(t => t.PublicId == teacherGuid )
-            .Select(teacher => teacher.Id )
+            .Where(t => t.PublicId == teacherGuid)
+            .Select(t => t.Id)
             .FirstOrDefaultAsync();
 
-        
         await db.SaveChangesAsync();
 
         return new StudentResponse(
             student.Id,
             student.FirstName,
             student.LastName,
-            group.Name);
+            group.Name
+        );
     }
     
     public async Task RemoveStudentFromGroupAsync(int studentId)
@@ -232,11 +237,13 @@ public class TeacherService(
                         ?? throw ServiceApplicationException.Forbidden("User not authenticated");
         
         var student = await db.Students.Include(s => s.Group)
+                          .ThenInclude(g => g.Teacher)
                           .FirstOrDefaultAsync(s => s.Id == studentId)
                       ?? throw ServiceApplicationException.NotFound("Student not found");
         if (student.Group is null)
             throw ServiceApplicationException.Conflict("Student is not assigned to a group");
-
+        if (student.Group.Teacher.PublicId != teacherGuid)
+            throw ServiceApplicationException.Forbidden("You cannot remove students from another class");
         student.Group = null;
         
         student.UpdatedAt = DateTime.UtcNow;
@@ -265,5 +272,31 @@ public class TeacherService(
             .ToListAsync();
 
         return results;
+    }
+    
+    public async Task<List<GroupWithStudentsResponse>> GetMyGroupsAsync()
+    {
+        var teacherGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var groups = await db.Groups
+            .AsNoTracking()
+            .Where(g =>  g.Teacher.PublicId == teacherGuid)
+            .Select(g => new GroupWithStudentsResponse(
+                g.Id,
+                g.Name,
+                db.Students
+                    .OrderBy(s => s.FirstName)
+                    .ThenBy(s => s.LastName)
+                    .Where(s => s.Group != null && s.Group.Id == g.Id)
+                    .Select(s =>  new StudentItemResponse(
+                        s.Id,
+                        s.FirstName,
+                        s.LastName,
+                        s.Email
+                        )).ToList()
+            ))
+            .ToListAsync();
+        return groups;
     }
 }
