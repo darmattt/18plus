@@ -3,7 +3,6 @@
 POST http://localhost:5000/api/Teacher/login
 Content-Type: application/json
 
-
 {
   "emailAddress": "eder.johannes@18plus.local",
   "password": "Hashed-Teacher2-Password"

@@ -6,6 +6,6 @@ namespace Application.Models.Services;
 
 public interface IOneTimeCodeService
 { 
-    CreateOnetimeCode Create(Student student, TimeSpan lifetime);
+    CreatedOneTimeCode Create(Student student, TimeSpan lifetime);
     bool Verify(OneTimeCode oneTimeCode, string plainCode);
 }
