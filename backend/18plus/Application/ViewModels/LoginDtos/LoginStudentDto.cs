@@ -7,7 +7,5 @@ public class LoginStudentDto
 {
     [Required]
     public EMailAddress EmailAddress { get; init; }
-    
-    [Required]
-    public string OneTimeCode { get; init; }
+    public string? OneTimeCode { get; init; }
 }

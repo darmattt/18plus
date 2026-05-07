@@ -19,7 +19,7 @@ public class OneTimeCodeService : IOneTimeCodeService
         _secretKey = Encoding.UTF8.GetBytes(secret);
     }
 
-    public CreateOnetimeCode Create(Student student, TimeSpan lifetime)
+    public CreatedOneTimeCode Create(Student student, TimeSpan lifetime)
     {
         ArgumentNullException.ThrowIfNull(student);
 
@@ -31,18 +31,18 @@ public class OneTimeCodeService : IOneTimeCodeService
             hash
         );
 
-        return new CreateOnetimeCode(plainCode, entity);
+        return new CreatedOneTimeCode(entity, plainCode);
     }
 
     public bool Verify(OneTimeCode oneTimeCode, string plainCode)
     {
         ArgumentNullException.ThrowIfNull(oneTimeCode);
         ArgumentException.ThrowIfNullOrWhiteSpace(plainCode);
-
-        
         
         var computedHash = HashCode(plainCode.Trim());
-        return oneTimeCode.VerifyHash(computedHash);
+
+        var isValid = oneTimeCode.VerifyHash(computedHash);
+        return isValid;
     }
 
     private string HashCode(string code)

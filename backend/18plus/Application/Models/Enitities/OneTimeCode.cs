@@ -38,16 +38,18 @@ public class OneTimeCode : EntityBase
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(computedHash);
 
-        if (IsUsed || IsExpired)
-            return false;
-
+        if (IsUsed )
+            throw new DomainBusinessValidationException("Code already used.");
+        if (IsExpired)
+            throw new DomainBusinessValidationException("Code expired.");
+        
         var isValid = CryptographicOperations.FixedTimeEquals(
             Convert.FromHexString(CodeHash),
             Convert.FromHexString(computedHash)
         );
 
         if (isValid)
-            UsedAt = DateTime.UtcNow;
+            MarkAsUsed();
 
         return isValid;
     }

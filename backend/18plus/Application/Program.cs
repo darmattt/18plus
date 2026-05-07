@@ -54,6 +54,7 @@ public class Program
         builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
         builder.Services.AddTransient<IAdminService, AdminService>();
         builder.Services.AddScoped<ITeacherService, TeacherService>();
+        builder.Services.AddScoped<IStudentService, StudentService>();
 
         // Registers OpenAPI
         //builder.Services.AddOpenApi();

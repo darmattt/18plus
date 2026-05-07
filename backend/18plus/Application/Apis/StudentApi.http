@@ -1,0 +1,8 @@
+###
+POST http://localhost:5000/api/Student/login
+Content-Type: application/json
+
+{
+    "EmailAddress" : "Mansour.Khawari@18plus.local",
+    "OneTimeCode" : "891867"
+} 
