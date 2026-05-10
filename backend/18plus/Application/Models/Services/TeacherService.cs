@@ -1,6 +1,5 @@
 ﻿using Application.Infrastructure;
-using Application.Models.Enitities;
-using Application.Models.ValueObjects;
+using Application.Models.Entities;
 using Application.ViewModels.AddDtos;
 using Application.ViewModels.Converters;
 using Application.ViewModels.CreateDtos;
@@ -22,26 +21,68 @@ public class TeacherService(
     public async Task<TeacherLoginResponse> LoginTeacherAsync(LoginAdminDto dto)
     {
         logger.LogDebug("Teacher login attempt for email {Email}", dto.EmailAddress);
+
         var teacher = await db.Teachers
-                          .Include(userBase => userBase.Email)
-                          .FirstOrDefaultAsync(a => a.Email.Value.ToLower() == dto.EmailAddress.Value)
-                    ?? throw ServiceApplicationException.NotFound("Admin not found");
+                          .Include(t => t.Email)
+                          .FirstOrDefaultAsync(t => t.Email.Value.ToLower() == dto.EmailAddress.Value.ToLower())
+                      ?? throw ServiceApplicationException.NotFound("Teacher not found");
 
         var validPassword = passwordService.Verify(teacher, dto.Password);
+
         if (!validPassword)
             throw ServiceApplicationException.Forbidden("Invalid password");
-        
-        var token = tokenService.GenerateToken(teacher);
-        
+
+        var accessToken = tokenService.GenerateTeacherAccessToken(teacher);
+
+        var refreshToken = tokenService.GenerateRefreshToken();
+
+        var refreshTokenHash = tokenService.HashRefreshToken(refreshToken);
+
+        db.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = teacher.Id,
+            TokenHash = refreshTokenHash,
+            ExpiresAt = DateTime.UtcNow.AddHours(24),
+            IsRevoked = false
+        });
+
+        await db.SaveChangesAsync();
+
         logger.LogInformation("Teacher logged in successfully with id {Teacher}", teacher.Id);
-        
+
         return new TeacherLoginResponse(
-            token,teacher.FirstName,
+            accessToken,
+            refreshToken,
+            teacher.FirstName,
             teacher.LastName,
-            teacher.Email);
+            teacher.Email
+        );
     }
 
-    public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
+    public async Task<TeacherRefreshResponse> RefreshTeacherTokenAsync(string? refreshToken)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            throw ServiceApplicationException.Forbidden("Refresh token missing");
+
+        var tokenHash = tokenService.HashRefreshToken(refreshToken);
+
+        var storedToken = await db.RefreshTokens
+            .Include(rt => rt.User)
+            .FirstOrDefaultAsync(rt =>
+                rt.TokenHash == tokenHash &&
+                !rt.IsRevoked &&
+                rt.ExpiresAt > DateTime.UtcNow);
+
+        if (storedToken is null)
+            throw ServiceApplicationException.Forbidden("Invalid refresh token");
+
+        var accessToken = tokenService.GenerateTeacherAccessToken(storedToken.User);
+
+        return new TeacherRefreshResponse(accessToken);
+    }
+    
+
+public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
     {
        var teacherGuid = currentUserService.UserId 
             ?? throw ServiceApplicationException.Forbidden("User not authenticated");

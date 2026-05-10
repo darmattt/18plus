@@ -1,8 +1,9 @@
 ﻿using System.Security.Cryptography;
+using Application.Models.Enitities;
 using Application.Models.Exception;
 using Application.Models.Users;
 
-namespace Application.Models.Enitities;
+namespace Application.Models.Entities;
 
 public class OneTimeCode : EntityBase
 {

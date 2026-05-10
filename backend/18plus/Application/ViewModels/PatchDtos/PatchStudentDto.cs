@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Application.Models.Enitities;
+using Application.Models.Entities;
 using Application.Models.ValueObjects;
 
 namespace Application.ViewModels.PatchDtos;

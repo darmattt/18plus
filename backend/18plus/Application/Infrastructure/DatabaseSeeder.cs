@@ -1,5 +1,4 @@
-﻿using Application.Models.Enitities;
-using Application.Models.Enums;
+﻿using Application.Models.Entities;
 using Application.Models.Services;
 using Application.Models.Users;
 using Application.Models.ValueObjects;
@@ -84,7 +83,7 @@ public static class DatabaseSeeder
             new Student(
                 firstName: "Mansour",
                 lastName: "Khawari",
-                email: new EMailAddress("Mansour.Khawari@18plus.local")
+                email: new EMailAddress("MansourKhawari14@gmail.com")
             ),
             new Student(
                 firstName: "Darya",
@@ -94,7 +93,7 @@ public static class DatabaseSeeder
             new Student(
                 firstName: "Maryam",
                 lastName: "Hukic-Dzavo",
-                email: new EMailAddress("Maryam.Hukic@18plus.local")
+                email: new EMailAddress("HUK231042@spengergasse.at")
             ),
             new Student(
                 firstName: "Beshr",
@@ -104,7 +103,7 @@ public static class DatabaseSeeder
             new Student(
                 firstName: "Dana",
                 lastName: "Alawad",
-                email: new EMailAddress("Dana.Alawad@18plus.local")
+                email: new EMailAddress("ala230463@spengergasse.at")
             ),
             new Student(
                 firstName: "Michael",

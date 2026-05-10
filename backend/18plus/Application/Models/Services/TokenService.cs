@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Application.Models.Users;
 using Microsoft.IdentityModel.Tokens;
@@ -13,46 +14,71 @@ public class TokenService : ITokenService
     //(z.B. appsettings.json) aus einer Konfigurationsdatei
     //oder Umgebung auslesen kann.
     private readonly IConfiguration _config;
-
-    public TokenService(IConfiguration config)
+    private readonly IJwtKeyProvider _jwtKeyProvider;
+    public TokenService(IConfiguration config,
+        IJwtKeyProvider jwtKeyProvider)
     {
         _config = config;
+        _jwtKeyProvider = jwtKeyProvider;
     }
 
-    public string GenerateToken(UserBase user)
+    public string GenerateAdminToken(UserBase user)
     {
+        var jwtKey = _config["Jwt:Key"]
+            ?? throw ServiceApplicationException.InternalServerError("Jwt:Key ist nicht konfiguriert");
+        
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtKey)
+        );
+        
+        return GenerateJwtToken(user, key, DateTime.UtcNow.AddHours(2));
+    }
+
+    public string GenerateTeacherAccessToken(UserBase user)
+    {
+        var jwtKey = _jwtKeyProvider.GetTeacherKey();
+
+        return GenerateJwtToken(user, jwtKey, DateTime.UtcNow.AddHours(2));
+
+    }
+
+    private string GenerateJwtToken(UserBase user, SecurityKey key, DateTime expires)
+    {
+        var issuer = _config["Jwt:Issuer"]
+            ?? throw ServiceApplicationException.InternalServerError("Jwt:Issuer ist nicht konfiguriert");
+        var audience = _config["Jwt:Audience"]
+            ?? throw ServiceApplicationException.InternalServerError("Jwt:Audience ist nicht konfiguriert");
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.PublicId.ToString()),
             new Claim(ClaimTypes.Email, user.Email.Value),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
-
-        var jwtKey = _config["Jwt:Key"]
-            ?? throw ServiceApplicationException.InternalServerError("Jwt:Key ist nicht konfiguriert");
-        var issuer = _config["Jwt:Issuer"]
-            ?? throw ServiceApplicationException.InternalServerError("Jwt:Issuer fehlt");
-        var audience = _config["Jwt:Audience"]
-            ?? throw ServiceApplicationException.InternalServerError("Jwt:Audience fehlt");
-        var expiryHours = int.TryParse(_config["Jwt:ExpiryHours"], out var configuredExpiryHours)
-                          && configuredExpiryHours > 0
-            ? configuredExpiryHours
-            : 2;
-
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtKey)
-        );
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
+        var cred = new SigningCredentials(
+            key, SecurityAlgorithms.HmacSha256);
+        
         var token = new JwtSecurityToken(
-            issuer: issuer,
-            audience: audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(expiryHours),
-            signingCredentials: creds
-        );
-
+            issuer, audience, claims, expires: expires, signingCredentials: cred);
+        
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+    
+    public string GenerateRefreshToken()
+    { 
+        var randomBytes = new byte[64];
+
+        using var rng = RandomNumberGenerator.Create();
+        
+        rng.GetBytes(randomBytes);
+        
+        return Convert.ToBase64String(randomBytes);
+    }
+    
+    public string HashRefreshToken(string refreshToken)
+    {
+        var bytes = SHA256.HashData(
+            Encoding.UTF8.GetBytes(refreshToken));
+        
+        return Convert.ToBase64String(bytes);
     }
 }

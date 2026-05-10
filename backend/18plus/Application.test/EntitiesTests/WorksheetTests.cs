@@ -1,4 +1,4 @@
-﻿using Application.Models.Enitities;
+﻿using Application.Models.Entities; 
 using Application.Models.Exception;
 using Xunit;
 

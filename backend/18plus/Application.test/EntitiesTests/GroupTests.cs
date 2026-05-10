@@ -1,5 +1,4 @@
-﻿using Application.Models;
-using Application.Models.Enitities;
+﻿using Application.Models.Entities;
 using Application.Models.Users;
 using Application.Models.ValueObjects;
 using Xunit;

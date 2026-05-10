@@ -1,6 +1,6 @@
 ﻿using Application.Models.Exception;
 
-namespace Application.Models.Enitities;
+namespace Application.Models.Entities;
 
 public class GroupWorksheet
 {

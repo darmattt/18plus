@@ -1,10 +1,11 @@
 ﻿using System.Security.Cryptography;
+using Application.Models.Enitities;
 using Application.Models.Enums;
 using Application.Models.Exception;
 using Application.Models.Users;
 using Application.Models.ValueObjects;
 
-namespace Application.Models.Enitities;
+namespace Application.Models.Entities;
 
 public  class Group : EntityBase
 {

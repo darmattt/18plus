@@ -1,6 +1,7 @@
-﻿using Application.Models.Exception;
+﻿using Application.Models.Enitities;
+using Application.Models.Exception;
 
-namespace Application.Models.Enitities;
+namespace Application.Models.Entities;
 
 public class Worksheet : EntityBase
 {

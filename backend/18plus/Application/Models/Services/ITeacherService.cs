@@ -9,6 +9,7 @@ namespace Application.Models.Services;
 public interface ITeacherService
 {
     Task<TeacherLoginResponse> LoginTeacherAsync(LoginAdminDto dto);
+    Task<TeacherRefreshResponse> RefreshTeacherTokenAsync(string? refreshToken);
     Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto);
     Task<GroupResponse> PatchGroupAsync(int groupId, PatchGroupDto dto);
     Task<List<StudentResponse>> GetMyGroupsMembers();

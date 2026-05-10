@@ -1,4 +1,4 @@
-﻿using Application.Models.Enitities;
+﻿using Application.Models.Entities;
 using Application.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -21,11 +21,13 @@ public class EighteenplusDbContext(DbContextOptions<EighteenplusDbContext> optio
     public DbSet<OneTimeCode> OneTimeCodes => Set<OneTimeCode>();
     public DbSet<Teacher> Teachers => Set<Teacher>();
     public DbSet<Admin> Admins => Set<Admin>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {   //EF Core Standardkonfiguration holen.
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<UserBase>(ConfigureUser);
+        modelBuilder.Entity<RefreshToken>();
         modelBuilder.Entity<Group>(ConfigureGroup);
         modelBuilder.Entity<Student>(ConfigureStudent);
         modelBuilder.Entity<GroupWorksheet>(ConfigureGroupWorksheet);
@@ -121,6 +123,8 @@ public class EighteenplusDbContext(DbContextOptions<EighteenplusDbContext> optio
         builder.ToTable("Students");
         builder.HasOne(x => x.Group).WithMany().HasForeignKey("GroupId").OnDelete(DeleteBehavior.SetNull);
     }
+    
+    
     
 }
     

@@ -18,9 +18,40 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<TeacherLoginResponse>> Login([FromBody] LoginAdminDto dto)
     {
-        var result = await teacherService.LoginTeacherAsync(dto);
-        return Ok(result);
+        var response = await teacherService.LoginTeacherAsync(dto);
+
+        Response.Cookies.Append("refreshToken", response.refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddDays(7)
+        });
+
+        return Ok(new
+        {
+            accessToken = response.Token,
+            firstName = response.FirstName,
+            lastName = response.LastName,
+            email = response.EmailAddress
+        });
     }
+    
+    [HttpPost("teacher/refresh")]
+    public async Task<IActionResult> RefreshTeacherToken()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+
+        var response = await teacherService.RefreshTeacherTokenAsync(refreshToken);
+
+        return Ok(new
+        {
+            accessToken = response.
+        });
+    }
+    
+    
+    
 
     [Authorize(Roles = "Teacher")]
     [HttpPost("group")]

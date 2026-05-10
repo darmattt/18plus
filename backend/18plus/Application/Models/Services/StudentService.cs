@@ -14,7 +14,8 @@ public class StudentService (
     IOneTimeCodeService oneTimeCodeService,
     ITokenService tokenService,
     ICurrentUserService currentUserService,
-    ILogger<StudentService> logger
+    ILogger<StudentService> logger,
+    IEmailSender emailSender
     ) : IStudentService 
 {
     public async Task<StudentResponse> LoginStudentAsync(LoginStudentDto dto)
@@ -27,8 +28,8 @@ public class StudentService (
             var result = oneTimeCodeService.Create(student, TimeSpan.FromMinutes(10));
             db.OneTimeCodes.Add(result.OneTimeCode);
             await db.SaveChangesAsync();
-
-            throw ServiceApplicationException.BadRequest($"One Time Code is {result.PlainCode}");
+            await emailSender.SendEmailAsync(student.Email.Value, "One time code", $"Your one time code is:{result.PlainCode}");
+            throw ServiceApplicationException.BadRequest($"One Time Code is");
         }
 
         var oneTimeCode = await db.OneTimeCodes

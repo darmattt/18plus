@@ -3,6 +3,10 @@
 namespace Application.Models.Services;
 
 public interface ITokenService
-{
-    string GenerateToken(UserBase user);
+{ 
+    string GenerateAdminToken(UserBase user); 
+    string GenerateTeacherAccessToken(UserBase user); 
+    string GenerateRefreshToken();
+    
+    string HashRefreshToken(string refreshToken);
 }

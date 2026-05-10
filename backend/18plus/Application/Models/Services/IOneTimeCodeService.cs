@@ -1,4 +1,4 @@
-﻿using Application.Models.Enitities;
+﻿using Application.Models.Entities;
 using Application.Models.Users;
 using Application.ViewModels.CreateDtos;
 

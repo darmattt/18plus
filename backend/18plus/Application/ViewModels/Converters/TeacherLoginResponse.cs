@@ -5,6 +5,7 @@ namespace Application.ViewModels.Converters;
 
 public record TeacherLoginResponse(
     string Token,
+    string refreshToken,
     string  FirstName,
     string  LastName,
     EMailAddress  EmailAddress

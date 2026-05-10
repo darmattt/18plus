@@ -49,12 +49,15 @@ public class Program
         builder.Services.AddSingleton<PasswordHasher<UserBase>>();
         builder.Services.AddSingleton<IOneTimeCodeService, OneTimeCodeService>();
         builder.Services.AddSingleton<IPasswordService, PasswordService>();
+        builder.Services.AddSingleton<IEmailSender, EmailSender>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
+        builder.Services.AddSingleton<IJwtKeyProvider, JwtKeyProvider>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
         builder.Services.AddTransient<IAdminService, AdminService>();
         builder.Services.AddScoped<ITeacherService, TeacherService>();
         builder.Services.AddScoped<IStudentService, StudentService>();
+        
 
         // Registers OpenAPI
         //builder.Services.AddOpenApi();

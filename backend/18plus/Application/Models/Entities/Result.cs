@@ -1,7 +1,8 @@
-﻿using Application.Models.Enums;
+﻿using Application.Models.Enitities;
+using Application.Models.Enums;
 using Application.Models.Users;
 
-namespace Application.Models.Enitities;
+namespace Application.Models.Entities;
 
 public class Result : EntityBase
 {
