@@ -4,30 +4,49 @@ import { Card, CardContent } from "@/components/ui/card"
 import { GraduationCap, Trophy, ArrowRight } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { LoginBox } from "./LoginPage.jsx"
+import {RegistrationBox } from "./RegistrationPage.jsx"
 import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
+import { loginStudent, setStudentToken } from "@/api/studentApi"
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false)
+  const [showRegistration, setShowRegistration] = useState(false)
   const navigate = useNavigate()
 
-  const handleLogin = async (email, password) => {
-    try {
-      const result = await loginTeacher(email, password)
+    const handleLogin = async (role, email, passwordOrCode) => {
+      try {
+        if (role === "teacher") {
+          const result = await loginTeacher(email, passwordOrCode)
+          const token = result.token || result.jwt || result.accessToken
 
-      const token = result.token || result.jwt || result.accessToken
+          if (!token) {
+            console.log("Teacher login response:", result)
+            throw new Error("Kein Teacher-Token gefunden")
+          }
 
-      if (!token) {
-        console.log("Login response:", result)
-        throw new Error("Kein Token in der Antwort gefunden")
+          setTeacherToken(token)
+          setShowLogin(false)
+          navigate("/TeacherView")
+          return
+        }
+
+        if (role === "student") {
+          const result = await loginStudent(email, passwordOrCode)
+          const token = result.token || result.jwt || result.accessToken
+
+          if (!token) {
+            console.log("Student login response:", result)
+            throw new Error("Kein Student-Token gefunden")
+          }
+
+          setStudentToken(token)
+          setShowLogin(false)
+          navigate("/arbeitsblaetter")
+        }
+      } catch (error) {
+        alert(error.message)
       }
-
-      setTeacherToken(token)
-      setShowLogin(false)
-      navigate("/TeacherView")
-    } catch (error) {
-      alert(error.message)
     }
-  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -121,12 +140,30 @@ export default function LandingPage() {
         </div>
       </main>
 
-      {showLogin && (
-        <LoginBox
-          onClose={() => setShowLogin(false)}
-          onLogin={handleLogin}
-        />
-      )}
+       {showLogin && (
+              <LoginBox
+                onClose={() => setShowLogin(false)}
+                onLogin={handleLogin}
+                onRegister={() => {
+                  setShowLogin(false)
+                  setShowRegistration(true)
+                }}
+              />
+            )}
+
+            {showRegistration && (
+              <RegistrationBox
+                onClose={() => setShowRegistration(false)}
+                onRegisterSuccess={() => {
+                  setShowRegistration(false)
+                  setShowLogin(true)
+                }}
+                onBackToLogin={() => {
+                  setShowRegistration(false)
+                  setShowLogin(true)
+                }}
+              />
+            )}
     </div>
   )
 }

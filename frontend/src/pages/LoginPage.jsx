@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { LogIn, Mail, Lock, X, Key, Send } from "lucide-react"
 
-export const LoginBox = ({ onClose, onLogin }) => {
-  const [activeTab, setActiveTab] = useState("teacher")
+export const LoginBox = ({ onClose, onLogin, onRegister }) => {
+  const [activeTab, setActiveTab] = useState("student")
 
   const [teacherEmail, setTeacherEmail] = useState("")
   const [teacherPassword, setTeacherPassword] = useState("")
@@ -21,7 +21,7 @@ export const LoginBox = ({ onClose, onLogin }) => {
 
   const handleTeacherSubmit = (e) => {
     e.preventDefault()
-    onLogin(teacherEmail, teacherPassword)
+    onLogin("teacher", teacherEmail, teacherPassword)
   }
 
   const handleSendCode = () => {
@@ -33,7 +33,7 @@ export const LoginBox = ({ onClose, onLogin }) => {
 
   const handleStudentSubmit = (e) => {
     e.preventDefault()
-    onLogin(studentEmail, oneTimeCode)
+    onLogin("student", studentEmail, oneTimeCode)
   }
 
   return (
@@ -99,6 +99,7 @@ export const LoginBox = ({ onClose, onLogin }) => {
 
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+
                   <input
                     id="teacher-email"
                     type="email"
@@ -121,6 +122,7 @@ export const LoginBox = ({ onClose, onLogin }) => {
 
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+
                   <input
                     id="teacher-password"
                     type="password"
@@ -160,6 +162,7 @@ export const LoginBox = ({ onClose, onLogin }) => {
 
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+
                   <input
                     id="student-email"
                     type="email"
@@ -203,6 +206,7 @@ export const LoginBox = ({ onClose, onLogin }) => {
 
                     <div className="relative">
                       <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+
                       <input
                         id="one-time-code"
                         type="text"
@@ -230,14 +234,19 @@ export const LoginBox = ({ onClose, onLogin }) => {
             </form>
           )}
 
-          <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-            <p className="text-sm text-gray-600">
-              Noch kein Konto?{" "}
-              <a href="#" className="text-[#00a7e7] hover:underline font-bold">
-                Jetzt registrieren
-              </a>
-            </p>
-          </div>
+          {activeTab === "student" && (
+            <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+              <p className="text-sm text-gray-600">
+                Noch kein Konto?{" "}
+                <button
+                  onClick={onRegister}
+                  className="text-[#00a7e7] hover:underline font-bold"
+                >
+                  Jetzt registrieren
+                </button>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
