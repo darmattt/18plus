@@ -5,7 +5,7 @@ import { GraduationCap, Trophy, ArrowRight } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { LoginBox } from "./LoginPage.jsx"
 import {RegistrationBox } from "./RegistrationPage.jsx"
-import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
+import { loginTeacher} from "@/api/teacherApi"
 import { loginStudent, setStudentToken } from "@/api/studentApi"
 
 export default function LandingPage() {
@@ -34,12 +34,6 @@ export default function LandingPage() {
           const result = await loginStudent(email, passwordOrCode)
           const token = result.token || result.jwt || result.accessToken
 
-          if (!token) {
-            console.log("Student login response:", result)
-            throw new Error("Kein Student-Token gefunden")
-          }
-
-          setStudentToken(token)
           setShowLogin(false)
           navigate("/arbeitsblaetter")
         }
