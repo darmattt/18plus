@@ -31,17 +31,13 @@ export default function LandingPage() {
         }
 
         if (role === "student") {
-          const result = await loginStudent(email, passwordOrCode)
-          const token = result.token || result.jwt || result.accessToken
+          const result = await verifyStudentLoginCode(email, passwordOrCode)
 
-          if (!result?.student) {
-            throw new Error(
-              result?.message || "Student-Login konnte nicht abgeschlossen werden"
-            )
-          }
+          console.log("Student login response:", result)
 
           setShowLogin(false)
           navigate("/arbeitsblaetter")
+          return
         }
       } catch (error) {
         alert(error.message)

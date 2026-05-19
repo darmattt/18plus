@@ -5,6 +5,8 @@ import ContentSidebar from "@/components/layout/ContentSidebar"
 import BottomNav from "@/components/layout/BottomNav"
 import WorksheetRenderer from "@/components/WorksheetRenderer"
 import { modules } from "@/data/modules"
+import { ProfileView } from "@/pages/ProfileView"
+import { ChatBot } from "@/pages/ChatBot"
 
 export default function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -13,7 +15,7 @@ export default function AppShell() {
   const [expandedModules, setExpandedModules] = useState([
     "Modul 1: Berufsorientierung - Arbeitsblätter",
   ])
-    
+
   const [chatOpen, setChatOpen] = useState(false)
 
   const toggleModule = (title) => {
@@ -58,9 +60,7 @@ export default function AppShell() {
           className="mx-auto max-w-6xl"
         >
           {activeView === "profile" ? (
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h1 className="text-3xl font-bold text-slate-900">Mein Profil</h1>
-            </div>
+            <ProfileView />
           ) : (
             <WorksheetRenderer worksheetId={activeWorksheetId} />
           )}
@@ -69,18 +69,8 @@ export default function AppShell() {
 
       <AnimatePresence>
         {chatOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            className="fixed bottom-28 right-4 z-50 w-[360px] rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
-          >
-            <h3 className="text-lg font-bold text-slate-900">Chat</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Hier kommt später dein ChatBot rein.
-            </p>
-          </motion.div>
-        )}
+            <ChatBot onClose={() => setChatOpen(false)} />
+          )}
       </AnimatePresence>
 
       <BottomNav

@@ -102,7 +102,7 @@ export const ProfileView = () => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
           <div className="flex items-center gap-3 text-[#c7d300]">
             <Trophy className="w-5 h-5" />
-            <h3 className="font-bold">ABs erfüllt</h3>
+            <h3 className="font-bold">Arbeitsblätter erfüllt</h3>
           </div>
 
           <div className="space-y-3">

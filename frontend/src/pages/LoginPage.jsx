@@ -30,16 +30,11 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
     if (!studentEmail) return
 
     try {
-      setLoading(true)
-
-      await requestStudentLoginCode(studentEmail.trim().toLowerCase())
-
+      await requestStudentLoginCode(studentEmail)
       setCodeSent(true)
       setCountdown(60)
-    } catch (err) {
-      alert(err.message)
-    } finally {
-      setLoading(false)
+    } catch (error) {
+      alert(error.message)
     }
   }
 
