@@ -1,23 +1,8 @@
 ﻿const API_BASE_URL = "http://localhost:5000/api/Student"
 
-export function getStudentToken() {
-  return localStorage.getItem("studentToken")
-}
-
-export function setStudentToken(token) {
-  localStorage.setItem("studentToken", token)
-}
-
-export function removeStudentToken() {
-  localStorage.removeItem("studentToken")
-}
-
 async function apiRequest(path, options = {}) {
-  const token = getStudentToken()
-
   const headers = {
     ...(options.body ? { "Content-Type": "application/json" } : {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {}),
   }
 
@@ -31,11 +16,12 @@ async function apiRequest(path, options = {}) {
 
     try {
       const errorData = await response.json()
+
       errorMessage =
-        errorData.message ||
-        errorData.title ||
-        errorData.error ||
-        JSON.stringify(errorData)
+          errorData.message ||
+          errorData.title ||
+          errorData.error ||
+          JSON.stringify(errorData)
     } catch {
       try {
         errorMessage = await response.text()
@@ -52,15 +38,25 @@ async function apiRequest(path, options = {}) {
   }
 
   const text = await response.text()
+
   return text ? JSON.parse(text) : null
 }
 
-export async function loginStudent(emailAddress, oneTimeCode = null) {
-  return apiRequest("/login", {
+export async function requestStudentLoginCode(emailAddress) {
+  return apiRequest("/login/request-code", {
     method: "POST",
     body: JSON.stringify({
-      emailAddress,
-      oneTimeCode,
+      EmailAddress: emailAddress,
+    }),
+  })
+}
+
+export async function verifyStudentLoginCode(emailAddress, oneTimeCode) {
+  return apiRequest("/login/verify-code", {
+    method: "POST",
+    body: JSON.stringify({
+      EmailAddress: emailAddress,
+      OneTimeCode: oneTimeCode,
     }),
   })
 }

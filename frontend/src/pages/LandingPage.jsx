@@ -5,8 +5,8 @@ import { GraduationCap, Trophy, ArrowRight } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { LoginBox } from "./LoginPage.jsx"
 import {RegistrationBox } from "./RegistrationPage.jsx"
-import { loginTeacher} from "@/api/teacherApi"
-import { loginStudent, setStudentToken } from "@/api/studentApi"
+import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
+import { verifyStudentLoginCode } from "@/api/studentApi"
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false)
@@ -33,6 +33,12 @@ export default function LandingPage() {
         if (role === "student") {
           const result = await loginStudent(email, passwordOrCode)
           const token = result.token || result.jwt || result.accessToken
+
+          if (!result?.student) {
+            throw new Error(
+              result?.message || "Student-Login konnte nicht abgeschlossen werden"
+            )
+          }
 
           setShowLogin(false)
           navigate("/arbeitsblaetter")

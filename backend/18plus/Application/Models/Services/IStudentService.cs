@@ -5,5 +5,6 @@ namespace Application.Models.Services;
 
 public interface IStudentService
 { 
-    Task<StudentResponse> LoginStudentAsync(LoginStudentDto dto);
+    Task<StudentLoginResponse> RequestLoginCodeAsync(RequestStudentLoginCodeDto dto);
+    Task<StudentLoginResponse> VerifyLoginCodeAsync(LoginStudentDto dto);
 }

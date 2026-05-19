@@ -12,10 +12,18 @@ namespace Application.Controllers;
 public class StudentController(IStudentService studentService) : ControllerBase
 {
     [AllowAnonymous]
-    [HttpPost("login")]
-    public async Task<ActionResult<StudentResponse>> StudentLoginAsync([FromBody] LoginStudentDto request)
+    [HttpPost("login/request-code")]
+    public async Task<ActionResult<StudentLoginResponse>> RequestLoginCodeAsync([FromBody] RequestStudentLoginCodeDto request)
     {
-        var result = await studentService.LoginStudentAsync(request);
+        var result = await studentService.RequestLoginCodeAsync(request);
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("login/verify-code")]
+    public async Task<ActionResult<StudentLoginResponse>> VerifyLoginCodeAsync([FromBody] LoginStudentDto request)
+    {
+        var result = await studentService.VerifyLoginCodeAsync(request);
         return Ok(result);
     }
 }

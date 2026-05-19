@@ -46,7 +46,7 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
 
         return Ok(new
         {
-            accessToken = response.
+            accessToken = response.AccessToken
         });
     }
     

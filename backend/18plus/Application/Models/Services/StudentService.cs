@@ -18,19 +18,30 @@ public class StudentService (
     IEmailSender emailSender
     ) : IStudentService 
 {
-    public async Task<StudentResponse> LoginStudentAsync(LoginStudentDto dto)
+    public async Task<StudentLoginResponse> RequestLoginCodeAsync(RequestStudentLoginCodeDto dto)
     {
-        var student = db.Students.FirstOrDefault(s => s.Email.Value == dto.EmailAddress.Value) 
+        var student = await db.Students.FirstOrDefaultAsync(s => s.Email.Value == dto.EmailAddress.Value) 
                       ?? throw ServiceApplicationException.NotFound("Account doesn't exist pls sign in or try other account");
 
-        if (dto.OneTimeCode == null)
-        {
-            var result = oneTimeCodeService.Create(student, TimeSpan.FromMinutes(10));
-            db.OneTimeCodes.Add(result.OneTimeCode);
-            await db.SaveChangesAsync();
-            await emailSender.SendEmailAsync(student.Email.Value, "One time code", $"Your one time code is:{result.PlainCode}");
-            throw ServiceApplicationException.BadRequest($"One Time Code is");
-        }
+        var result = oneTimeCodeService.Create(student, TimeSpan.FromMinutes(10));
+        db.OneTimeCodes.Add(result.OneTimeCode);
+        await db.SaveChangesAsync();
+        await emailSender.SendEmailAsync(student.Email.Value, "One time code", $"Your one time code is:{result.PlainCode}");
+
+        return new StudentLoginResponse(
+            true,
+            "One time code sent to your email",
+            null);
+    }
+    
+
+    public async Task<StudentLoginResponse> VerifyLoginCodeAsync(LoginStudentDto dto)
+    {
+        var student = await db.Students.FirstOrDefaultAsync(s => s.Email.Value == dto.EmailAddress.Value) 
+                      ?? throw ServiceApplicationException.NotFound("Account doesn't exist pls sign in or try other account");
+
+        if (string.IsNullOrWhiteSpace(dto.OneTimeCode))
+            throw ServiceApplicationException.BadRequest("One time code is required");
 
         var oneTimeCode = await db.OneTimeCodes
             .Where(otc => otc.Student.Id == student.Id)
@@ -43,8 +54,9 @@ public class StudentService (
         
         await db.SaveChangesAsync();
         
-        return new StudentResponse(student.Id, student.FirstName, student.LastName, student.Group?.Name);
-
+        return new StudentLoginResponse(
+            false,
+            null,
+            new StudentResponse(student.Id, student.FirstName, student.LastName, student.Group?.Name));
     }
-    
 }
