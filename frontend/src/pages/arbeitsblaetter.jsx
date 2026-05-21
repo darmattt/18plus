@@ -19,19 +19,17 @@ export default function Arbeitsblaetter() {
                 </div>
 
                 <nav className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
-                    <Link className="hover:text-slate-900" to="/arbeitsblaetter">
-                        Arbeitsblätter
-                    </Link>
-                    <Link className="hover:text-slate-900" to="/gruppe">
-                        Gruppe beitreten
-                    </Link>
                     <a className="hover:text-slate-900" href="#">
                         über 18plus
                     </a>
                 </nav>
 
                 <Link to="/login">
-                    <Button variant="outline" className="hidden md:inline-flex">
+                    <Button
+                      variant="outline"
+                      className="hidden md:inline-flex"
+                      onClick={() => setShowLogin(true)}
+                    >
                         Login
                     </Button>
                 </Link>

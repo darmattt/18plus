@@ -142,6 +142,29 @@ export const RegistrationBox = ({
                   </div>
                 </div>
 
+                <div>
+                  <label
+                    htmlFor="LernGruppeCode"
+                    className="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Code für deine Lerngruppe
+                  </label>
+
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+
+                    <input
+                      id="lgCode"
+                      type="lgCode"
+                      value={email}
+                      //onChange={(e) => setEmail(e.target.value)}
+                      placeholder="123456"
+                      required
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20 transition-all"
+                    />
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   className="w-full py-4 bg-[#c7d300] text-black rounded-xl font-bold hover:bg-[#b0ba00] transition-colors shadow-lg shadow-[#c7d300]/20 flex items-center justify-center gap-2"

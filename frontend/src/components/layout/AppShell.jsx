@@ -8,6 +8,12 @@ import { modules } from "@/data/modules"
 import { ProfileView } from "@/pages/ProfileView"
 import { ChatBot } from "@/pages/ChatBot"
 
+import { LoginBox } from "@/pages/LoginPage.jsx"
+import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
+import { verifyStudentLoginCode } from "@/api/studentApi"
+import { useNavigate } from "react-router-dom"
+import { RegistrationBox } from "@/pages/RegistrationPage.jsx"
+
 export default function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeView, setActiveView] = useState("content")
@@ -15,6 +21,10 @@ export default function AppShell() {
   const [expandedModules, setExpandedModules] = useState([
     "Modul 1: Berufsorientierung - Arbeitsblätter",
   ])
+
+    const [showLogin, setShowLogin] = useState(false)
+    const navigate = useNavigate()
+const [showRegistration, setShowRegistration] = useState(false)
 
   const [chatOpen, setChatOpen] = useState(false)
 
@@ -33,6 +43,37 @@ export default function AppShell() {
     setChatOpen(false)
   }
 
+    const handleLogin = async (role, email, passwordOrCode) => {
+          try {
+            if (role === "teacher") {
+              const result = await loginTeacher(email, passwordOrCode)
+              const token = result.token || result.jwt || result.accessToken
+
+              if (!token) {
+                console.log("Teacher login response:", result)
+                throw new Error("Kein Teacher-Token gefunden")
+              }
+
+              setTeacherToken(token)
+              setShowLogin(false)
+              navigate("/TeacherView")
+              return
+            }
+
+            if (role === "student") {
+              await verifyStudentLoginCode(email, passwordOrCode)
+              setIsLoggedIn(true)
+              setShowLogin(false)
+              navigate("/arbeitsblaetter")
+              return
+            }
+          } catch (error) {
+            alert(error.message)
+          }
+        }
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-50">
       {sidebarOpen && (
@@ -41,6 +82,13 @@ export default function AppShell() {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+        <button
+          onClick={() => setShowLogin(true)}
+          className="fixed right-6 top-6 z-30 rounded-xl bg-[#006ddd] px-5 py-3 font-bold text-white shadow-lg transition-colors hover:bg-[#005bb8]"
+        >
+          Login
+        </button>
 
       <ContentSidebar
         open={sidebarOpen}
@@ -74,23 +122,61 @@ export default function AppShell() {
       </AnimatePresence>
 
       <BottomNav
-        sidebarOpen={sidebarOpen}
-        activeView={activeView}
-        chatOpen={chatOpen}
-        onToggleSidebar={() => {
-          setSidebarOpen((prev) => !prev)
-          setActiveView("content")
-        }}
-        onOpenProfile={() => {
-          setActiveView("profile")
-          setSidebarOpen(false)
-          setChatOpen(false)
-        }}
-        onToggleChat={() => {
-          setChatOpen((prev) => !prev)
-          setSidebarOpen(false)
-        }}
-      />
+          sidebarOpen={sidebarOpen}
+          activeView={activeView}
+          chatOpen={chatOpen}
+          isLoggedIn={isLoggedIn}
+          onToggleSidebar={() => {
+            setSidebarOpen((prev) => !prev)
+            setActiveView("content")
+          }}
+          onOpenProfile={() => {
+            if (!isLoggedIn) return
+            setActiveView("profile")
+            setSidebarOpen(false)
+            setChatOpen(false)
+          }}
+          onToggleChat={() => {
+            if (!isLoggedIn) return
+            setChatOpen((prev) => !prev)
+            setSidebarOpen(false)
+          }}
+        />
+
+
+    {!isLoggedIn && (
+      <button
+        onClick={() => setShowLogin(true)}
+        className="fixed right-6 top-6 z-30 rounded-xl bg-[#006ddd] px-5 py-3 font-bold text-white shadow-lg hover:bg-[#005bb8]"
+      >
+        Login
+      </button>
+    )}
+
+      {showLogin && (
+        <LoginBox
+          onClose={() => setShowLogin(false)}
+          onLogin={handleLogin}
+          onRegister={() => {
+            setShowLogin(false)
+            setShowRegistration(true)
+          }}
+        />
+      )}
+
+        {showRegistration && (
+          <RegistrationBox
+            onClose={() => setShowRegistration(false)}
+            onRegisterSuccess={() => {
+              setShowRegistration(false)
+              setShowLogin(true)
+            }}
+            onBackToLogin={() => {
+              setShowRegistration(false)
+              setShowLogin(true)
+            }}
+          />
+        )}
     </div>
   )
 }

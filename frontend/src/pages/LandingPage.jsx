@@ -52,13 +52,6 @@ export default function LandingPage() {
         </div>
 
         <nav className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
-          <button className="hover:text-slate-900" onClick={() => setShowLogin(true)}>
-            Arbeitsblätter
-          </button>
-
-          <Link className="hover:text-slate-900" to="/GruppePage">
-            Gruppe beitreten
-          </Link>
 
           <a className="hover:text-slate-900" href="#">
             über 18plus
@@ -91,7 +84,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="rounded-2xl bg-lime-300 px-7 py-6 text-slate-900 hover:bg-lime-400"
-              onClick={() => setShowLogin(true)}
+              onClick={() => navigate("/arbeitsblaetter")}
             >
               Jetzt starten
               <ArrowRight className="ml-2 h-5 w-5" />
