@@ -9,7 +9,7 @@ import {
   FileText,
 } from "lucide-react"
 
-export const ProfileView = () => {
+export const ProfileView = ({user}) => {
   const worksheets = [
     { name: "Modul 1: Arbeitsblatt 1", status: "completed" },
     { name: "Modul 1: Arbeitsblatt 2", status: "completed" },
@@ -50,12 +50,12 @@ export const ProfileView = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Alex Johnson
+                {user?.firstName} {user?.lastName}
               </h1>
 
               <p className="text-gray-500 flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                alex.johnson@student.de
+                {user?.email}
               </p>
             </div>
 
@@ -72,7 +72,7 @@ export const ProfileView = () => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
           <div className="flex items-center gap-3 text-[#006ddd]">
             <Users className="w-5 h-5" />
-            <h3 className="font-bold">Meine Gruppe</h3>
+            <h3 className="font-bold">{user?.groupName || "Keine Gruppe"}</h3>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-lg text-center">

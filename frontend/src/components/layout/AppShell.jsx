@@ -23,6 +23,7 @@ export default function AppShell() {
   ])
 
     const [showLogin, setShowLogin] = useState(false)
+    const [currentUser, setCurrentUser] = useState(null)
     const navigate = useNavigate()
 const [showRegistration, setShowRegistration] = useState(false)
 
@@ -61,7 +62,15 @@ const [showRegistration, setShowRegistration] = useState(false)
             }
 
             if (role === "student") {
-              await verifyStudentLoginCode(email, passwordOrCode)
+              const result = await verifyStudentLoginCode(email, passwordOrCode)
+
+              setCurrentUser({
+                firstName: result.firstName,
+                lastName: result.lastName,
+                email: result.emailAddress || email,
+                groupName: result.groupName,
+              })
+
               setIsLoggedIn(true)
               setShowLogin(false)
               navigate("/arbeitsblaetter")
@@ -108,7 +117,7 @@ const [showRegistration, setShowRegistration] = useState(false)
           className="mx-auto max-w-6xl"
         >
           {activeView === "profile" ? (
-            <ProfileView />
+            <ProfileView user={currentUser} />
           ) : (
             <WorksheetRenderer worksheetId={activeWorksheetId} />
           )}
