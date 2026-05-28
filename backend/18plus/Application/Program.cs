@@ -70,11 +70,13 @@ public class Program
                 policy
                     .WithOrigins("http://localhost:5173")
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
         });
         
-        var jwtKey = builder.Configuration["Jwt:Key"]
+        var jwtKey = builder.Configuration["Jwt:TeacherKey"]
+                     ?? builder.Configuration["Jwt:Key"]
                      ?? throw new InvalidOperationException("Jwt:Key is missing. For local development, set it with: dotnet user-secrets set \"Jwt:Key\" \"<secret>\"");
         var jwtIssuer = builder.Configuration["Jwt:Issuer"]
                         ?? throw new InvalidOperationException("Jwt:Issuer is missing.");

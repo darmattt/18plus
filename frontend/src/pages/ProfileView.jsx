@@ -40,7 +40,7 @@ export const ProfileView = ({user}) => {
           <div className="relative -mt-12 mb-6">
             <div className="w-24 h-24 rounded-2xl border-4 border-white overflow-hidden shadow-lg">
               <img
-                src="https://images.unsplash.com/photo-1729824186570-4d4aede00043?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwcHJvZmlsZSUyMGF2YXRhcnxlbnwxfHx8fDE3NzAzMDU2MjV8MA"
+                src="https://images-prod.dazeddigital.com/355/azure/dazed-prod/1060/8/1068776.jpg"
                 alt="Profil"
                 className="w-full h-full object-cover"
               />
@@ -72,12 +72,14 @@ export const ProfileView = ({user}) => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
           <div className="flex items-center gap-3 text-[#006ddd]">
             <Users className="w-5 h-5" />
-            <h3 className="font-bold">{user?.groupName || "Keine Gruppe"}</h3>
+            <h3 className="font-bold">
+              {user?.groupName ? "Meine Gruppe" : "Keine Gruppe"}
+            </h3>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-lg text-center">
             <p className="text-lg font-bold text-gray-900">
-              Klasse 9A
+              {user?.groupName }
             </p>
           </div>
         </div>
@@ -85,17 +87,16 @@ export const ProfileView = ({user}) => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
           <div className="flex items-center gap-3 text-[#00a7e7]">
             <UserCheck className="w-5 h-5" />
-            <h3 className="font-bold">Mein Lehrer</h3>
+            <h3 className="font-bold">
+              {user?.groupName ? "Lehrperson" : "Keine Lehrperson"}
+            </h3>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-lg font-bold text-gray-900 text-center">
-              Anna Schmidt
+              {user?.teacherName }
             </p>
 
-            <p className="text-sm text-gray-500 text-center mt-2">
-              mathematik & physik
-            </p>
           </div>
         </div>
 

@@ -7,4 +7,5 @@ public interface IStudentService
 { 
     Task<StudentLoginResponse> RequestLoginCodeAsync(RequestStudentLoginCodeDto dto);
     Task<StudentLoginResponse> VerifyLoginCodeAsync(LoginStudentDto dto);
+    Task<StudentProfileResponse> GetCurrentStudentProfileAsync();
 }

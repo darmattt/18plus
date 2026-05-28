@@ -107,7 +107,7 @@ public static class DatabaseSeeder
             ),
             new Student(
                 firstName: "Michael",
-                lastName: "Scottfield",
+                lastName: "Scofield",
                 email: new EMailAddress("Michael.Scottfield@18plus.local")
             ),
             new Student(

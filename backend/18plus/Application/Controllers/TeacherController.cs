@@ -7,12 +7,13 @@ using Application.ViewModels.LoginDtos;
 using Application.ViewModels.PatchDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace Application.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TeacherController(ITeacherService teacherService) : ControllerBase
+public class TeacherController(ITeacherService teacherService, IHostEnvironment environment) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("login")]
@@ -23,8 +24,8 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
         Response.Cookies.Append("refreshToken", response.refreshToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = !environment.IsDevelopment(),
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddDays(7)
         });
 

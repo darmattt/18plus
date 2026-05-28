@@ -1,4 +1,4 @@
-﻿const API_BASE_URL = "http://localhost:5000/api/Teacher"
+const API_BASE_URL = "/api/Teacher"
 const TEACHER_TOKEN_KEY = "teacherToken"
 
 export function setTeacherToken(token) {
@@ -13,7 +13,29 @@ export function removeTeacherToken() {
   localStorage.removeItem(TEACHER_TOKEN_KEY)
 }
 
-async function apiRequest(path, options = {}) {
+async function refreshTeacherToken() {
+  const response = await fetch(`${API_BASE_URL}/teacher/refresh`, {
+    method: "POST",
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    removeTeacherToken()
+    throw new Error("Session abgelaufen. Bitte neu einloggen.")
+  }
+
+  const data = await response.json()
+  const token = data?.accessToken || data?.token || data?.jwt
+
+  if (!token) {
+    throw new Error("Kein neuer Access Token erhalten")
+  }
+
+  setTeacherToken(token)
+  return token
+}
+
+async function apiRequest(path, options = {}, retry = true) {
   const token = getTeacherToken()
 
   const headers = {
@@ -22,10 +44,24 @@ async function apiRequest(path, options = {}) {
     ...(options.headers || {}),
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  let response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
+    credentials: "include",
   })
+
+  if ((response.status === 401 || response.status === 403) && retry) {
+    const newToken = await refreshTeacherToken()
+
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${newToken}`,
+      },
+      credentials: "include",
+    })
+  }
 
   if (!response.ok) {
     let errorMessage = `HTTP ${response.status}`
@@ -33,10 +69,10 @@ async function apiRequest(path, options = {}) {
     try {
       const errorData = await response.json()
       errorMessage =
-          errorData.message ||
-          errorData.title ||
-          errorData.error ||
-          JSON.stringify(errorData)
+        errorData.message ||
+        errorData.title ||
+        errorData.error ||
+        JSON.stringify(errorData)
     } catch {
       try {
         errorMessage = await response.text()
@@ -46,26 +82,28 @@ async function apiRequest(path, options = {}) {
     throw new Error(errorMessage || "Request fehlgeschlagen")
   }
 
-  if (response.status === 204) {
-    return null
-  }
+  if (response.status === 204) return null
 
   const text = await response.text()
   return text ? JSON.parse(text) : null
 }
 
 export async function loginTeacher(emailAddress, password) {
-  const data = await apiRequest("/login", {
-    method: "POST",
-    body: JSON.stringify({ emailAddress, password }),
-  })
+  const data = await apiRequest(
+    "/login",
+    {
+      method: "POST",
+      body: JSON.stringify({ emailAddress, password }),
+    },
+    false
+  )
 
   const token =
-      data?.token ||
-      data?.jwt ||
-      data?.accessToken ||
-      data?.access_token ||
-      data?.data?.token
+    data?.accessToken ||
+    data?.token ||
+    data?.jwt ||
+    data?.access_token ||
+    data?.data?.token
 
   if (!token) {
     throw new Error("Kein Token in der Login-Antwort gefunden")
@@ -75,10 +113,12 @@ export async function loginTeacher(emailAddress, password) {
   return data
 }
 
+export async function logoutTeacher() {
+  removeTeacherToken()
+}
+
 export async function getTeacherGroups() {
-  return apiRequest("/groups", {
-    method: "GET",
-  })
+  return apiRequest("/groups", { method: "GET" })
 }
 
 export async function createTeacherGroup(classNumber) {
@@ -101,10 +141,11 @@ export async function deleteTeacherGroup(groupId) {
   })
 }
 
-export async function addStudentToGroup(groupId, EMailAddress ) {
+export async function addStudentToGroup(groupId, EMailAddress) {
   return apiRequest(`/groups/${groupId}/students`, {
     method: "POST",
-    body: JSON.stringify({ EMailAddress  })  })
+    body: JSON.stringify({ EMailAddress }),
+  })
 }
 
 export async function removeStudentFromMyGroup(studentId) {
@@ -114,7 +155,5 @@ export async function removeStudentFromMyGroup(studentId) {
 }
 
 export async function getStudentResults() {
-  return apiRequest("/results", {
-    method: "GET",
-  })
+  return apiRequest("/results", { method: "GET" })
 }

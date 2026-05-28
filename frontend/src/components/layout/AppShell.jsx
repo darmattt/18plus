@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 import ContentSidebar from "@/components/layout/ContentSidebar"
@@ -10,9 +10,43 @@ import { ChatBot } from "@/pages/ChatBot"
 
 import { LoginBox } from "@/pages/LoginPage.jsx"
 import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
-import { verifyStudentLoginCode } from "@/api/studentApi"
+import {
+  getStudentProfile,
+  getStudentToken,
+  logoutStudent,
+  verifyStudentLoginCode,
+} from "@/api/studentApi"
 import { useNavigate } from "react-router-dom"
 import { RegistrationBox } from "@/pages/RegistrationPage.jsx"
+
+const STUDENT_SESSION_KEY = "studentSession"
+
+function readStudentSession() {
+  try {
+    const raw = localStorage.getItem(STUDENT_SESSION_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+function writeStudentSession(user) {
+  localStorage.setItem(STUDENT_SESSION_KEY, JSON.stringify(user))
+}
+
+function clearStudentSession() {
+  localStorage.removeItem(STUDENT_SESSION_KEY)
+}
+
+function mapStudentProfile(profile) {
+  return {
+    firstName: profile?.firstName || "",
+    lastName: profile?.lastName || "",
+    email: profile?.emailAddress || "",
+    groupName: profile?.groupName || null,
+    teacherName: profile?.teacherName || null,
+  }
+}
 
 export default function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -21,13 +55,58 @@ export default function AppShell() {
   const [expandedModules, setExpandedModules] = useState([
     "Modul 1: Berufsorientierung - Arbeitsblätter",
   ])
-
-    const [showLogin, setShowLogin] = useState(false)
-    const [currentUser, setCurrentUser] = useState(null)
-    const navigate = useNavigate()
-const [showRegistration, setShowRegistration] = useState(false)
-
+  const [showLogin, setShowLogin] = useState(false)
+  const [showRegistration, setShowRegistration] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState(() => readStudentSession())
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getStudentToken()))
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (currentUser) {
+      writeStudentSession(currentUser)
+      return
+    }
+
+    clearStudentSession()
+  }, [currentUser])
+
+  useEffect(() => {
+    const token = getStudentToken()
+
+    if (!token) {
+      setIsLoggedIn(false)
+      setCurrentUser(null)
+      return
+    }
+
+    let cancelled = false
+
+    async function refreshStudentProfile() {
+      try {
+        const profile = await getStudentProfile()
+
+        if (!cancelled) {
+          setCurrentUser(mapStudentProfile(profile))
+          setIsLoggedIn(true)
+        }
+      } catch (error) {
+        if (!cancelled) {
+          logoutStudent()
+          setCurrentUser(null)
+          setIsLoggedIn(false)
+        }
+
+        console.error("Student profile refresh failed", error)
+      }
+    }
+
+    refreshStudentProfile()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const toggleModule = (title) => {
     setExpandedModules((prev) =>
@@ -44,44 +123,36 @@ const [showRegistration, setShowRegistration] = useState(false)
     setChatOpen(false)
   }
 
-    const handleLogin = async (role, email, passwordOrCode) => {
-          try {
-            if (role === "teacher") {
-              const result = await loginTeacher(email, passwordOrCode)
-              const token = result.token || result.jwt || result.accessToken
+  const handleLogin = async (role, email, passwordOrCode) => {
+    try {
+      if (role === "teacher") {
+        const result = await loginTeacher(email, passwordOrCode)
+        const token = result.token || result.jwt || result.accessToken
 
-              if (!token) {
-                console.log("Teacher login response:", result)
-                throw new Error("Kein Teacher-Token gefunden")
-              }
-
-              setTeacherToken(token)
-              setShowLogin(false)
-              navigate("/TeacherView")
-              return
-            }
-
-            if (role === "student") {
-              const result = await verifyStudentLoginCode(email, passwordOrCode)
-
-              setCurrentUser({
-                firstName: result.firstName,
-                lastName: result.lastName,
-                email: result.emailAddress || email,
-                groupName: result.groupName,
-              })
-
-              setIsLoggedIn(true)
-              setShowLogin(false)
-              navigate("/arbeitsblaetter")
-              return
-            }
-          } catch (error) {
-            alert(error.message)
-          }
+        if (!token) {
+          console.log("Teacher login response:", result)
+          throw new Error("Kein Teacher-Token gefunden")
         }
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+        setTeacherToken(token)
+        setShowLogin(false)
+        navigate("/TeacherView")
+        return
+      }
+
+      if (role === "student") {
+        await verifyStudentLoginCode(email, passwordOrCode)
+        const profile = await getStudentProfile()
+
+        setCurrentUser(mapStudentProfile(profile))
+        setIsLoggedIn(true)
+        setShowLogin(false)
+        navigate("/arbeitsblaetter")
+      }
+    } catch (error) {
+      alert(error.message)
+    }
+  }
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-50">
@@ -92,12 +163,14 @@ const [showRegistration, setShowRegistration] = useState(false)
         />
       )}
 
+      {!isLoggedIn && (
         <button
           onClick={() => setShowLogin(true)}
           className="fixed right-6 top-6 z-30 rounded-xl bg-[#006ddd] px-5 py-3 font-bold text-white shadow-lg transition-colors hover:bg-[#005bb8]"
         >
           Login
         </button>
+      )}
 
       <ContentSidebar
         open={sidebarOpen}
@@ -125,42 +198,30 @@ const [showRegistration, setShowRegistration] = useState(false)
       </main>
 
       <AnimatePresence>
-        {chatOpen && (
-            <ChatBot onClose={() => setChatOpen(false)} />
-          )}
+        {chatOpen && <ChatBot onClose={() => setChatOpen(false)} />}
       </AnimatePresence>
 
       <BottomNav
-          sidebarOpen={sidebarOpen}
-          activeView={activeView}
-          chatOpen={chatOpen}
-          isLoggedIn={isLoggedIn}
-          onToggleSidebar={() => {
-            setSidebarOpen((prev) => !prev)
-            setActiveView("content")
-          }}
-          onOpenProfile={() => {
-            if (!isLoggedIn) return
-            setActiveView("profile")
-            setSidebarOpen(false)
-            setChatOpen(false)
-          }}
-          onToggleChat={() => {
-            if (!isLoggedIn) return
-            setChatOpen((prev) => !prev)
-            setSidebarOpen(false)
-          }}
-        />
-
-
-    {!isLoggedIn && (
-      <button
-        onClick={() => setShowLogin(true)}
-        className="fixed right-6 top-6 z-30 rounded-xl bg-[#006ddd] px-5 py-3 font-bold text-white shadow-lg hover:bg-[#005bb8]"
-      >
-        Login
-      </button>
-    )}
+        sidebarOpen={sidebarOpen}
+        activeView={activeView}
+        chatOpen={chatOpen}
+        isLoggedIn={isLoggedIn}
+        onToggleSidebar={() => {
+          setSidebarOpen((prev) => !prev)
+          setActiveView("content")
+        }}
+        onOpenProfile={() => {
+          if (!isLoggedIn) return
+          setActiveView("profile")
+          setSidebarOpen(false)
+          setChatOpen(false)
+        }}
+        onToggleChat={() => {
+          if (!isLoggedIn) return
+          setChatOpen((prev) => !prev)
+          setSidebarOpen(false)
+        }}
+      />
 
       {showLogin && (
         <LoginBox
@@ -173,19 +234,19 @@ const [showRegistration, setShowRegistration] = useState(false)
         />
       )}
 
-        {showRegistration && (
-          <RegistrationBox
-            onClose={() => setShowRegistration(false)}
-            onRegisterSuccess={() => {
-              setShowRegistration(false)
-              setShowLogin(true)
-            }}
-            onBackToLogin={() => {
-              setShowRegistration(false)
-              setShowLogin(true)
-            }}
-          />
-        )}
+      {showRegistration && (
+        <RegistrationBox
+          onClose={() => setShowRegistration(false)}
+          onRegisterSuccess={() => {
+            setShowRegistration(false)
+            setShowLogin(true)
+          }}
+          onBackToLogin={() => {
+            setShowRegistration(false)
+            setShowLogin(true)
+          }}
+        />
+      )}
     </div>
   )
 }

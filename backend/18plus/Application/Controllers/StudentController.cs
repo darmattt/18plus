@@ -11,6 +11,14 @@ namespace Application.Controllers;
 
 public class StudentController(IStudentService studentService) : ControllerBase
 {
+    [Authorize(Roles = "Student")]
+    [HttpGet("me")]
+    public async Task<ActionResult<StudentProfileResponse>> GetStudentProfileAsync()
+    {
+        var result = await studentService.GetCurrentStudentProfileAsync();
+        return Ok(result);
+    }
+
     [AllowAnonymous]
     [HttpPost("login/request-code")]
     public async Task<ActionResult<StudentLoginResponse>> RequestLoginCodeAsync([FromBody] RequestStudentLoginCodeDto request)

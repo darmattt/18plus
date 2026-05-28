@@ -1,19 +1,26 @@
-﻿using System.Security.Cryptography;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Models.Services;
 
 public class JwtKeyProvider : IJwtKeyProvider
 {
-    private readonly byte[] _teacherKey;
+    private readonly SymmetricSecurityKey _teacherKey;
 
-    public JwtKeyProvider()
+    public JwtKeyProvider(IConfiguration configuration)
     {
-        _teacherKey = RandomNumberGenerator.GetBytes(64);
+        var teacherKey = configuration["Jwt:TeacherKey"] ?? configuration["Jwt:Key"];
+
+        if (string.IsNullOrWhiteSpace(teacherKey))
+        {
+            throw new InvalidOperationException("Jwt signing key is missing.");
+        }
+
+        _teacherKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(teacherKey));
     }
 
     public SymmetricSecurityKey GetTeacherKey()
     {
-        return new SymmetricSecurityKey(_teacherKey);
+        return _teacherKey;
     }
 }

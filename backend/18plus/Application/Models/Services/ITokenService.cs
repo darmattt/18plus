@@ -6,6 +6,7 @@ public interface ITokenService
 { 
     string GenerateAdminToken(UserBase user); 
     string GenerateTeacherAccessToken(UserBase user); 
+    string GenerateStudentAccessToken(UserBase user);
     string GenerateRefreshToken();
     
     string HashRefreshToken(string refreshToken);

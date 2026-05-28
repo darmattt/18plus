@@ -4,5 +4,6 @@ public record StudentLoginResponse
 (
     bool RequiresOneTimeCode,
     string? Message,
-    StudentResponse? Student
+    StudentResponse? Student,
+    string? AccessToken
 );
