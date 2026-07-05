@@ -1,0 +1,19 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Fragen & Selbsteinschätzung",
+  "headerSubtitle": "Design-Typ: Offene Fragen + Tabellen",
+  "openQuestionText": "Reflektiere über deine bisherigen Erfahrungen: Was hast du aus Praktika, Nebenjobs oder ehrenamtlichen Tätigkeiten gelernt?",
+  "openAnswerMinLength": 30,
+  "skills": [
+    "Teamfähigkeit",
+    "Kommunikation",
+    "Selbstständigkeit",
+    "Kreativität",
+    "Analytisches Denken"
+  ],
+  "scaleLabels": ["Schwach", "Basic", "Gut", "Sehr gut", "Exzellent"],
+  "motivationText": "Ausgezeichnet! Alle Kompetenzen bewertet!",
+  "hintTitle": "Hinweis:",
+  "hintText": "Sei ehrlich zu dir selbst. Diese Einschätzung hilft dir, deine Stärken zu erkennen und Bereiche zu identifizieren, in denen du dich noch weiterentwickeln möchtest.",
+  "submitLabelIncomplete": "Bitte beide Aufgaben vollständig bearbeiten",
+  "submitLabelComplete": "Arbeitsblatt abschließen"
+}

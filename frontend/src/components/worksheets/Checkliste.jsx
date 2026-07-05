@@ -1,49 +1,45 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { CheckSquare, Award } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
 
-const checklistData = [
-  {
-    category: "Soziale Kompetenzen",
-    items: [
-      "Ich kann gut im Team arbeiten",
-      "Ich höre anderen aktiv zu",
-      "Ich kann Konflikte konstruktiv lösen",
-    ],
-  },
-  {
-    category: "Fachliche Kompetenzen",
-    items: [
-      "Ich arbeite sorgfältig und genau",
-      "Ich kann komplexe Probleme lösen",
-      "Ich lerne gerne Neues dazu",
-    ],
-  },
-  {
-    category: "Persönliche Kompetenzen",
-    items: [
-      "Ich bin zuverlässig und pünktlich",
-      "Ich bleibe auch bei Schwierigkeiten motiviert",
-      "Ich kann meine Zeit gut organisieren",
-    ],
-  },
-  {
-    category: "Kommunikation",
-    items: [
-      "Ich kann mich klar ausdrücken",
-      "Ich gebe konstruktives Feedback",
-      "Ich bin offen für Kritik",
-    ],
-  },
-];
-
-export default function Checkliste() {
-  const totalItems = checklistData.reduce((sum, category) => sum + category.items.length, 0);
+/**
+ * Shablon für "Checkliste"-Arbeitsblätter.
+ *
+ * Props:
+ * {
+ *   headerTitle:      string,
+ *   headerSubtitle:   string,
+ *   checklistData: [
+ *     { category: string, items: string[] }
+ *   ],
+ *   encouragementMidText?:      string,  // Zwischenmeldung, z.B. nach der Hälfte
+ *   encouragementCompleteText?: string,
+ *   completeButtonLabel?:       string,
+ * }
+ */
+export default function ChecklisteTemplate({
+  headerTitle,
+  headerSubtitle,
+  checklistData,
+  encouragementMidText = "Weiter so! Du machst großartige Fortschritte!",
+  encouragementCompleteText = "Perfekt! Alle Punkte bearbeitet!",
+  completeButtonLabel = "Selbsteinschätzung abschließen",
+}) {
+  const totalItems = checklistData.reduce(
+    (sum, category) => sum + category.items.length,
+    0
+  );
+  const midPoint = Math.round(totalItems / 2);
 
   const [checkedItems, setCheckedItems] = useState(new Array(totalItems).fill(false));
   const [showEncouragement, setShowEncouragement] = useState(false);
@@ -55,7 +51,7 @@ export default function Checkliste() {
 
     const checkedCountNow = newChecked.filter(Boolean).length;
 
-    if (checkedCountNow === 6 || checkedCountNow === totalItems) {
+    if (checkedCountNow === midPoint || checkedCountNow === totalItems) {
       setShowEncouragement(true);
       setTimeout(() => setShowEncouragement(false), 3000);
     }
@@ -72,11 +68,9 @@ export default function Checkliste() {
         <CardHeader>
           <div className="mb-2 flex items-center gap-3">
             <CheckSquare className="h-8 w-8 text-blue-600" />
-            <CardTitle className="text-3xl">Arbeitsblatt: Checkliste</CardTitle>
+            <CardTitle className="text-3xl">{headerTitle}</CardTitle>
           </div>
-          <CardDescription className="text-base">
-            Design-Typ: Checkliste (Fremdeinschätzung)
-          </CardDescription>
+          <CardDescription className="text-base">{headerSubtitle}</CardDescription>
         </CardHeader>
       </Card>
 
@@ -104,8 +98,8 @@ export default function Checkliste() {
               <Award className="h-6 w-6" />
               <span className="font-bold">
                 {checkedCount === totalItems
-                  ? "Perfekt! Alle Punkte bearbeitet!"
-                  : "Weiter so! Du machst großartige Fortschritte!"}
+                  ? encouragementCompleteText
+                  : encouragementMidText}
               </span>
             </motion.div>
           )}
@@ -198,7 +192,7 @@ export default function Checkliste() {
           ) : (
             <>
               <CheckSquare className="mr-2 h-5 w-5" />
-              Selbsteinschätzung abschließen
+              {completeButtonLabel}
             </>
           )}
         </Button>

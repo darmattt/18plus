@@ -46,7 +46,7 @@ export const RegistrationBox = ({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
-        <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+        <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
         <button
           onClick={onClose}
@@ -178,7 +178,7 @@ export const RegistrationBox = ({
                   Schon ein Konto?{" "}
                   <button
                     onClick={onBackToLogin}
-                    className="text-[#006ddd] hover:underline font-bold"
+                    className="text-[#006dd6] hover:underline font-bold"
                   >
                     Zum Login
                   </button>
@@ -255,7 +255,7 @@ export const RegistrationBox = ({
               <div className="mt-6 pt-6 border-t border-gray-200 text-center">
                 <button
                   onClick={onBackToLogin}
-                  className="text-sm text-[#006ddd] hover:underline font-medium"
+                  className="text-sm text-[#006dd6] hover:underline font-medium"
                 >
                   Zurück zum Login
                 </button>

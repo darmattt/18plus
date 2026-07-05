@@ -18,7 +18,7 @@ export const AdminView = () => {
           </h1>
 
           <p className="text-gray-600 mt-1">
-            Verwaltung von Betreuern und Lerngruppen
+            Verwaltung von Betreuer:innen und Lerngruppen
           </p>
         </div>
       </div>
@@ -44,7 +44,7 @@ export const AdminView = () => {
               onClick={() => setActiveTab("teachers")}
               className={`flex items-center justify-center gap-2 px-4 py-4 rounded-xl font-bold transition-all ${
                 activeTab === "teachers"
-                  ? "bg-[#006ddd] text-white shadow-lg"
+                  ? "bg-[#006dd6] text-white shadow-lg"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -55,7 +55,7 @@ export const AdminView = () => {
               </span>
 
               <span className="sm:hidden text-xs">
-                Betreuer
+                Betreuer:in
               </span>
             </button>
 
@@ -63,7 +63,7 @@ export const AdminView = () => {
               onClick={() => setActiveTab("groups")}
               className={`flex items-center justify-center gap-2 px-4 py-4 rounded-xl font-bold transition-all ${
                 activeTab === "groups"
-                  ? "bg-[#006ddd] text-white shadow-lg"
+                  ? "bg-[#006dd6] text-white shadow-lg"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -82,7 +82,7 @@ export const AdminView = () => {
               onClick={() => setActiveTab("students")}
               className={`flex items-center justify-center gap-2 px-4 py-4 rounded-xl font-bold transition-all ${
                 activeTab === "students"
-                  ? "bg-[#006ddd] text-white shadow-lg"
+                  ? "bg-[#006dd6] text-white shadow-lg"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -93,7 +93,7 @@ export const AdminView = () => {
               </span>
 
               <span className="sm:hidden text-xs">
-                Schüler
+                Schüler:in
               </span>
             </button>
           </div>

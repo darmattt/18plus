@@ -110,7 +110,7 @@ export const TeacherAdminManagement = () => {
   }
 
   const handleDelete = (id) => {
-    if (confirm("Möchten Sie diesen Betreuer wirklich löschen?")) {
+    if (confirm("Möchten Sie diese:n Betreuer:in wirklich löschen?")) {
       setTeachers(teachers.filter((t) => t.id !== id))
     }
   }
@@ -157,7 +157,7 @@ export const TeacherAdminManagement = () => {
           className="flex items-center gap-2 px-6 py-3 bg-[#c7d300] text-black rounded-xl font-bold hover:bg-[#b0ba00] transition-colors shadow-lg"
         >
           <Plus className="w-5 h-5" />
-          Betreuer hinzufügen
+          Betreuer:in hinzufügen
         </button>
       </div>
 
@@ -184,7 +184,7 @@ export const TeacherAdminManagement = () => {
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-[#006ddd]" />
+                  <User className="w-5 h-5 text-[#006dd6]" />
 
                   <h3 className="text-lg font-bold text-gray-900">
                     {teacher.name}
@@ -236,7 +236,7 @@ export const TeacherAdminManagement = () => {
         {filteredTeachers.length === 0 && (
           <div className="text-center py-12 text-gray-500">
             <User className="w-12 h-12 mx-auto mb-3 opacity-30" />
-            <p>Keine Betreuer gefunden</p>
+            <p>Keine Betreuer:innen gefunden</p>
           </div>
         )}
       </div>
@@ -245,14 +245,14 @@ export const TeacherAdminManagement = () => {
       {(showCreateModal || editingTeacher) && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-extrabold text-gray-900">
                   {editingTeacher
-                    ? "Betreuer bearbeiten"
-                    : "Neuer Betreuer"}
+                    ? "Betreuer:in bearbeiten"
+                    : "Neue:r Betreuer:in"}
                 </h3>
 
                 <button

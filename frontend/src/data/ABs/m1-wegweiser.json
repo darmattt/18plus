@@ -1,0 +1,19 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Starte mit dem Fragebogen",
+  "headerSubtitle": "Design-Typ: Text",
+  "sections": [
+    {
+      "title": "Starte mit dem Fragebogen auf wegweiser.at",
+      "content": "Bevor du mit den weiteren Arbeitsblättern zur Berufsorientierung startest, empfehlen wir dir, zuerst den Fragebogen unter www.wegweiser.at auszufüllen. Er hilft dir dabei, deine Interessen, Stärken und mögliche Berufsfelder besser einzuordnen. Die Ergebnisse geben dir eine gute Grundlage für die nächsten Schritte in diesem Programm.",
+      "highlight": "#006dd6",
+      "links": [
+        { "text": "www.wegweiser.at", "url": "https://www.wegweiser.at" }
+      ]
+    }
+  ],
+  "insightTitle": "Wichtiger Hinweis:",
+  "insightText": "Fülle den Fragebogen unter www.wegweiser.at aus, bevor du mit den weiteren Arbeitsblättern fortfährst. So kannst du die Ergebnisse gezielt in deine weitere Berufsorientierung einbauen.",
+  "insightLinks": [
+    { "text": "www.wegweiser.at", "url": "https://www.wegweiser.at" }
+  ]
+}

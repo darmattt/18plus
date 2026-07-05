@@ -1,26 +1,55 @@
-import { Link } from "react-router-dom"
-
-
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, FileText, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
+const defaultScaleLabels = ["Schwach", "Basic", "Gut", "Sehr gut", "Exzellent"];
 
+/**
+ * Shablon für "Offene Frage + Kompetenz-Tabelle"-Arbeitsblätter.
+ *
+ * Props:
+ * {
+ *   headerTitle:       string,
+ *   headerSubtitle:    string,
+ *   openQuestionText:  string,
+ *   openAnswerMinLength?: number,
+ *   skills:            string[],
+ *   scaleLabels?:      string[],   // Länge = Anzahl der Bewertungsstufen (Standard 5)
+ *   motivationText?:   string,
+ *   hintTitle?:        string,
+ *   hintText?:         string,
+ *   submitLabelIncomplete?: string,
+ *   submitLabelComplete?:   string,
+ *   columnLabel?:      string,   // Spaltenüberschrift der ersten Spalte, Standard "Kompetenz"
+ *   openAnswerPlaceholder?: string,
+ *   tableHeadingText?: string,   // Standard "Bewerte deine Kompetenzen auf einer Skala von 1 bis N"
+ * }
+ */
+export default function FragenTabellenTemplate({
+  headerTitle,
+  headerSubtitle,
+  openQuestionText,
+  openAnswerMinLength = 30,
+  skills: initialSkillNames,
+  scaleLabels = defaultScaleLabels,
+  motivationText = "Ausgezeichnet! Alle Kompetenzen bewertet!",
+  hintTitle = "Hinweis:",
+  hintText = "Sei ehrlich zu dir selbst. Diese Einschätzung hilft dir, deine Stärken zu erkennen und Bereiche zu identifizieren, in denen du dich noch weiterentwickeln möchtest.",
+  submitLabelIncomplete = "Bitte beide Aufgaben vollständig bearbeiten",
+  submitLabelComplete = "Arbeitsblatt abschließen",
+  columnLabel = "Kompetenz",
+  openAnswerPlaceholder = "Beschreibe deine wichtigsten Erkenntnisse und Lernerfahrungen...",
+  tableHeadingText,
+}) {
+  const levels = scaleLabels.map((_, i) => i + 1);
 
-const initialSkills = [
-  { name: "Teamfähigkeit", level: 0 },
-  { name: "Kommunikation", level: 0 },
-  { name: "Selbstständigkeit", level: 0 },
-  { name: "Kreativität", level: 0 },
-  { name: "Analytisches Denken", level: 0 },
-];
-
-export default function FragenTabelle() {
   const [openAnswer, setOpenAnswer] = useState("");
-  const [skills, setSkills] = useState(initialSkills);
+  const [skills, setSkills] = useState(() =>
+    initialSkillNames.map((name) => ({ name, level: 0 }))
+  );
   const [showMotivation, setShowMotivation] = useState(false);
   const [tableComplete, setTableComplete] = useState(false);
 
@@ -38,8 +67,8 @@ export default function FragenTabelle() {
   };
 
   const isComplete = useMemo(() => {
-    return openAnswer.trim().length > 30 && tableComplete;
-  }, [openAnswer, tableComplete]);
+    return openAnswer.trim().length > openAnswerMinLength && tableComplete;
+  }, [openAnswer, tableComplete, openAnswerMinLength]);
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-8 p-6">
@@ -51,11 +80,9 @@ export default function FragenTabelle() {
             </div>
             <div>
               <CardTitle className="text-2xl font-bold text-slate-900 md:text-3xl">
-                Arbeitsblatt: Fragen & Selbsteinschätzung
+                {headerTitle}
               </CardTitle>
-              <p className="mt-1 text-sm text-slate-600">
-                Design-Typ: Offene Fragen + Tabellen
-              </p>
+              <p className="mt-1 text-sm text-slate-600">{headerSubtitle}</p>
             </div>
           </div>
         </CardHeader>
@@ -70,9 +97,7 @@ export default function FragenTabelle() {
             className="fixed left-1/2 top-24 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl bg-lime-300 px-6 py-4 text-slate-900 shadow-2xl"
           >
             <Sparkles className="h-5 w-5" />
-            <span className="font-semibold">
-              Ausgezeichnet! Alle Kompetenzen bewertet!
-            </span>
+            <span className="font-semibold">{motivationText}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -87,19 +112,18 @@ export default function FragenTabelle() {
 
               <div className="flex-1 space-y-4">
                 <h3 className="text-lg font-bold leading-7 text-slate-900 md:text-xl">
-                  Reflektiere über deine bisherigen Erfahrungen: Was hast du aus
-                  Praktika, Nebenjobs oder ehrenamtlichen Tätigkeiten gelernt?
+                  {openQuestionText}
                 </h3>
 
                 <Textarea
                   value={openAnswer}
                   onChange={(e) => setOpenAnswer(e.target.value)}
-                  placeholder="Beschreibe deine wichtigsten Erkenntnisse und Lernerfahrungen..."
+                  placeholder={openAnswerPlaceholder}
                   className="min-h-[160px] resize-none rounded-2xl border-2 border-slate-200 focus-visible:ring-sky-400"
                 />
 
                 <AnimatePresence>
-                  {openAnswer.trim().length > 30 && (
+                  {openAnswer.trim().length > openAnswerMinLength && (
                     <motion.div
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -129,7 +153,8 @@ export default function FragenTabelle() {
                 2
               </div>
               <h3 className="text-lg font-bold text-slate-900 md:text-xl">
-                Bewerte deine Kompetenzen auf einer Skala von 1 bis 5
+                {tableHeadingText ??
+                  `Bewerte deine Kompetenzen auf einer Skala von 1 bis ${levels.length}`}
               </h3>
             </div>
 
@@ -138,24 +163,16 @@ export default function FragenTabelle() {
                 <thead className="bg-slate-50">
                   <tr className="border-b border-slate-200">
                     <th className="px-4 py-4 text-left font-semibold text-slate-900">
-                      Kompetenz
+                      {columnLabel}
                     </th>
-                    {[1, 2, 3, 4, 5].map((level) => (
+                    {levels.map((level) => (
                       <th
                         key={level}
                         className="px-3 py-4 text-center text-sm font-semibold text-slate-600"
                       >
                         <div>{level}</div>
                         <div className="text-xs font-medium text-slate-500">
-                          {level === 1
-                            ? "Schwach"
-                            : level === 2
-                            ? "Basic"
-                            : level === 3
-                            ? "Gut"
-                            : level === 4
-                            ? "Sehr gut"
-                            : "Exzellent"}
+                          {scaleLabels[level - 1]}
                         </div>
                       </th>
                     ))}
@@ -180,7 +197,7 @@ export default function FragenTabelle() {
                         </div>
                       </td>
 
-                      {[1, 2, 3, 4, 5].map((level) => {
+                      {levels.map((level) => {
                         const active = skill.level === level;
 
                         return (
@@ -213,10 +230,7 @@ export default function FragenTabelle() {
             <div className="mt-6 flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4">
               <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-sky-600" />
               <p className="text-sm leading-6 text-slate-700">
-                <span className="font-semibold">Hinweis:</span> Sei ehrlich zu dir
-                selbst. Diese Einschätzung hilft dir, deine Stärken zu erkennen
-                und Bereiche zu identifizieren, in denen du dich noch
-                weiterentwickeln möchtest.
+                <span className="font-semibold">{hintTitle}</span> {hintText}
               </p>
             </div>
           </CardContent>
@@ -229,9 +243,7 @@ export default function FragenTabelle() {
           size="lg"
           className="min-w-[320px] rounded-2xl px-8 py-6 text-base font-semibold"
         >
-          {!isComplete
-            ? "Bitte beide Aufgaben vollständig bearbeiten"
-            : "Arbeitsblatt abschließen"}
+          {!isComplete ? submitLabelIncomplete : submitLabelComplete}
         </Button>
       </div>
     </div>

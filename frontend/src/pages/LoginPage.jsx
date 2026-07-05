@@ -54,7 +54,7 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
   return (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
-          <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+          <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
           <button
               onClick={onClose}
@@ -65,7 +65,7 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
 
           <div className="p-8">
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-[#006ddd] rounded-full mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-[#006dd6] rounded-full mb-4">
                 <LogIn className="text-white w-8 h-8" />
               </div>
 
@@ -83,7 +83,7 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
                   onClick={() => setActiveTab("teacher")}
                   className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all ${
                       activeTab === "teacher"
-                          ? "bg-[#006ddd] text-white shadow-lg"
+                          ? "bg-[#006dd6] text-white shadow-lg"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
               >
@@ -94,7 +94,7 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
                   onClick={() => setActiveTab("student")}
                   className={`flex-1 py-3 px-4 rounded-xl font-bold transition-all ${
                       activeTab === "student"
-                          ? "bg-[#006ddd] text-white shadow-lg"
+                          ? "bg-[#006dd6] text-white shadow-lg"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
               >

@@ -11,9 +11,9 @@ export default function TeacherView() {
         {/* Header */}
         <div className="bg-white border-b-2 border-gray-200 px-6 py-6">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-extrabold text-gray-900">Betreuer-Bereich</h1>
+            <h1 className="text-3xl font-extrabold text-gray-900">Betreuer:innen-Bereich</h1>
             <p className="text-gray-600 mt-1">
-              Verwaltung Ihrer Gruppen und Schülerergebnisse
+              Verwaltung Ihrer Gruppen und Schüler:innenergebnisse
             </p>
           </div>
         </div>
@@ -33,7 +33,7 @@ export default function TeacherView() {
                   onClick={() => setActiveTab("groups")}
                   className={`flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold transition-all ${
                       activeTab === "groups"
-                          ? "bg-[#006ddd] text-white shadow-lg"
+                          ? "bg-[#006dd6] text-white shadow-lg"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
               >
@@ -45,12 +45,12 @@ export default function TeacherView() {
                   onClick={() => setActiveTab("results")}
                   className={`flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold transition-all ${
                       activeTab === "results"
-                          ? "bg-[#006ddd] text-white shadow-lg"
+                          ? "bg-[#006dd6] text-white shadow-lg"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
               >
                 <ClipboardCheck className="w-5 h-5" />
-                Schülerergebnisse
+                Schüler:innenergebnisse
               </button>
             </div>
           </div>

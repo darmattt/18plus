@@ -51,7 +51,7 @@ function mapStudentProfile(profile) {
 export default function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeView, setActiveView] = useState("content")
-  const [activeWorksheetId, setActiveWorksheetId] = useState("ws-offene-fragen")
+  const [activeWorksheetId, setActiveWorksheetId] = useState("ws-wegweiser-intro")
   const [expandedModules, setExpandedModules] = useState([
     "Modul 1: Berufsorientierung - Arbeitsblätter",
   ])
@@ -166,7 +166,7 @@ export default function AppShell() {
       {!isLoggedIn && (
         <button
           onClick={() => setShowLogin(true)}
-          className="fixed right-6 top-6 z-30 rounded-xl bg-[#006ddd] px-5 py-3 font-bold text-white shadow-lg transition-colors hover:bg-[#005bb8]"
+          className="fixed right-6 top-6 z-30 rounded-xl bg-[#006dd6] px-5 py-3 font-bold text-white shadow-lg transition-colors hover:bg-[#005bb8]"
         >
           Login
         </button>

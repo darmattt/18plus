@@ -34,7 +34,7 @@ export const ProfileView = ({user}) => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-[#00a7e7] via-[#006ddd] to-[#c7d300]" />
+        <div className="h-32 bg-gradient-to-r from-[#00a7e7] via-[#006dd6] to-[#c7d300]" />
 
         <div className="px-8 pb-8">
           <div className="relative -mt-12 mb-6">
@@ -70,7 +70,7 @@ export const ProfileView = ({user}) => {
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-          <div className="flex items-center gap-3 text-[#006ddd]">
+          <div className="flex items-center gap-3 text-[#006dd6]">
             <Users className="w-5 h-5" />
             <h3 className="font-bold">
               {user?.groupName ? "Meine Gruppe" : "Keine Gruppe"}

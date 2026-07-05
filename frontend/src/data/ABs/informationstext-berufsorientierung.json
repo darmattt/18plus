@@ -1,0 +1,28 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Informationstext",
+  "headerSubtitle": "Design-Typ: Text",
+  "sections": [
+    {
+      "title": "Berufsorientierung: Der erste Schritt",
+      "content": "Die Wahl des richtigen Berufs ist eine der wichtigsten Entscheidungen im Leben. Es geht nicht nur darum, Geld zu verdienen, sondern auch darum, eine Tätigkeit zu finden, die zu deinen Interessen, Fähigkeiten und Werten passt.",
+      "highlight": "#006dd6"
+    },
+    {
+      "title": "Selbstreflexion ist der Schlüssel",
+      "content": "Bevor du dich für einen Beruf entscheidest, solltest du dir Zeit nehmen, über dich selbst nachzudenken. Was sind deine Stärken? Was macht dir Freude? Welche Themen interessieren dich? Diese Fragen helfen dir, den richtigen Weg zu finden.",
+      "highlight": "#00a7e7"
+    },
+    {
+      "title": "Praktische Erfahrungen sammeln",
+      "content": "Praktika, Schnuppertage und Gespräche mit Berufstätigen sind unerlässlich. Nur durch praktische Erfahrungen kannst du herausfinden, ob ein Beruf wirklich zu dir passt. Nutze jede Gelegenheit, verschiedene Berufsfelder kennenzulernen!",
+      "highlight": "#c7d300"
+    },
+    {
+      "title": "Der Weg ist das Ziel",
+      "content": "Denke daran: Deine berufliche Laufbahn ist kein gerader Weg, sondern eine Reise. Es ist völlig normal, seine Meinung zu ändern und neue Richtungen einzuschlagen. Bleib offen für neue Möglichkeiten und hab keine Angst vor Veränderungen!",
+      "highlight": "#006dd6"
+    }
+  ],
+  "insightTitle": "Wichtiger Hinweis:",
+  "insightText": "Nutze die Erkenntnisse aus diesem Text für deine weiteren Arbeitsblätter. Deine Berufswahl sollte gut überlegt sein!"
+}

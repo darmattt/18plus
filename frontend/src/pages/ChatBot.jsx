@@ -50,7 +50,7 @@ export const ChatBot = ({ onClose }) => {
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       className="fixed bottom-28 right-6 w-80 md:w-96 h-[500px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden z-[60]"
     >
-      <div className="bg-[#006ddd] p-4 flex items-center justify-between">
+      <div className="bg-[#006dd6] p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-white shrink-0">
             <img
@@ -110,7 +110,7 @@ export const ChatBot = ({ onClose }) => {
                 <div
                   className={`p-3 rounded-2xl text-sm font-medium ${
                     msg.sender === "user"
-                      ? "bg-[#006ddd] text-white rounded-tr-none"
+                      ? "bg-[#006dd6] text-white rounded-tr-none"
                       : "bg-white text-gray-800 border border-gray-100 shadow-sm rounded-tl-none"
                   }`}
                 >

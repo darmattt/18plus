@@ -1,0 +1,20 @@
+﻿{
+  "headerTitle": "Vertiefende Ergebnissicherung – Meine Berufsvorschläge",
+  "openQuestions": [
+    {
+      "question": "Welche Berufsvorschläge kommen für Sie in die engere Wahl?"
+    },
+    {
+      "hint": "Sehen sie sich noch einmal die Blätter „Stärken/Werte/Ziele“ an. Passen die Ergebnisse zu den nun gefundenen Berufsvorschlägen?",
+      "question": "Welche Ihrer Stärken, Werte, Ziele und Fähigkeiten passen besonders gut zu den ausgewählten Berufen?"
+    },
+    {
+      "question": "Welche Ihrer ausgewählten Berufe passen besonders gut zu Ihren Stärken, Werten, Zielen und Fähigkeiten?"
+    },
+    {
+      "question": "Was passt eher nicht, ist unklar?"
+    }
+  ],
+  "rankingLabel": "Bringen Sie diese Vorschläge in eine persönliche Rangordnung: welcher Vorschlag ist Ihnen am liebsten, scheint Ihnen am besten? Welcher bekommt von Ihnen den zweiten Platz? …",
+  "rankingCount": 3
+}

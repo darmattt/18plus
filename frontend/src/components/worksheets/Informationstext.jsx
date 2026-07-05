@@ -1,40 +1,77 @@
-
-import { Link } from "react-router-dom"
-
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BookOpen, ChevronRight, Lightbulb } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-const sections = [
-  {
-    title: "Berufsorientierung: Der erste Schritt",
-    content:
-      "Die Wahl des richtigen Berufs ist eine der wichtigsten Entscheidungen im Leben. Es geht nicht nur darum, Geld zu verdienen, sondern auch darum, eine Tätigkeit zu finden, die zu deinen Interessen, Fähigkeiten und Werten passt.",
-    highlight: "#006ddd",
-  },
-  {
-    title: "Selbstreflexion ist der Schlüssel",
-    content:
-      "Bevor du dich für einen Beruf entscheidest, solltest du dir Zeit nehmen, über dich selbst nachzudenken. Was sind deine Stärken? Was macht dir Freude? Welche Themen interessieren dich? Diese Fragen helfen dir, den richtigen Weg zu finden.",
-    highlight: "#00a7e7",
-  },
-  {
-    title: "Praktische Erfahrungen sammeln",
-    content:
-      "Praktika, Schnuppertage und Gespräche mit Berufstätigen sind unerlässlich. Nur durch praktische Erfahrungen kannst du herausfinden, ob ein Beruf wirklich zu dir passt. Nutze jede Gelegenheit, verschiedene Berufsfelder kennenzulernen!",
-    highlight: "#c7d300",
-  },
-  {
-    title: "Der Weg ist das Ziel",
-    content:
-      "Denke daran: Deine berufliche Laufbahn ist kein gerader Weg, sondern eine Reise. Es ist völlig normal, seine Meinung zu ändern und neue Richtungen einzuschlagen. Bleib offen für neue Möglichkeiten und hab keine Angst vor Veränderungen!",
-    highlight: "#006ddd",
-  },
-];
+/**
+ * Ersetzt Vorkommen von link.text innerhalb von text durch einen echten <a>-Link.
+ * links: [{ text: string, url: string }]
+ */
+function linkify(text, links) {
+  if (!links || links.length === 0) return text;
 
-export default function TextArbeitsblatt() {
+  let parts = [text];
+
+  links.forEach(({ text: linkText, url }, linkIdx) => {
+    parts = parts.flatMap((part) => {
+      if (typeof part !== "string") return [part];
+
+      const split = part.split(linkText);
+      if (split.length === 1) return [part];
+
+      const result = [];
+      split.forEach((chunk, idx) => {
+        if (chunk) result.push(chunk);
+        if (idx < split.length - 1) {
+          result.push(
+            <a
+              key={`link-${linkIdx}-${idx}`}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-blue-600 underline hover:text-blue-800"
+            >
+              {linkText}
+            </a>
+          );
+        }
+      });
+      return result;
+    });
+  });
+
+  return parts;
+}
+
+/**
+ * Generisches Shablon für "Informationstext"-Arbeitsblätter.
+ *
+ * Enthält nur Layout, Animationen und Verhalten. Alle Inhalte (Titel,
+ * Abschnitte, Hinweistext) kommen als Props von außen - typischerweise
+ * aus einer JSON-Datei pro Arbeitsblatt.
+ *
+ * Erwartete Props:
+ * {
+ *   headerTitle:    string,
+ *   headerSubtitle: string,
+ *   sections: [
+ *     { title: string, content: string, highlight: string,
+ *       links?: [{ text: string, url: string }] }   // text-Vorkommen wird zum Link
+ *   ],
+ *   insightTitle: string,
+ *   insightText:  string,
+ *   insightLinks?: [{ text: string, url: string }],
+ * }
+ */
+export default function InformationstextTemplate({
+  headerTitle,
+  headerSubtitle,
+  sections,
+  insightTitle,
+  insightText,
+  insightLinks,
+}) {
   const [currentSection, setCurrentSection] = useState(0);
   const [showInsight, setShowInsight] = useState(false);
 
@@ -45,7 +82,7 @@ export default function TextArbeitsblatt() {
     }
 
     setShowInsight(false);
-  }, [currentSection]);
+  }, [currentSection, sections.length]);
 
   const handleNext = () => {
     if (currentSection < sections.length - 1) {
@@ -66,9 +103,9 @@ export default function TextArbeitsblatt() {
             </div>
             <div>
               <CardTitle className="text-2xl font-bold text-slate-900 md:text-3xl">
-                Arbeitsblatt: Informationstext
+                {headerTitle}
               </CardTitle>
-              <p className="mt-1 text-sm text-slate-600">Design-Typ: Text</p>
+              <p className="mt-1 text-sm text-slate-600">{headerSubtitle}</p>
             </div>
           </div>
         </CardHeader>
@@ -135,7 +172,7 @@ export default function TextArbeitsblatt() {
                     transition={{ delay: 0.35 + idx * 0.15 }}
                     className="inline"
                   >
-                    {sentence}
+                    {linkify(sentence, currentData.links)}
                     {idx < sentences.length - 1 ? ". " : ""}
                   </motion.span>
                 ))}
@@ -161,11 +198,10 @@ export default function TextArbeitsblatt() {
                     <Lightbulb className="mt-1 h-6 w-6 shrink-0 text-lime-600" />
                     <div>
                       <p className="mb-1 font-semibold text-slate-900">
-                        Wichtiger Hinweis:
+                        {insightTitle}
                       </p>
                       <p className="text-slate-700">
-                        Nutze die Erkenntnisse aus diesem Text für deine weiteren
-                        Arbeitsblätter. Deine Berufswahl sollte gut überlegt sein!
+                        {linkify(insightText, insightLinks)}
                       </p>
                     </div>
                   </motion.div>

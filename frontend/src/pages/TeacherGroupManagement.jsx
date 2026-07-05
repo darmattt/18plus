@@ -146,7 +146,7 @@ export default function TeacherGroupManagement() {
   }
 
   const handleRemoveStudent = async (studentId) => {
-    if (!window.confirm("Möchten Sie diesen Schüler aus der Gruppe entfernen?")) return
+    if (!window.confirm("Möchten Sie diese:n Schüler:in aus der Gruppe entfernen?")) return
 
     try {
       await removeStudentFromMyGroup(studentId)
@@ -201,7 +201,7 @@ export default function TeacherGroupManagement() {
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
         <input
           type="text"
-          placeholder="Nach Gruppe oder Schüler suchen..."
+          placeholder="Nach Gruppe oder Schüler:in suchen..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20 transition-all"
@@ -218,7 +218,7 @@ export default function TeacherGroupManagement() {
               <div className="flex items-start justify-between gap-4">
                 <button onClick={() => toggleGroup(group.id)} className="flex-1 text-left">
                   <div className="flex items-center gap-3">
-                    <Users className="w-6 h-6 text-[#006ddd]" />
+                    <Users className="w-6 h-6 text-[#006dd6]" />
                     <div>
                       <h3 className="text-lg font-bold text-gray-900">{group.name}</h3>
                       <p className="text-sm text-gray-600 mt-1">
@@ -240,7 +240,7 @@ export default function TeacherGroupManagement() {
                   <button
                     onClick={() => openAddStudentModal(group)}
                     className="p-2 text-[#00a7e7] hover:bg-[#00a7e7]/10 rounded-lg transition-colors"
-                    title="Schüler hinzufügen"
+                    title="Schüler:in hinzufügen"
                   >
                     <UserPlus className="w-5 h-5" />
                   </button>
@@ -283,7 +283,7 @@ export default function TeacherGroupManagement() {
                       <button
                         onClick={() => handleRemoveStudent(student.id)}
                         className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
-                        title="Schüler entfernen"
+                        title="Schüler:in entfernen"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -312,7 +312,7 @@ export default function TeacherGroupManagement() {
       {showCreateGroupModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-extrabold text-gray-900">Neue Gruppe erstellen</h3>
@@ -350,7 +350,7 @@ export default function TeacherGroupManagement() {
       {showEditGroupModal && selectedGroup && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-extrabold text-gray-900">Gruppe bearbeiten</h3>
@@ -394,7 +394,7 @@ export default function TeacherGroupManagement() {
       {showQRCodeModal && selectedGroup && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-extrabold text-gray-900">
@@ -425,7 +425,7 @@ export default function TeacherGroupManagement() {
                   Scanne den Code oder gib diesen Gruppencode ein
                 </p>
 
-                <div className="w-full px-6 py-4 bg-gradient-to-r from-[#00a7e7]/10 to-[#c7d300]/10 rounded-xl border-2 border-dashed border-[#006ddd]">
+                <div className="w-full px-6 py-4 bg-gradient-to-r from-[#00a7e7]/10 to-[#c7d300]/10 rounded-xl border-2 border-dashed border-[#006dd6]">
                   <p className="text-3xl font-extrabold text-center text-gray-900 tracking-wider">
                     {String(selectedGroup.id).padStart(6, "0")}-
                     {selectedGroup.name.substring(0, 3).toUpperCase()}
@@ -440,7 +440,7 @@ export default function TeacherGroupManagement() {
       {showAddStudentModal && selectedGroup && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-extrabold text-gray-900">

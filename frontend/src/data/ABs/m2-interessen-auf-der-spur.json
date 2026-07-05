@@ -1,0 +1,32 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Meinen Interessen auf der Spur",
+  "headerSubtitle": "Hier geht es darum, Ihre Interessen und Neigungen ebenso wie Ihre Begabungen und Ihre persönlichen Stärken zu berücksichtigen. So bekommen Sie Anhaltspunkte dafür, was Ihnen hinsichtlich Ihrer zukünftigen Ausbildung und Ihrem zukünftigen Beruf wichtig ist.",
+  "openQuestionText": "Was würden Sie beruflich gerne machen?",
+  "openAnswerMinLength": 10,
+  "openAnswerPlaceholder": "Beschreibe, was du dir beruflich vorstellen könntest...",
+  "columnLabel": "BEDÜRFNISSE, DIE ICH IN MEINEN BERUF EINBRINGEN MÖCHTE",
+  "tableHeadingText": "Wie wichtig ist Ihnen das jeweils?",
+  "scaleLabels": ["sehr wichtig", "wichtig", "unwichtig"],
+  "skills": [
+    "Kontakt mit Menschen, beraten, helfen",
+    "Allgemeines oder fachliches Wissen weitergeben",
+    "Leitende Funktion und Verantwortung übernehmen",
+    "In einem Team arbeiten, Teil einer Gruppe sein",
+    "Aufgaben allein und selbstständig bearbeiten",
+    "Experimentieren, analysieren, forschen, tüfteln",
+    "Gestalterisch und kreativ tätig sein",
+    "Sich mit technischen Konstruktionsproblemen befassen und planen",
+    "Mit Informationstechnologien umgehen, Software anwenden, programmieren",
+    "Mit Zahlen umgehen, etwas berechnen oder kalkulieren",
+    "Mit Sprachen umgehen, Muttersprache oder Fremdsprachen; schreiben, reden",
+    "Organisatorische Aufgaben übernehmen, koordinieren",
+    "Verwaltungstechnische und kaufmännische Aufgaben bearbeiten",
+    "Bewegung haben, nicht immer am selben Ort sein",
+    "Handwerklich tätig sein und handwerklich zupacken"
+  ],
+  "motivationText": "Sehr gut! Alle Bedürfnisse eingeschätzt!",
+  "hintTitle": "Hinweis:",
+  "hintText": "Es gibt hier kein richtig oder falsch - vertraue deinem ersten Eindruck.",
+  "submitLabelIncomplete": "Bitte beide Aufgaben vollständig bearbeiten",
+  "submitLabelComplete": "Arbeitsblatt abschließen"
+}

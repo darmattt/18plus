@@ -133,7 +133,7 @@ export default function StudentResults() {
   return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-extrabold text-gray-900">Schülerergebnisse</h2>
+          <h2 className="text-2xl font-extrabold text-gray-900">Schüler:innenergebnisse</h2>
           <p className="text-gray-600 mt-1">{results.length} Ergebnisse gesamt</p>
         </div>
 
@@ -144,8 +144,8 @@ export default function StudentResults() {
                   onClick={() => setFilterStatus(status)}
                   className={`px-4 py-2 rounded-lg font-bold transition-all ${
                       filterStatus === status
-                          ? "bg-[#006ddd] text-white shadow-lg"
-                          : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#006ddd]"
+                          ? "bg-[#006dd6] text-white shadow-lg"
+                          : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#006dd6]"
                   }`}
               >
                 {status === "All" ? "Alle" : status} ({statusCounts[status]})
@@ -157,7 +157,7 @@ export default function StudentResults() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
               type="text"
-              placeholder="Nach Schüler, Gruppe oder Arbeitsblatt suchen..."
+              placeholder="Nach Schüler:in, Gruppe oder Arbeitsblatt suchen..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20"

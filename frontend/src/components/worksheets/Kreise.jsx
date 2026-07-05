@@ -1,6 +1,4 @@
-﻿import { Link } from "react-router-dom"
-
-import { useMemo, useState } from "react"
+﻿import { useMemo, useState } from "react"
 import { Circle, X, CheckCircle2, Sparkles } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -8,56 +6,31 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 
-const initialCircles = [
-  {
-    id: 1,
-    label: "Stärken",
-    question: "Was sind deine drei größten Stärken?",
-    answer: "",
-    completed: false,
-    position: { x: 20, y: 20 },
-    color: "#006ddd",
-  },
-  {
-    id: 2,
-    label: "Interessen",
-    question: "Welche Themen interessieren dich besonders?",
-    answer: "",
-    completed: false,
-    position: { x: 60, y: 15 },
-    color: "#00a7e7",
-  },
-  {
-    id: 3,
-    label: "Werte",
-    question: "Was ist dir im Berufsleben wichtig?",
-    answer: "",
-    completed: false,
-    position: { x: 15, y: 55 },
-    color: "#c7d300",
-  },
-  {
-    id: 4,
-    label: "Ziele",
-    question: "Welche beruflichen Ziele hast du?",
-    answer: "",
-    completed: false,
-    position: { x: 65, y: 60 },
-    color: "#006ddd",
-  },
-  {
-    id: 5,
-    label: "Erfahrungen",
-    question: "Welche praktischen Erfahrungen hast du schon gesammelt?",
-    answer: "",
-    completed: false,
-    position: { x: 42, y: 45 },
-    color: "#00a7e7",
-  },
-]
-
-export default function Kreise() {
-  const [circles, setCircles] = useState(initialCircles)
+/**
+ * Shablon für "Interaktive Kreise"-Arbeitsblätter.
+ *
+ * Props:
+ * {
+ *   headerTitle:     string,
+ *   headerSubtitle:  string,
+ *   instructionText: string,
+ *   circles: [
+ *     { id: number, label: string, question: string,
+ *       position: { x: number, y: number }, color: string }
+ *   ],
+ *   celebrationText?: string,
+ * }
+ */
+export default function KreiseTemplate({
+  headerTitle,
+  headerSubtitle,
+  instructionText,
+  circles: initialCircleData,
+  celebrationText = "Alle Kreise beantwortet!",
+}) {
+  const [circles, setCircles] = useState(() =>
+    initialCircleData.map((circle) => ({ ...circle, answer: "", completed: false }))
+  )
   const [selectedCircle, setSelectedCircle] = useState(null)
   const [showCelebration, setShowCelebration] = useState(false)
 
@@ -65,8 +38,6 @@ export default function Kreise() {
     () => circles.filter((circle) => circle.completed).length,
     [circles]
   )
-
-  const progressValue = (completedCount / circles.length) * 100
 
   const selectedCircleData = useMemo(
     () => circles.find((circle) => circle.id === selectedCircle) ?? null,
@@ -107,15 +78,11 @@ export default function Kreise() {
             <div className="flex items-center gap-3">
               <Circle className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-4xl">
-                Arbeitsblatt: Interaktive Kreise
+                {headerTitle}
               </h1>
             </div>
-            <p className="text-sm text-slate-600 md:text-base">
-              Design-Typ: Kreise
-            </p>
-            <p className="text-sm text-slate-500">
-              Klicke auf einen Kreis, um die Frage zu beantworten
-            </p>
+            <p className="text-sm text-slate-600 md:text-base">{headerSubtitle}</p>
+            <p className="text-sm text-slate-500">{instructionText}</p>
           </CardHeader>
         </Card>
 
@@ -192,7 +159,7 @@ export default function Kreise() {
               >
                 <Sparkles className="h-7 w-7" />
                 <span className="text-lg font-black md:text-2xl">
-                  Alle Kreise beantwortet!
+                  {celebrationText}
                 </span>
               </motion.div>
             )}
@@ -237,9 +204,7 @@ export default function Kreise() {
 
                 <Textarea
                   value={selectedCircleData.answer}
-                  onChange={(e) =>
-                    handleSaveAnswer(selectedCircle, e.target.value)
-                  }
+                  onChange={(e) => handleSaveAnswer(selectedCircle, e.target.value)}
                   placeholder="Deine Antwort hier eingeben..."
                   rows={6}
                   autoFocus
@@ -253,9 +218,7 @@ export default function Kreise() {
                     className="mb-4 flex items-center gap-2 text-lime-600"
                   >
                     <CheckCircle2 className="h-5 w-5" />
-                    <span className="text-sm font-semibold">
-                      Antwort gespeichert!
-                    </span>
+                    <span className="text-sm font-semibold">Antwort gespeichert!</span>
                   </motion.div>
                 )}
 

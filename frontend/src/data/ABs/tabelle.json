@@ -1,0 +1,17 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Berufsvergleich",
+  "headerSubtitle": "Design-Typ: Tabelle",
+  "progressLabel": "Berufe analysiert",
+  "addButtonLabel": "Beruf hinzufügen",
+  "columns": [
+    { "key": "beruf", "label": "Beruf", "placeholder": "z.B. Arzt / Ärztin", "minLength": 2 },
+    { "key": "vorteile", "label": "Vorteile", "placeholder": "Was spricht dafür?", "minLength": 5 },
+    { "key": "nachteile", "label": "Nachteile", "placeholder": "Was könnte schwierig sein?", "minLength": 5 },
+    { "key": "voraussetzungen", "label": "Voraussetzungen", "placeholder": "Was wird benötigt?", "minLength": 5 }
+  ],
+  "tipTitle": "Tipp zum Ausfüllen",
+  "tipText": "Recherchiere gründlich zu jedem Beruf. Je detaillierter deine Angaben, desto besser kannst du die verschiedenen Berufe miteinander vergleichen!",
+  "celebrationText": "Hervorragend! Alle Berufe analysiert!",
+  "submitLabelIncomplete": "Mindestens einen Beruf vollständig analysieren",
+  "submitLabelComplete": "Analyse abschließen"
+}

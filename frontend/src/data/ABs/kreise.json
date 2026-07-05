@@ -1,0 +1,43 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Interaktive Kreise",
+  "headerSubtitle": "Design-Typ: Kreise",
+  "instructionText": "Klicke auf einen Kreis, um die Frage zu beantworten",
+  "circles": [
+    {
+      "id": 1,
+      "label": "Stärken",
+      "question": "Was sind deine drei größten Stärken?",
+      "position": { "x": 20, "y": 20 },
+      "color": "#006dd6"
+    },
+    {
+      "id": 2,
+      "label": "Interessen",
+      "question": "Welche Themen interessieren dich besonders?",
+      "position": { "x": 60, "y": 15 },
+      "color": "#00a7e7"
+    },
+    {
+      "id": 3,
+      "label": "Werte",
+      "question": "Was ist dir im Berufsleben wichtig?",
+      "position": { "x": 15, "y": 55 },
+      "color": "#c7d300"
+    },
+    {
+      "id": 4,
+      "label": "Ziele",
+      "question": "Welche beruflichen Ziele hast du?",
+      "position": { "x": 65, "y": 60 },
+      "color": "#006dd6"
+    },
+    {
+      "id": 5,
+      "label": "Erfahrungen",
+      "question": "Welche praktischen Erfahrungen hast du schon gesammelt?",
+      "position": { "x": 42, "y": 45 },
+      "color": "#00a7e7"
+    }
+  ],
+  "celebrationText": "Alle Kreise beantwortet!"
+}

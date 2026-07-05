@@ -1,0 +1,41 @@
+﻿{
+  "headerTitle": "Arbeitsblatt: Checkliste",
+  "headerSubtitle": "Design-Typ: Checkliste (Fremdeinschätzung)",
+  "checklistData": [
+    {
+      "category": "Soziale Kompetenzen",
+      "items": [
+        "Ich kann gut im Team arbeiten",
+        "Ich höre anderen aktiv zu",
+        "Ich kann Konflikte konstruktiv lösen"
+      ]
+    },
+    {
+      "category": "Fachliche Kompetenzen",
+      "items": [
+        "Ich arbeite sorgfältig und genau",
+        "Ich kann komplexe Probleme lösen",
+        "Ich lerne gerne Neues dazu"
+      ]
+    },
+    {
+      "category": "Persönliche Kompetenzen",
+      "items": [
+        "Ich bin zuverlässig und pünktlich",
+        "Ich bleibe auch bei Schwierigkeiten motiviert",
+        "Ich kann meine Zeit gut organisieren"
+      ]
+    },
+    {
+      "category": "Kommunikation",
+      "items": [
+        "Ich kann mich klar ausdrücken",
+        "Ich gebe konstruktives Feedback",
+        "Ich bin offen für Kritik"
+      ]
+    }
+  ],
+  "encouragementMidText": "Weiter so! Du machst großartige Fortschritte!",
+  "encouragementCompleteText": "Perfekt! Alle Punkte bearbeitet!",
+  "completeButtonLabel": "Selbsteinschätzung abschließen"
+}

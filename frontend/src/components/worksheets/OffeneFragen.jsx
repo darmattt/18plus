@@ -1,6 +1,4 @@
-﻿import { Link } from "react-router-dom"
-
-import { useState } from "react";
+﻿import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Sparkles } from "lucide-react";
 
@@ -9,20 +7,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 
-const questions = [
-  "Was sind deine größten Stärken im schulischen Bereich?",
-  "Welche Interessen und Hobbys verfolgst du in deiner Freizeit?",
-  "Wo siehst du dich beruflich in 5 Jahren?",
-];
-
-const motivationMessages = [
-  "Gute Arbeit! Denke an konkrete Beispiele.",
-  "Sehr schön! Jedes Detail zählt.",
-  "Ausgezeichnet! Du machst Fortschritte.",
-];
-
-export default function OffeneFragen() {
-  const [answers, setAnswers] = useState(["", "", ""]);
+/**
+ * Shablon für "Offene Fragen"-Arbeitsblätter.
+ *
+ * Props:
+ * {
+ *   headerTitle:         string,
+ *   headerSubtitle:      string,
+ *   questions:           string[],
+ *   motivationMessages:  string[],  // gleiche Länge wie questions
+ *   completeLabel?:      string,
+ * }
+ */
+export default function OffeneFragenTemplate({
+  headerTitle,
+  headerSubtitle,
+  questions,
+  motivationMessages,
+  completeLabel = "Arbeitsblatt abschließen",
+}) {
+  const [answers, setAnswers] = useState(() => questions.map(() => ""));
   const [showMotivation, setShowMotivation] = useState(null);
   const [completed, setCompleted] = useState([]);
 
@@ -48,11 +52,9 @@ export default function OffeneFragen() {
         <Card className="overflow-hidden rounded-3xl border border-sky-200 bg-sky-50 shadow-sm">
           <CardHeader className="space-y-2 px-5 py-5 md:px-8 md:py-6">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-4xl">
-              Arbeitsblatt: Offene Fragen
+              {headerTitle}
             </h1>
-            <p className="text-sm text-slate-600 md:text-base">
-              Design-Typ: Offene Fragen
-            </p>
+            <p className="text-sm text-slate-600 md:text-base">{headerSubtitle}</p>
           </CardHeader>
         </Card>
 
@@ -123,7 +125,7 @@ export default function OffeneFragen() {
           >
             {completed.length < questions.length
               ? `Noch ${questions.length - completed.length} Fragen offen`
-              : "Arbeitsblatt abschließen"}
+              : completeLabel}
           </Button>
         </div>
       </div>

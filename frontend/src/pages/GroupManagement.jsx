@@ -119,7 +119,7 @@ export const GroupManagement = () => {
   }
 
   const handleDeleteStudent = (groupId, studentId) => {
-    if (confirm("Möchten Sie diesen Schüler wirklich löschen?")) {
+    if (confirm("Möchten Sie diese:n Schüler:in wirklich löschen?")) {
       setGroups(
         groups.map((g) =>
           g.id === groupId
@@ -168,7 +168,7 @@ export const GroupManagement = () => {
 
         <input
           type="text"
-          placeholder="Nach Gruppe, Betreuer oder Schüler suchen..."
+          placeholder="Nach Gruppe, Betreuer:in oder Schüler:in suchen..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20 transition-all"
@@ -190,7 +190,7 @@ export const GroupManagement = () => {
                   className="flex-1 text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <Users className="w-6 h-6 text-[#006ddd]" />
+                    <Users className="w-6 h-6 text-[#006dd6]" />
 
                     <div>
                       <h3 className="text-lg font-bold text-gray-900">
@@ -209,7 +209,7 @@ export const GroupManagement = () => {
                   <button
                     onClick={() => openAddStudentModal(group)}
                     className="p-2 text-[#00a7e7] hover:bg-[#00a7e7]/10 rounded-lg transition-colors"
-                    title="Schüler hinzufügen"
+                    title="Schüler:in hinzufügen"
                   >
                     <UserPlus className="w-5 h-5" />
                   </button>
@@ -253,7 +253,7 @@ export const GroupManagement = () => {
                           handleDeleteStudent(group.id, student.id)
                         }
                         className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
-                        title="Schüler entfernen"
+                        title="Schüler:in entfernen"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -283,7 +283,7 @@ export const GroupManagement = () => {
       {showCreateGroupModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -354,7 +354,7 @@ export const GroupManagement = () => {
       {showAddStudentModal && selectedGroup && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006ddd]" />
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">

@@ -226,7 +226,7 @@ export const StudentProgressManagement = () => {
 
         <input
           type="text"
-          placeholder="Nach Schüler, E-Mail oder Gruppe suchen..."
+          placeholder="Nach Schüler:in, E-Mail oder Gruppe suchen..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20 transition-all"
@@ -250,7 +250,7 @@ export const StudentProgressManagement = () => {
               >
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="flex items-start gap-3 flex-1">
-                    <div className="w-12 h-12 bg-[#006ddd] rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="w-12 h-12 bg-[#006dd6] rounded-full flex items-center justify-center text-white font-bold">
                       {student.studentName.charAt(0)}
                     </div>
 
@@ -299,7 +299,7 @@ export const StudentProgressManagement = () => {
                       {student.worksheetsTotal}
                     </span>
 
-                    <span className="font-bold text-[#006ddd]">
+                    <span className="font-bold text-[#006dd6]">
                       {completionPercentage}%
                     </span>
                   </div>

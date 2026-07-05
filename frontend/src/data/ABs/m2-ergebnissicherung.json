@@ -1,0 +1,18 @@
+﻿{
+  "headerTitle": "Ergebnissicherung",
+  "reflectionQuestion": "Überlegen Sie, was Sie dazu gebracht hat, gerade diese Rangordnung zu wählen. Was war für IHRE Einschätzung ausschlaggebend? Welche Merkmale der Berufsvorschläge sind für SIE bedeutsam? Notieren Sie Ihre Gedanken schlagwortartig:",
+  "comparisonIntroLabel": "Recherche",
+  "comparisonIntroText": "Finden Sie heraus, durch welche Ausbildungen Sie Ihre Nummer 1 unter den Berufsvorschlägen erreichen können. Benutzen Sie dazu verschiedene Informationsquellen.",
+  "comparisonVariants": ["Variante A", "Variante B", "Variante C"],
+  "comparisonRowLabels": [
+    "Name der Ausbildung",
+    "Institution",
+    "Ort",
+    "Dauer",
+    "Ihr Pro + Kontra"
+  ],
+  "comparisonSections": [
+    { "title": "Meine Nummer 1" },
+    { "title": "Ev. auch Nummer 2" }
+  ]
+}
