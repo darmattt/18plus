@@ -1,0 +1,21 @@
+{
+  "headerTitle": "Arbeitsblatt: Expert/Innen-Interview zu Studium",
+  "headerSubtitle": "Tipp: Zeichnen Sie das Interview mit Ihrem Handy auf. Stellen Sie zuvor sicher, dass Ihr Akku aufgeladen ist und die Aufnahme nicht gestört wird. Tragen Sie zu Hause die Antworten aus dem Interview in die Tabelle ein oder ergänzen Sie Ihre Notizen.",
+  "targetLabel": "zum Studium:",
+  "questions": [
+    { "question": "Warum haben Sie sich für dieses Studium entschieden? Was erleben Sie als Vor- und Nachteile?" },
+    { "question": "Hatten Sie für Ihre Entscheidung Vorbilder?" },
+    { "question": "Welche Alternativen gab es zu Ihrem derzeitigen Studium? Hatten Sie einen Plan B und wenn ja, welchen?" },
+    { "question": "Welche Fähigkeiten werden benötigt, um in Ihrem Studium erfolgreich zu sein? Was wird von Ihnen erwartet?" },
+    { "question": "Wie sieht ein „normaler“ Tagesablauf bei Ihnen aus?" },
+    { "question": "Welche Rahmenbedingungen gibt es (Anmeldefristen, Zugangsbeschränkungen, Prüfungsmodalitäten etc.)" },
+    { "question": "Welche inhaltlichen Schwerpunkte hat Ihr Studium?" },
+    { "question": "Welche Perspektiven und beruflichen Möglichkeiten bietet Ihr Studium?" },
+    { "question": "Welche benachbarten Studiengänge gibt es?" },
+    { "question": "Was ist aus Ihrer Sicht das Faszinierende an Ihrem Studium?" },
+    { "question": "Wenn Sie zurückblicken – wer oder was hat Sie bei Ihrer Studienwahl am meisten unterstützt?" },
+    { "question": "Worauf sollte ich besonders achten, wenn ich mich für Ihr Studium entscheiden würde?" },
+    { "question": "Was würden Sie mir abschließend als Tipp mitgeben?" }
+  ],
+  "closingText": "Herzlichen Dank! Darf ich Sie – wenn ich noch Fragen habe – noch einmal kontaktieren?"
+}

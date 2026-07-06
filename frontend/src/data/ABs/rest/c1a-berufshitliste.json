@@ -1,0 +1,19 @@
+{
+  "headerTitle": "Meine Berufshitliste",
+  "headerSubtitle": "Design-Typ: Tabelle",
+  "progressLabel": "Berufe eingetragen",
+  "addButtonLabel": "Beruf hinzufügen",
+  "columns": [
+    { "key": "rang", "label": "Mein Rang", "placeholder": "1", "minLength": 0 },
+    { "key": "taetigkeiten", "label": "Tätigkeiten in diesem Beruf", "placeholder": "Was macht man in diesem Beruf?", "minLength": 3 },
+    { "key": "ausbildungsdauer", "label": "Ausbildungsdauer", "placeholder": "z.B. 3 Jahre", "minLength": 1 },
+    { "key": "ausbildungsart", "label": "Ausbildungsart", "placeholder": "z.B. Lehre, Schule, Studium", "minLength": 1 },
+    { "key": "voraussetzungen", "label": "Voraussetzungen", "placeholder": "Was wird benötigt?", "minLength": 3 },
+    { "key": "verwandte", "label": "Verwandte Berufe", "placeholder": "Ähnliche Berufe", "minLength": 1 }
+  ],
+  "tipTitle": "Quelle",
+  "tipText": "www.so.ch/fileadmin/internet/dbk/ebbaa/pdf/bsb/Berufswahlordner/Kapitel_4/bwo_erforschen18-19quer_20130723_sf.pdf",
+  "celebrationText": "Berufshitliste vollständig!",
+  "submitLabelIncomplete": "Mindestens einen Beruf vollständig eintragen",
+  "submitLabelComplete": "Berufshitliste abschließen"
+}

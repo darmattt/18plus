@@ -31,6 +31,7 @@ public class Program
             options.JsonSerializerOptions.Converters.Add(new EmailConverter());
             options.JsonSerializerOptions.Converters.Add(new PhoneNumberConverter());
             options.JsonSerializerOptions.Converters.Add(new ClassNumberConverter());
+            options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
         });
         
         builder.Services.AddProblemDetails();
@@ -121,7 +122,6 @@ public class Program
             var db = scope.ServiceProvider.GetRequiredService<EighteenplusDbContext>();
             var passwordHasher = scope.ServiceProvider.GetRequiredService<PasswordHasher<UserBase>>();
             var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-            db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
             DatabaseSeeder.Seed(db, passwordHasher, passwordService);
         }

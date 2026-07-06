@@ -1,0 +1,13 @@
+{
+  "headerTitle": "Arbeitsblatt: Vertrag mit mir selbst",
+  "headerSubtitle": "Dieses Arbeitsblatt unterstützt Sie dabei, konkrete Schritte festzulegen. Füllen Sie den folgenden Vertrag aus und lassen Sie ihn von einer Person Ihres Vertrauens gegenzeichnen. Besprechen Sie nach 6 Wochen, ob es Ihnen gelungen ist, diese Schritte einzuhalten.",
+  "contractLabel": "Vertrag mit mir selbst",
+  "questions": [
+    "Meine konkreten nächsten Schritte für meine Berufs- und Studienwahl innerhalb von 6 Wochen",
+    "Welchen konkreten Nutzen habe ich, wenn ich diese Schritte umsetze?",
+    "Wen möchte ich um Unterstützung für eine gelungene Umsetzung bitten?",
+    "Welche meiner Fähigkeiten tragen zum Erfüllen des Vertrages bei?",
+    "Welche Auswirkungen kann es haben, wenn der Vertrag nicht gelingt?"
+  ],
+  "signatureFields": ["Ort, Datum", "Unterschrift", "Unterschrift Vertragspartner/in"]
+}

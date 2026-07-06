@@ -1,0 +1,12 @@
+{
+  "headerTitle": "Arbeitsblatt: „Blitzlicht-Interview“",
+  "headerSubtitle": "Das „Blitzlicht-Interview“ unterstützt Sie dabei, Personen mit einem interessanten Beruf oder Studium zu befragen. Machen Sie sich keinen Druck und nutzen Sie das Gespräch, um erste Informationen zu erhalten, wie Andere zu einer für sie passenden Entscheidung gekommen sind.",
+  "targetLabel": "zum Beruf:",
+  "questions": [
+    { "question": "Wie hat sich Ihr Berufs- bzw. Studienwunsch entwickelt?" },
+    { "question": "Welche Schritte haben Sie zur Verwirklichung Ihres Zieles gesetzt? Und wer hat Sie dabei unterstützt?" },
+    { "question": "Wenn Sie heute wieder entscheiden könnten – würden Sie erneut diesen Beruf/dieses Studium wählen? Wenn ja, warum? Wenn nein, warum?" },
+    { "question": "Welche Tipps würden Sie mir für meine Berufs- und Studienwahl mit auf den Weg geben?" }
+  ],
+  "closingText": "Herzlichen Dank! Darf ich Sie – wenn ich noch Fragen habe – noch einmal kontaktieren?"
+}

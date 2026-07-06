@@ -31,4 +31,14 @@ public class Result : EntityBase
         SubmittedAt = DateTime.UtcNow;
         Status = WorkingStatus.Submitted;
     }
+
+    public void UpdateAnswers(string answersJson)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(answersJson);
+
+        AnswersJson = answersJson.Trim();
+
+        if (Status != WorkingStatus.Submitted)
+            Status = WorkingStatus.InProgress;
+    }
 }

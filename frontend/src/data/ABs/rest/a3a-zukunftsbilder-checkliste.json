@@ -1,0 +1,45 @@
+{
+  "headerTitle": "Arbeitsblatt: Zukunftsbilder",
+  "headerSubtitle": "Die Erwartungen an die berufliche Zukunft spielen eine wichtige Rolle im Entscheidungsprozess für die Berufs- und Studienwahl. Bitte kreuzen Sie an, was Sie von Ihrer künftigen beruflichen Tätigkeit erwarten würden:",
+  "checklistData": [
+    {
+      "category": "Meine Erwartungen an die berufliche Zukunft",
+      "items": [
+        "Kreativ sein",
+        "Eine sinnvolle Aufgabe ausführen",
+        "Anerkennung finden",
+        "Im Ausland arbeiten",
+        "Möglichst keinen Stress bei der Arbeit",
+        "Eine interessante und herausfordernde Arbeit, die dann aber auch anstrengend sein darf",
+        "Mein handwerkliches Geschick einbringen können",
+        "Später selbstständig werden",
+        "Mich spezialisieren können",
+        "Berufliche Karriere machen",
+        "Ein gutes Einkommen",
+        "Bald finanziell unabhängig sein",
+        "Die Ergebnisse meiner Arbeit unmittelbar sehen",
+        "Meine persönlichen Fähigkeiten und Ideen entfalten",
+        "Einen angenehmen Arbeitsplatz bezüglich Lärm, Sauberkeit, Kleidung, Möblierung, Arbeitszeiten, ...",
+        "Gute Aufstiegsmöglichkeiten haben",
+        "Viel Selbstständigkeit und Verantwortung",
+        "Mit Menschen zu tun haben",
+        "Anderen Menschen helfen",
+        "Beruf und Freizeit verbinden, bzw. ergänzen",
+        "Am jetzigen Wohnort lernen und arbeiten können",
+        "Eine kurze Ausbildung machen",
+        "Eine Ausbildung machen, der ich leicht gewachsen bin",
+        "Eine anspruchsvolle Ausbildung machen",
+        "Viel Abwechslung",
+        "Nette Kolleginnen und Kollegen",
+        "Einen sicheren Arbeitsplatz",
+        "Berufliche Erfolgsergebnisse",
+        "Viel reisen",
+        "In möglichst schicker Umgebung arbeiten",
+        "Eine Arbeit, die mir nicht so besonders viel Geld einbringt, dafür aber Spaß und Befriedigung"
+      ]
+    }
+  ],
+  "encouragementMidText": "Weiter so, du bist auf gutem Weg!",
+  "encouragementCompleteText": "Alle Erwartungen markiert!",
+  "completeButtonLabel": "Weiter zur Reflexion"
+}

@@ -1,0 +1,22 @@
+{
+  "headerTitle": "Arbeitsblatt: „Expert/Innen – Berufe-Interview“",
+  "headerSubtitle": "Tipp: Zeichnen Sie das Interview mit Ihrem Handy auf. Stellen Sie zuvor sicher, dass Ihr Akku aufgeladen ist und die Aufnahme nicht gestört wird. Tragen Sie zu Hause die Antworten aus dem Interview in die Tabelle ein oder ergänzen Sie Ihre Notizen.",
+  "targetLabel": "zum Beruf:",
+  "questions": [
+    { "question": "Können Sie mir bitte kurz Ihren Werdegang beschreiben?" },
+    { "question": "Warum haben Sie sich für diesen Beruf entschieden? Was erleben Sie als Vor- und Nachteile?" },
+    { "question": "Hatten Sie für Ihre Berufsentscheidung Vorbilder?" },
+    { "question": "Welche Ausbildungswege bzw. alternativen Wege können noch zu diesem Beruf führen?" },
+    { "question": "Welche Fähigkeiten werden benötigt, um in Ihrem Beruf erfolgreich zu sein?" },
+    { "question": "Wie sieht ein „normaler“ Arbeitstag/Tagesablauf bei Ihnen aus?" },
+    { "question": "Was wird von Ihnen bei der Ausübung Ihres Berufes erwartet?" },
+    { "question": "Welche Perspektiven/Aufstiegsmöglichkeiten bietet Ihr Beruf?" },
+    { "question": "Welche Rahmenbedingungen hat Ihr Beruf? (Arbeitszeit, Arbeitsort, Gehalt, etc.)" },
+    { "question": "Gab es auch alternative Berufswünsche?" },
+    { "question": "Wenn Sie zurückblicken – wer oder was hat Sie bei Ihrer Berufswahl am meisten unterstützt?" },
+    { "question": "Was ist aus Ihrer Sicht das Faszinierende an Ihrem Beruf?" },
+    { "question": "Wenn ich mich für Ihren Beruf entscheiden würde – auf was sollte ich besonders achten?" },
+    { "question": "Was würden Sie mir abschließend als Tipp mitgeben?" }
+  ],
+  "closingText": "Herzlichen Dank! Darf ich Sie – wenn ich noch Fragen habe – noch einmal kontaktieren?"
+}

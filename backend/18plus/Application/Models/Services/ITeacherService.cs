@@ -19,4 +19,6 @@ public interface ITeacherService
     Task RemoveStudentFromGroupAsync(int studentId);
     Task<List<ResultResponse>> GetStudentResultsAsync();
     Task<List<GroupWithStudentsResponse>> GetMyGroupsAsync();
+    Task<List<string>> GetGroupEnabledWorksheetsAsync(int groupId);
+    Task<List<string>> SetGroupWorksheetsAsync(int groupId, SetGroupWorksheetsDto dto);
 }

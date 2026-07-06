@@ -1,0 +1,21 @@
+{
+  "headerTitle": "Arbeitsblatt: Berufe-Interview",
+  "headerSubtitle": "Tipp: Zeichnen Sie das Interview mit Ihrem Handy auf. Stellen Sie zuvor sicher, dass Ihr Akku aufgeladen ist und die Aufnahme nicht gestört wird. Tragen Sie zu Hause die Antworten aus dem Interview in die Tabelle ein oder ergänzen Sie Ihre Notizen.",
+  "targetLabel": "zum Beruf:",
+  "questions": [
+    { "question": "Welche Aufgaben hat Ihr Beruf?" },
+    { "question": "Warum haben Sie sich für diesen Beruf entschieden? Was erleben Sie als Vor- und Nachteile?" },
+    { "question": "Welche Ausbildung mussten Sie für Ihren Beruf durchlaufen?" },
+    { "question": "Welche Stärken / Fähigkeiten sollte ich für Ihren Beruf mitbringen?" },
+    { "question": "Wo findet Ihr Job überwiegend statt? Sind Sie viel unterwegs oder eher vor Ort?" },
+    { "question": "In welchen Fächern sollte ich gut sein, wenn ich Ihren Beruf einmal ausüben möchte?" },
+    { "question": "Welche Arbeitszeiten würde ich haben? (Arbeit am Wochenende, flexible Arbeitszeiten, etc.)" },
+    { "question": "Welche Aufstiegsmöglichkeiten habe ich?" },
+    { "question": "Gibt es Besonderheiten? (z.B. Reisetätigkeit, körperlich anstrengende oder gefährliche Arbeiten etc.)" },
+    { "question": "Wie sehen die Verdienstmöglichkeiten in Ihrem Beruf aus?" },
+    { "question": "Arbeitet man eher im Team oder eher alleine?" },
+    { "question": "Würden Sie sich wieder für Ihren Beruf entscheiden? Würden Sie rückblickend etwas anders machen?" },
+    { "question": "Was würde Sie mir abschließend als Tipp mitgeben?" }
+  ],
+  "closingText": "Herzlichen Dank! Darf ich Sie – wenn ich noch Fragen habe – noch einmal kontaktieren?"
+}

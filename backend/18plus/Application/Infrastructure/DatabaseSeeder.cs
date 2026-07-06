@@ -88,7 +88,7 @@ public static class DatabaseSeeder
             new Student(
                 firstName: "Darya",
                 lastName: "Martysiuk",
-                email: new EMailAddress("Darya.Martysiuk@18plus.local")
+                email: new EMailAddress("darmaralk@gmail.com")
             ),
             new Student(
                 firstName: "Maryam",
@@ -134,25 +134,81 @@ public static class DatabaseSeeder
         // =========================================================
         var worksheet1 = new Worksheet(
             name: "Alkohol Grundlagen",
-            type: "Basiswissen zu Alkohol, Wirkung und Risiken"
+            type: "Basiswissen zu Alkohol, Wirkung und Risiken",
+            slug: "demo-alkohol-grundlagen"
         );
 
         var worksheet2 = new Worksheet(
             name: "Suchtprävention",
-            type: "Prävention, Warnsignale und Unterstützungsangebote"
+            type: "Prävention, Warnsignale und Unterstützungsangebote",
+            slug: "demo-suchtpraevention"
         );
 
         var worksheet3 = new Worksheet(
             name: "Recht und Verantwortung",
-            type: "Jugendschutz, Verantwortung und rechtliche Grundlagen"
+            type: "Jugendschutz, Verantwortung und rechtliche Grundlagen",
+            slug: "demo-recht-und-verantwortung"
         );
 
         var worksheet4 = new Worksheet(
             name: "Gesundheit und Konsum",
-            type: "Langzeitfolgen, Gesundheit und verantwortungsvoller Umgang"
+            type: "Langzeitfolgen, Gesundheit und verantwortungsvoller Umgang",
+            slug: "demo-gesundheit-und-konsum"
         );
 
         db.Worksheets.AddRange(worksheet1, worksheet2, worksheet3, worksheet4);
+
+        // =========================================================
+        // FRONTEND WORKSHEETS (ws-* slugs, referenced by frontend/src/data/modules.js)
+        // =========================================================
+        var frontendWorksheets = new List<Worksheet>
+        {
+            new Worksheet(name: "Wegweiser Einleitung", type: null, slug: "ws-wegweiser-intro"),
+
+            new Worksheet(name: "Arbeitsblatt 1: Fremdbild", type: null, slug: "ws-fremdbild"),
+            new Worksheet(name: "Arbeitsblatt 2: Selbstbild", type: null, slug: "ws-selbstbild"),
+            new Worksheet(name: "Arbeitsblatt 3/1: Werte-Ziele Allgemein", type: null, slug: "ws-werte-ziele-allgemein"),
+            new Worksheet(name: "Arbeitsblatt 3/2: Werte-Ziele Berufsbezogen", type: null, slug: "ws-werte-ziele-berufsbezogen"),
+            new Worksheet(name: "Arbeitsblatt 4: Meine Stärken, Werte, Ziele", type: null, slug: "ws-staerken-werte-ziele"),
+            new Worksheet(name: "Arbeitsblatt 5: Meinen Interessen auf der Spur", type: null, slug: "ws-interessen-auf-der-spur"),
+            new Worksheet(name: "Arbeitsblatt 6: Meine Aktivitäten - nächste Schritte", type: null, slug: "ws-aktivitaeten-naechste-schritte"),
+            new Worksheet(name: "Arbeitsblatt 7: Meine Recherche - nächste Schritte", type: null, slug: "ws-recherche-naechste-schritte"),
+            new Worksheet(name: "Arbeitsblatt 8: Meine Berufsvorschläge", type: null, slug: "ws-berufsvorschlaege"),
+            new Worksheet(name: "Ergebnissicherung", type: null, slug: "ws-ergebnissicherung"),
+
+            new Worksheet(name: "Arbeitsblatt 1: Offene Fragen", type: null, slug: "ws-offene-fragen"),
+            new Worksheet(name: "Arbeitsblatt 2: Interview", type: null, slug: "ws-interview"),
+            new Worksheet(name: "Arbeitsblatt 3: Checkliste", type: null, slug: "ws-checkliste"),
+            new Worksheet(name: "Arbeitsblatt 4: Informationstext", type: null, slug: "ws-text"),
+            new Worksheet(name: "Arbeitsblatt 5: Interaktive Kreise", type: null, slug: "ws-kreise"),
+            new Worksheet(name: "Arbeitsblatt 6: Berufsvergleich Tabelle", type: null, slug: "ws-tabelle"),
+            new Worksheet(name: "Arbeitsblatt 7: Fragen & Tabellen", type: null, slug: "ws-fragen-tabelle"),
+            new Worksheet(name: "Arbeitsblatt 8: Kontaktformular", type: null, slug: "ws-kontaktform"),
+
+            new Worksheet(name: "A1: Ein Blick in die Zukunft", type: null, slug: "ws-a1-blick-in-die-zukunft"),
+            new Worksheet(name: "A2: Meine persönliche Zukunft", type: null, slug: "ws-a2-persoenliche-zukunft"),
+            new Worksheet(name: "A3: Zukunftsbilder – Erwartungen", type: null, slug: "ws-a3-zukunftsbilder-checkliste"),
+            new Worksheet(name: "A3: Zukunftsbilder – Anregungen zur Bearbeitung", type: null, slug: "ws-a3-zukunftsbilder-reflexion"),
+            new Worksheet(name: "B1: Ihre Berufs- und Studienwahlpartner/in", type: null, slug: "ws-b1-berufs-studienwahlpartner"),
+            new Worksheet(name: "B2: Blitzlicht-Interview", type: null, slug: "ws-b2-blitzlicht-interview"),
+            new Worksheet(name: "B3: Meine Planungsaktivitäten", type: null, slug: "ws-b3-planungsaktivitaeten"),
+            new Worksheet(name: "C1a: Meine Berufshitliste", type: null, slug: "ws-c1a-berufshitliste"),
+            new Worksheet(name: "C1b: Meine Studienhitliste", type: null, slug: "ws-c1b-studienhitliste"),
+            new Worksheet(name: "C2: Berufe-Interview", type: null, slug: "ws-c2-berufe-interview"),
+            new Worksheet(name: "C3: Die wichtigsten Interviewregeln", type: null, slug: "ws-c3-interviewregeln"),
+            new Worksheet(name: "C4: Checkliste für Ihre Praxiskontakte", type: null, slug: "ws-c4-praxiskontakte"),
+            new Worksheet(name: "D1a: Realitätscheck – Meine Berufshitliste", type: null, slug: "ws-d1a-realitaetscheck-beruf"),
+            new Worksheet(name: "D1b: Realitätscheck – Meine Studienhitliste", type: null, slug: "ws-d1b-realitaetscheck-studium"),
+            new Worksheet(name: "D2: Checkliste zur Nutzung von Informationsangeboten", type: null, slug: "ws-d2-informationsangebote"),
+            new Worksheet(name: "D3: Ihre Entscheidungspartner/innen", type: null, slug: "ws-d3-entscheidungspartner"),
+            new Worksheet(name: "E1: Mein Portfolio", type: null, slug: "ws-e1-mein-portfolio"),
+            new Worksheet(name: "E2: Vertrag mit mir selbst", type: null, slug: "ws-e2-vertrag-mit-mir-selbst"),
+            new Worksheet(name: "E3: Mein Wunschlebenslauf", type: null, slug: "ws-e3-wunschlebenslauf"),
+            new Worksheet(name: "E4a: Expert/Innen – Berufe-Interview", type: null, slug: "ws-e4a-experten-interview-beruf"),
+            new Worksheet(name: "E4b: Expert/Innen-Interview zu Studium", type: null, slug: "ws-e4b-experten-interview-studium"),
+        };
+
+        db.Worksheets.AddRange(frontendWorksheets);
 
         // =========================================================
         // GROUP WORKSHEETS
@@ -196,6 +252,26 @@ public static class DatabaseSeeder
         };
 
         db.GroupWorksheets.AddRange(groupWorksheets);
+
+        // =========================================================
+        // DEFAULT MODULE ACCESS (Module 1 open by default for every group)
+        // =========================================================
+        var defaultWorksheets = frontendWorksheets
+            .Where(w => DefaultModuleAccess.DefaultEnabledSlugs.Contains(w.Slug))
+            .ToList();
+
+        var defaultGroupWorksheets = new List<GroupWorksheet>();
+        foreach (var group in new[] { group1, group2, group3 })
+        {
+            foreach (var worksheet in defaultWorksheets)
+            {
+                var groupWorksheet = new GroupWorksheet(group, worksheet);
+                groupWorksheet.Enable();
+                defaultGroupWorksheets.Add(groupWorksheet);
+            }
+        }
+
+        db.GroupWorksheets.AddRange(defaultGroupWorksheets);
 
         // =========================================================
         // RESULTS

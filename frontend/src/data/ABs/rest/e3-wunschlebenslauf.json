@@ -1,0 +1,14 @@
+{
+  "headerTitle": "Arbeitsblatt: Mein Wunschlebenslauf",
+  "headerSubtitle": "Machen Sie sich ein langfristiges Bild Ihres möglichen beruflichen und persönlichen Werdegangs. Notieren Sie Ihre Ideen in die entsprechenden Felder. Nutzen Sie die Möglichkeit, mit einer Person Ihres Vertrauens Ihre Gedanken zu Ihrem „Wunschlebenslauf“ zu besprechen.",
+  "rowGroupLabel": "So möchte ich leben…",
+  "rowLabels": [
+    "… mit 18 Jahren",
+    "… mit 21 Jahren",
+    "… mit 25 Jahren",
+    "… mit 30 Jahren",
+    "… mit 45 Jahren",
+    "… mit 65 Jahren"
+  ],
+  "columnLabels": ["Partnerschaft", "Kinder", "Wohnen", "Beruf", "Geld", "Freizeit"]
+}

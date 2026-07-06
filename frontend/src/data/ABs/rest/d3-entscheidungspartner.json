@@ -1,0 +1,21 @@
+{
+  "headerTitle": "Arbeitsblatt: Ihre Entscheidungspartner/innen",
+  "headerSubtitle": "Die erste Berufs- und Studienwahl ist eine wichtige Lebensentscheidung. Bereiten Sie Ihre Entscheidung gut vor und holen Sie sich aktiv Unterstützung!",
+  "circles": ["Ihre Eltern", "Schule", "Studien- und Berufswelt", "Freunde Freundinnen Bekannte", "Beratung"],
+  "reflectionTitle": "Überlegen sie:",
+  "reflectionQuestions": [
+    "Welche Personen kenne ich, die mich bei meiner Berufs- und Studienwahl unterstützen können?",
+    "Auf wessen Meinung lege ich besonderen Wert?",
+    "Wer hat mir bisher hilfreiche und nützliche Rückmeldungen in Hinblick auf meine Berufs- und Studienwahl gegeben?",
+    "Wem vertraue ich in dieser Hinsicht besonders?"
+  ],
+  "table": {
+    "rowGroupLabel": "Halten Sie fest mit wem Sie bis wann einen persönlichen Termin vereinbaren werden:",
+    "columns": [
+      { "key": "wer", "label": "WER?", "placeholder": "Name" },
+      { "key": "biswann", "label": "BIS WANN?", "placeholder": "Datum" },
+      { "key": "wichtig", "label": "WAS MIR IN DIESEM GESPRÄCH BESONDERS WICHTIG IST…", "placeholder": "..." }
+    ],
+    "rowCount": 6
+  }
+}

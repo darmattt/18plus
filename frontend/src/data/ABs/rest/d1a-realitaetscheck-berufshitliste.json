@@ -1,0 +1,18 @@
+{
+  "headerTitle": "Realitätscheck: Meine Berufshitliste",
+  "headerSubtitle": "Mit Hilfe der folgenden Fragestellungen können Sie Ihre bisherigen Recherchen auswerten: Füllen Sie die leeren Felder mit Ihren neu gewonnenen Erkenntnissen aus!",
+  "progressLabel": "Berufe ausgewertet",
+  "addButtonLabel": "Beruf hinzufügen",
+  "columns": [
+    { "key": "rang", "label": "Mein Rang", "placeholder": "1", "minLength": 0 },
+    { "key": "beruf", "label": "Beruf", "placeholder": "Berufsbezeichnung", "minLength": 2 },
+    { "key": "infos", "label": "Informationen und Erfahrungen aus Praxiskontakten", "placeholder": "Was hast du erfahren?", "minLength": 3 },
+    { "key": "sonnenseite", "label": "Sonnenseite des Berufes – Das gefällt mir am Beruf", "placeholder": "Was gefällt dir?", "minLength": 3 },
+    { "key": "schattenseite", "label": "Schattenseite des Berufes – Das muss ich in Kauf nehmen", "placeholder": "Was ist schwierig?", "minLength": 3 }
+  ],
+  "tipTitle": "Quelle",
+  "tipText": "www.so.ch/fileadmin/internet/dbk/ebbaa/pdf/bsb/Berufswahlordner/Kapitel_5/bwo_erkunden28-29_quer_20130723_sf.pdf",
+  "celebrationText": "Realitätscheck abgeschlossen!",
+  "submitLabelIncomplete": "Mindestens einen Beruf vollständig auswerten",
+  "submitLabelComplete": "Realitätscheck abschließen"
+}

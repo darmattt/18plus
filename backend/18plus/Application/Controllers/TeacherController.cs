@@ -127,4 +127,22 @@ public class TeacherController(ITeacherService teacherService, IHostEnvironment 
         var result = await teacherService.GetMyGroupsAsync();
         return Ok(result);
     }
+
+    [Authorize(Roles = "Teacher")]
+    [HttpGet("groups/{groupId:int}/enabled-worksheets")]
+    public async Task<ActionResult<List<string>>> GetGroupEnabledWorksheets(int groupId)
+    {
+        var result = await teacherService.GetGroupEnabledWorksheetsAsync(groupId);
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Teacher")]
+    [HttpPut("groups/{groupId:int}/worksheets")]
+    public async Task<ActionResult<List<string>>> SetGroupWorksheets(
+        int groupId,
+        [FromBody] SetGroupWorksheetsDto dto)
+    {
+        var result = await teacherService.SetGroupWorksheetsAsync(groupId, dto);
+        return Ok(result);
+    }
 }

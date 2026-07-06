@@ -1,0 +1,18 @@
+{
+  "headerTitle": "Arbeitsblatt: Meine Planungsaktivitäten",
+  "headerSubtitle": "Dieses Arbeitsblatt soll Sie dabei unterstützen, Ihre Schritte bei der Berufs- und Studienwahl zu dokumentieren und im Auge zu behalten. Impulse: Welche Möglichkeiten der Vorbereitung möchte ich nutzen? Wie gut kenne ich meine Werte und Ziele? Welche Informationen benötige ich? Habe ich einen Plan B?",
+  "progressLabel": "Schritte geplant",
+  "addButtonLabel": "Schritt hinzufügen",
+  "columns": [
+    { "key": "vorhaben", "label": "Meine Berufs- und Studienwahl – das will ich umsetzen", "placeholder": "Was willst du umsetzen?", "minLength": 3 },
+    { "key": "biswann", "label": "Bis wann sollte ich diese Schritte setzen?", "placeholder": "Datum / Zeitraum", "minLength": 1 },
+    { "key": "wer", "label": "Wer kann mich dabei unterstützen?", "placeholder": "Person / Institution", "minLength": 1 },
+    { "key": "benoetigt", "label": "Was würde ich noch benötigen?", "placeholder": "z.B. Informationen, Kontakte", "minLength": 1 },
+    { "key": "notizen", "label": "Notizen, Ergebnisse", "placeholder": "Deine Notizen", "minLength": 0 }
+  ],
+  "tipTitle": "Hinweis",
+  "tipText": "Vielleicht ändern sich deine Wünsche und Vorstellungen – lass dich nicht entmutigen, denn unterschiedliche Wege führen zum Ziel!",
+  "celebrationText": "Planungsschritte festgehalten!",
+  "submitLabelIncomplete": "Mindestens einen Schritt vollständig eintragen",
+  "submitLabelComplete": "Planung abschließen"
+}

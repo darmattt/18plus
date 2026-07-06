@@ -1,6 +1,8 @@
 using Application.Infrastructure;
+using Application.Models.Entities;
 using Application.Models.Users;
 using Application.ViewModels.Converters;
+using Application.ViewModels.CreateDtos;
 using Application.ViewModels.LoginDtos;
 using Microsoft.EntityFrameworkCore;
 using SpengerbiteApi.Exceptions;
@@ -16,6 +18,28 @@ public class StudentService(
     IEmailSender emailSender
 ) : IStudentService
 {
+    public async Task<RegisterStudentResponse> RegisterAsync(RegisterStudentDto dto)
+    {
+        var group = await db.Groups.FirstOrDefaultAsync(g => g.JoinCode == dto.JoinCode)
+                    ?? throw ServiceApplicationException.NotFound("Ungültiger Gruppencode");
+
+        var emailTaken = await db.Students.AnyAsync(s => s.Email.Value == dto.Email.Value);
+        if (emailTaken)
+            throw ServiceApplicationException.Conflict("Es existiert bereits ein Konto mit dieser E-Mail-Adresse.");
+
+        var student = new Student(dto.FirstName, dto.LastName, dto.Email)
+        {
+            Group = group
+        };
+
+        db.Students.Add(student);
+        await db.SaveChangesAsync();
+
+        logger.LogInformation("Student self-registered with id {StudentId} into group {GroupId}", student.Id, group.Id);
+
+        return new RegisterStudentResponse("Registrierung erfolgreich");
+    }
+
     public async Task<StudentLoginResponse> RequestLoginCodeAsync(RequestStudentLoginCodeDto dto)
     {
         var student = await db.Students.FirstOrDefaultAsync(s => s.Email.Value == dto.EmailAddress.Value)
@@ -89,5 +113,116 @@ public class StudentService(
             student.Group?.Name?.Value,
             teacherName
         );
+    }
+
+    public async Task<List<string>> GetMyEnabledWorksheetsAsync()
+    {
+        var studentGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var student = await db.Students
+                          .Include(s => s.Group)
+                          .FirstOrDefaultAsync(s => s.PublicId == studentGuid)
+                      ?? throw ServiceApplicationException.NotFound("Student not found");
+
+        if (student.Group is null)
+            return new List<string>();
+
+        return await db.GroupWorksheets
+            .Where(gw => gw.Group.Id == student.Group.Id && gw.IsEnabled)
+            .Select(gw => gw.Worksheet.Slug)
+            .ToListAsync();
+    }
+
+    public async Task<List<StudentResultSummaryResponse>> GetMyResultsAsync()
+    {
+        var studentGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var results = await db.Results
+            .AsNoTracking()
+            .Where(r => r.Student.PublicId == studentGuid)
+            .Select(r => new StudentResultSummaryResponse(
+                r.Worksheet.Slug,
+                r.Status
+            ))
+            .ToListAsync();
+
+        return results;
+    }
+
+    public async Task<StudentResultResponse> GetMyResultAsync(string slug)
+    {
+        var studentGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var student = await db.Students
+                          .Include(s => s.Group)
+                          .FirstOrDefaultAsync(s => s.PublicId == studentGuid)
+                      ?? throw ServiceApplicationException.NotFound("Student not found");
+
+        var worksheet = await db.Worksheets
+                            .FirstOrDefaultAsync(w => w.Slug == slug)
+                        ?? throw ServiceApplicationException.NotFound("Worksheet not found");
+
+        await EnsureWorksheetEnabledAsync(student, worksheet);
+
+        var result = await db.Results
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.Student.PublicId == studentGuid && r.Worksheet.Slug == slug);
+
+        if (result is null)
+            return new StudentResultResponse(null, null);
+
+        return new StudentResultResponse(result.AnswersJson, result.Status);
+    }
+
+    public async Task<StudentResultResponse> SaveMyResultAsync(string slug, SaveResultDto dto)
+    {
+        var studentGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var student = await db.Students
+                          .Include(s => s.Group)
+                          .FirstOrDefaultAsync(s => s.PublicId == studentGuid)
+                      ?? throw ServiceApplicationException.NotFound("Student not found");
+
+        var worksheet = await db.Worksheets
+                            .FirstOrDefaultAsync(w => w.Slug == slug)
+                        ?? throw ServiceApplicationException.NotFound("Worksheet not found");
+
+        await EnsureWorksheetEnabledAsync(student, worksheet);
+
+        var result = await db.Results
+            .FirstOrDefaultAsync(r => r.Student.PublicId == studentGuid && r.Worksheet.Slug == slug);
+
+        if (result is null)
+        {
+            result = new Result(dto.AnswersJson, student, worksheet);
+            db.Results.Add(result);
+        }
+        else
+        {
+            result.UpdateAnswers(dto.AnswersJson);
+        }
+
+        if (dto.Submit)
+            result.Submit();
+
+        await db.SaveChangesAsync();
+
+        return new StudentResultResponse(result.AnswersJson, result.Status);
+    }
+
+    private async Task EnsureWorksheetEnabledAsync(Student student, Worksheet worksheet)
+    {
+        if (student.Group is null)
+            throw ServiceApplicationException.Forbidden("Dieses Arbeitsblatt ist für deine Gruppe noch nicht freigeschaltet.");
+
+        var isEnabled = await db.GroupWorksheets
+            .AnyAsync(gw => gw.Group.Id == student.Group.Id && gw.Worksheet.Id == worksheet.Id && gw.IsEnabled);
+
+        if (!isEnabled)
+            throw ServiceApplicationException.Forbidden("Dieses Arbeitsblatt ist für deine Gruppe noch nicht freigeschaltet.");
     }
 }

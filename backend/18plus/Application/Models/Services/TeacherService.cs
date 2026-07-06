@@ -105,6 +105,19 @@ public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
         await db.Groups.AddAsync(group);
         await db.SaveChangesAsync();
 
+        var defaultWorksheets = await db.Worksheets
+            .Where(w => DefaultModuleAccess.DefaultEnabledSlugs.Contains(w.Slug))
+            .ToListAsync();
+
+        foreach (var worksheet in defaultWorksheets)
+        {
+            var groupWorksheet = new GroupWorksheet(group, worksheet);
+            groupWorksheet.Enable();
+            db.GroupWorksheets.Add(groupWorksheet);
+        }
+
+        await db.SaveChangesAsync();
+
         return new TeacherResponse(
             teacher.Id,
             teacher.FirstName,
@@ -307,8 +320,10 @@ public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
             .Select(r => new ResultResponse(
                 r.Student.FirstName,
                 r.Student.LastName,
+                r.Student.Group!.Name,
+                r.Worksheet.Name,
+                r.SubmittedAt,
                 r.Status
-                
             ))
             .ToListAsync();
 
@@ -326,6 +341,7 @@ public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
             .Select(g => new GroupWithStudentsResponse(
                 g.Id,
                 g.Name,
+                g.JoinCode,
                 db.Students
                     .OrderBy(s => s.FirstName)
                     .ThenBy(s => s.LastName)
@@ -339,5 +355,66 @@ public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
             ))
             .ToListAsync();
         return groups;
+    }
+
+    public async Task<List<string>> GetGroupEnabledWorksheetsAsync(int groupId)
+    {
+        var teacherGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var group = await db.Groups
+                        .Include(g => g.Teacher)
+                        .FirstOrDefaultAsync(g => g.Id == groupId)
+                    ?? throw ServiceApplicationException.NotFound("Group not found");
+
+        if (group.Teacher.PublicId != teacherGuid)
+            throw ServiceApplicationException.Forbidden("You cannot view this class");
+
+        return await db.GroupWorksheets
+            .Where(gw => gw.Group.Id == groupId && gw.IsEnabled)
+            .Select(gw => gw.Worksheet.Slug)
+            .ToListAsync();
+    }
+
+    public async Task<List<string>> SetGroupWorksheetsAsync(int groupId, SetGroupWorksheetsDto dto)
+    {
+        var teacherGuid = currentUserService.UserId
+                          ?? throw ServiceApplicationException.Forbidden("User not authenticated");
+
+        var group = await db.Groups
+                        .Include(g => g.Teacher)
+                        .FirstOrDefaultAsync(g => g.Id == groupId)
+                    ?? throw ServiceApplicationException.NotFound("Group not found");
+
+        if (group.Teacher.PublicId != teacherGuid)
+            throw ServiceApplicationException.Forbidden("You cannot edit this class");
+
+        foreach (var slug in dto.Slugs)
+        {
+            var worksheet = await db.Worksheets.FirstOrDefaultAsync(w => w.Slug == slug);
+            if (worksheet is null)
+                continue;
+
+            var groupWorksheet = await db.GroupWorksheets
+                .FirstOrDefaultAsync(gw => gw.Group.Id == groupId && gw.Worksheet.Id == worksheet.Id);
+
+            if (groupWorksheet is null)
+            {
+                groupWorksheet = new GroupWorksheet(group, worksheet);
+                db.GroupWorksheets.Add(groupWorksheet);
+            }
+
+            if (dto.Enabled && !groupWorksheet.IsEnabled)
+                groupWorksheet.Enable();
+            else if (!dto.Enabled && groupWorksheet.IsEnabled)
+                groupWorksheet.Disable();
+        }
+
+        await db.SaveChangesAsync();
+
+        return await db.GroupWorksheets
+            .Where(gw => gw.Group.Id == groupId && gw.IsEnabled)
+            .Select(gw => gw.Worksheet.Slug)
+            .ToListAsync();
     }
 }
