@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, FileText, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress";
 
 const defaultScaleLabels = ["Schwach", "Basic", "Gut", "Sehr gut", "Exzellent"];
 
@@ -43,8 +44,12 @@ export default function FragenTabellenTemplate({
   columnLabel = "Kompetenz",
   openAnswerPlaceholder = "Beschreibe deine wichtigsten Erkenntnisse und Lernerfahrungen...",
   tableHeadingText,
+  worksheetId,
 }) {
   const levels = scaleLabels.map((_, i) => i + 1);
+
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId);
 
   const [openAnswer, setOpenAnswer] = useState("");
   const [skills, setSkills] = useState(() =>
@@ -53,10 +58,27 @@ export default function FragenTabellenTemplate({
   const [showMotivation, setShowMotivation] = useState(false);
   const [tableComplete, setTableComplete] = useState(false);
 
+  useEffect(() => {
+    if (!loading) {
+      const restoredSkills =
+        initialAnswers?.skills ?? initialSkillNames.map((name) => ({ name, level: 0 }));
+      setOpenAnswer(initialAnswers?.openAnswer ?? "");
+      setSkills(restoredSkills);
+      setTableComplete(restoredSkills.every((skill) => skill.level > 0));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers]);
+
+  const handleOpenAnswerChange = (value) => {
+    setOpenAnswer(value);
+    saveAnswers({ openAnswer: value, skills });
+  };
+
   const handleSkillChange = (index, level) => {
     const updated = [...skills];
     updated[index] = { ...updated[index], level };
     setSkills(updated);
+    saveAnswers({ openAnswer, skills: updated });
 
     const allRated = updated.every((skill) => skill.level > 0);
     if (allRated && !tableComplete) {
@@ -70,8 +92,16 @@ export default function FragenTabellenTemplate({
     return openAnswer.trim().length > openAnswerMinLength && tableComplete;
   }, [openAnswer, tableComplete, openAnswerMinLength]);
 
+  const handleComplete = () => {
+    submitAnswers({ openAnswer, skills });
+  };
+
+  if (loading) {
+    return null;
+  }
+
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-8 p-6">
+    <div className="mx-auto flex max-w-5xl flex-col gap-4 p-4 md:gap-8 md:p-6">
       <Card className="overflow-hidden rounded-3xl border border-sky-200/50 bg-gradient-to-r from-lime-100/40 via-sky-100/40 to-blue-100/40 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -117,7 +147,7 @@ export default function FragenTabellenTemplate({
 
                 <Textarea
                   value={openAnswer}
-                  onChange={(e) => setOpenAnswer(e.target.value)}
+                  onChange={(e) => handleOpenAnswerChange(e.target.value)}
                   placeholder={openAnswerPlaceholder}
                   className="min-h-[160px] resize-none rounded-2xl border-2 border-slate-200 focus-visible:ring-sky-400"
                 />
@@ -159,19 +189,19 @@ export default function FragenTabellenTemplate({
             </div>
 
             <div className="overflow-x-auto rounded-2xl border border-slate-200">
-              <table className="w-full min-w-[760px] border-collapse">
+              <table className="w-full border-collapse">
                 <thead className="bg-slate-50">
                   <tr className="border-b border-slate-200">
-                    <th className="px-4 py-4 text-left font-semibold text-slate-900">
+                    <th className="px-2 py-3 text-left font-semibold text-slate-900 sm:px-4 sm:py-4">
                       {columnLabel}
                     </th>
                     {levels.map((level) => (
                       <th
                         key={level}
-                        className="px-3 py-4 text-center text-sm font-semibold text-slate-600"
+                        className="px-1 py-3 text-center text-sm font-semibold text-slate-600 sm:px-3 sm:py-4"
                       >
                         <div>{level}</div>
-                        <div className="text-xs font-medium text-slate-500">
+                        <div className="hidden text-xs font-medium text-slate-500 sm:block">
                           {scaleLabels[level - 1]}
                         </div>
                       </th>
@@ -188,11 +218,13 @@ export default function FragenTabellenTemplate({
                       transition={{ delay: 0.2 + index * 0.08 }}
                       className={skill.level > 0 ? "bg-lime-50/40" : "bg-white"}
                     >
-                      <td className="border-b border-slate-100 px-4 py-4">
+                      <td className="border-b border-slate-100 px-2 py-3 sm:px-4 sm:py-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-slate-900">{skill.name}</span>
+                          <span className="text-sm font-medium text-slate-900 sm:text-base">
+                            {skill.name}
+                          </span>
                           {skill.level > 0 && (
-                            <CheckCircle2 className="h-4 w-4 text-lime-600" />
+                            <CheckCircle2 className="h-4 w-4 shrink-0 text-lime-600" />
                           )}
                         </div>
                       </td>
@@ -203,13 +235,13 @@ export default function FragenTabellenTemplate({
                         return (
                           <td
                             key={level}
-                            className="border-b border-slate-100 px-3 py-4 text-center"
+                            className="border-b border-slate-100 px-1 py-3 text-center sm:px-3 sm:py-4"
                           >
                             <button
                               type="button"
                               onClick={() => handleSkillChange(index, level)}
                               className={[
-                                "inline-flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold transition-all",
+                                "inline-flex h-7 w-7 items-center justify-center rounded-full border text-xs font-bold transition-all sm:h-9 sm:w-9 sm:text-sm",
                                 active
                                   ? "scale-110 border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/25"
                                   : "border-slate-200 bg-slate-100 text-slate-500 hover:scale-105 hover:border-sky-300 hover:bg-sky-100",
@@ -239,11 +271,12 @@ export default function FragenTabellenTemplate({
 
       <div className="flex justify-center pt-2">
         <Button
-          disabled={!isComplete}
+          disabled={!isComplete || submitted}
+          onClick={handleComplete}
           size="lg"
-          className="min-w-[320px] rounded-2xl px-8 py-6 text-base font-semibold"
+          className="min-w-[320px] rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-semibold text-white hover:brightness-110"
         >
-          {!isComplete ? submitLabelIncomplete : submitLabelComplete}
+          {!isComplete ? submitLabelIncomplete : submitted ? "Abgeschlossen" : submitLabelComplete}
         </Button>
       </div>
     </div>

@@ -157,3 +157,14 @@ export async function removeStudentFromMyGroup(studentId) {
 export async function getStudentResults() {
   return apiRequest("/results", { method: "GET" })
 }
+
+export async function getGroupEnabledWorksheets(groupId) {
+  return apiRequest(`/groups/${groupId}/enabled-worksheets`, { method: "GET" })
+}
+
+export async function setGroupWorksheets(groupId, slugs, enabled) {
+  return apiRequest(`/groups/${groupId}/worksheets`, {
+    method: "PUT",
+    body: JSON.stringify({ Slugs: slugs, Enabled: enabled }),
+  })
+}

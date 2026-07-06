@@ -5,6 +5,7 @@ import LandingPage from "./pages/LandingPage"
 //import {LoginBox} from "./pages/LoginPage.jsx"
 import GruppePage from "./pages/GruppePage.jsx"
 import AdminLogIn from "./pages/AdminLogIn.jsx"
+import RegisterPage from "./pages/RegisterPage.jsx"
 
 import AppShell from "@/components/layout/AppShell"
 
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/GruppePage" element={<GruppePage />} />
           <Route path="/adminlogin" element={<AdminLogIn />} />
           <Route path="/TeacherView" element={<TeacherView />} />
+          <Route path="/registrieren" element={<RegisterPage />} />
         </Routes>
   )
 }

@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { Users, MessageSquare, Sparkles, CheckCircle2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
 /**
  * Shablon für "Interview"-Arbeitsblätter.
@@ -25,42 +26,65 @@ export default function InterviewTemplate({
   questions,
   tips,
   submitLabel = "Arbeitsblatt einreichen",
+  worksheetId,
 }) {
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId)
+
   const [interviews, setInterviews] = useState(() =>
     questions.map(() => ({ person: "", notes: "", completed: false }))
   )
   const [showTip, setShowTip] = useState(null)
 
-  const updateCompleted = (index, interview) => {
-    const newInterviews = [...interviews]
+  useEffect(() => {
+    if (!loading) {
+      setInterviews(
+        initialAnswers?.interviews ??
+          questions.map(() => ({ person: "", notes: "", completed: false }))
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers])
+
+  const updateCompleted = (newInterviews, index) => {
     newInterviews[index].completed =
-      interview.person.length > 2 && interview.notes.length > 20
-    setInterviews(newInterviews)
+      newInterviews[index].person.length > 2 && newInterviews[index].notes.length > 20
+    return newInterviews
   }
 
   const handlePersonChange = (index, value) => {
     const newInterviews = [...interviews]
     newInterviews[index].person = value
-    updateCompleted(index, newInterviews[index])
-    setInterviews(newInterviews)
+    const updated = updateCompleted(newInterviews, index)
+    setInterviews(updated)
+    saveAnswers({ interviews: updated })
   }
 
   const handleNotesChange = (index, value) => {
     const newInterviews = [...interviews]
     newInterviews[index].notes = value
-    updateCompleted(index, newInterviews[index])
-    setInterviews(newInterviews)
+    const updated = updateCompleted(newInterviews, index)
+    setInterviews(updated)
+    saveAnswers({ interviews: updated })
 
-    if (value.length > 30 && !newInterviews[index].completed) {
+    if (value.length > 30 && !updated[index].completed) {
       setShowTip(index)
       setTimeout(() => setShowTip(null), 3500)
     }
   }
 
+  const handleComplete = () => {
+    submitAnswers({ interviews })
+  }
+
+  if (loading) {
+    return null
+  }
+
   const completedCount = interviews.filter((i) => i.completed).length
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-6 py-10">
+    <div className="mx-auto max-w-5xl space-y-4 px-4 py-6 md:space-y-8 md:px-6 md:py-10">
       {/* HEADER */}
       <Card className="rounded-3xl border border-sky-200 bg-sky-50 shadow-sm">
         <CardHeader className="flex items-center gap-3 px-8 py-6">
@@ -159,10 +183,11 @@ export default function InterviewTemplate({
           </div>
 
           <Button
-            disabled={completedCount < questions.length}
-            className="px-8 py-6 rounded-2xl text-base font-bold"
+            disabled={completedCount < questions.length || submitted}
+            onClick={handleComplete}
+            className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
           >
-            {submitLabel}
+            {submitted ? "Abgeschlossen" : submitLabel}
           </Button>
         </CardContent>
       </Card>

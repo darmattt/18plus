@@ -1,4 +1,4 @@
-﻿import { Search, ChevronLeft, ChevronDown, ChevronRight } from "lucide-react"
+﻿import { Search, ChevronLeft, ChevronDown, ChevronRight, Lock } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Input } from "@/components/ui/input"
 
@@ -10,7 +10,10 @@ export default function ContentSidebar({
   toggleModule,
   activeWorksheetId,
   onSelectWorksheet,
+  enabledSlugs,
 }) {
+  // enabledSlugs === null means no restriction is known/applies (e.g. not logged in) — show everything unlocked
+  const isLocked = (sheetId) => enabledSlugs !== null && !enabledSlugs.has(sheetId)
   return (
     <aside
       className={`
@@ -64,22 +67,30 @@ export default function ContentSidebar({
                   className="overflow-hidden"
                 >
                   <div className="mt-1 space-y-1 pl-2">
-                    {module.sheets.map((sheet) => (
-                      <button
-                        key={sheet.id}
-                        onClick={() => onSelectWorksheet(sheet.id)}
-                        className={`
-                          w-full rounded-lg p-3 text-left text-sm transition-all
-                          ${
-                            activeWorksheetId === sheet.id
-                              ? "bg-blue-600 font-semibold text-white"
-                              : "text-slate-600 hover:bg-sky-50 hover:text-blue-600"
-                          }
-                        `}
-                      >
-                        {sheet.title}
-                      </button>
-                    ))}
+                    {module.sheets.map((sheet) => {
+                      const locked = isLocked(sheet.id)
+
+                      return (
+                        <button
+                          key={sheet.id}
+                          onClick={() => !locked && onSelectWorksheet(sheet.id)}
+                          disabled={locked}
+                          className={`
+                            flex w-full items-center gap-2 rounded-lg p-3 text-left text-sm transition-all
+                            ${
+                              locked
+                                ? "cursor-not-allowed text-slate-400"
+                                : activeWorksheetId === sheet.id
+                                  ? "bg-blue-600 font-semibold text-white"
+                                  : "text-slate-600 hover:bg-sky-50 hover:text-blue-600"
+                            }
+                          `}
+                        >
+                          {locked && <Lock className="h-3.5 w-3.5 shrink-0" />}
+                          <span>{sheet.title}</span>
+                        </button>
+                      )
+                    })}
                   </div>
                 </motion.div>
               )}

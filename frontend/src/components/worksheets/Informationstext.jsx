@@ -3,6 +3,7 @@ import { BookOpen, ChevronRight, Lightbulb } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress";
 
 /**
  * Ersetzt Vorkommen von link.text innerhalb von text durch einen echten <a>-Link.
@@ -71,9 +72,19 @@ export default function InformationstextTemplate({
   insightTitle,
   insightText,
   insightLinks,
+  worksheetId,
 }) {
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId);
+
   const [currentSection, setCurrentSection] = useState(0);
   const [showInsight, setShowInsight] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      setCurrentSection(initialAnswers?.currentSection ?? 0);
+    }
+  }, [loading, initialAnswers]);
 
   useEffect(() => {
     if (currentSection === sections.length - 1) {
@@ -86,15 +97,25 @@ export default function InformationstextTemplate({
 
   const handleNext = () => {
     if (currentSection < sections.length - 1) {
-      setCurrentSection((prev) => prev + 1);
+      const next = currentSection + 1;
+      setCurrentSection(next);
+      saveAnswers({ currentSection: next });
     }
   };
+
+  const handleComplete = () => {
+    submitAnswers({ currentSection });
+  };
+
+  if (loading) {
+    return null;
+  }
 
   const currentData = sections[currentSection];
   const sentences = currentData.content.split(". ");
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-8 p-6">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4 p-4 md:gap-8 md:p-6">
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -182,7 +203,7 @@ export default function InformationstextTemplate({
                 <div className="mt-8 flex justify-end">
                   <Button
                     onClick={handleNext}
-                    className="rounded-2xl px-6 py-6 text-base font-semibold"
+                    className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-6 py-6 text-base font-semibold text-white hover:brightness-110"
                   >
                     Weiter
                     <ChevronRight className="ml-2 h-5 w-5" />
@@ -193,16 +214,29 @@ export default function InformationstextTemplate({
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-8 flex items-start gap-3 rounded-2xl border border-lime-300 bg-lime-100/40 p-4"
+                    className="mt-8 space-y-6"
                   >
-                    <Lightbulb className="mt-1 h-6 w-6 shrink-0 text-lime-600" />
-                    <div>
-                      <p className="mb-1 font-semibold text-slate-900">
-                        {insightTitle}
-                      </p>
-                      <p className="text-slate-700">
-                        {linkify(insightText, insightLinks)}
-                      </p>
+                    <div className="flex items-start gap-3 rounded-2xl border border-lime-300 bg-lime-100/40 p-4">
+                      <Lightbulb className="mt-1 h-6 w-6 shrink-0 text-lime-600" />
+                      <div>
+                        <p className="mb-1 font-semibold text-slate-900">
+                          {insightTitle}
+                        </p>
+                        <p className="text-slate-700">
+                          {linkify(insightText, insightLinks)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center">
+                      <Button
+                        size="lg"
+                        disabled={submitted}
+                        onClick={handleComplete}
+                        className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
+                      >
+                        {submitted ? "Abgeschlossen" : "Arbeitsblatt abschließen"}
+                      </Button>
                     </div>
                   </motion.div>
                 )

@@ -52,8 +52,8 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
   }
 
   return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden my-8">
           <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
           <button
@@ -63,7 +63,7 @@ export const LoginBox = ({ onClose, onLogin, onRegister }) => {
             <X className="w-6 h-6" />
           </button>
 
-          <div className="p-8">
+          <div className="p-6 sm:p-8">
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-[#006dd6] rounded-full mb-4">
                 <LogIn className="text-white w-8 h-8" />

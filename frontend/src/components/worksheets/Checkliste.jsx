@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckSquare, Award } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress";
 
 /**
  * Shablon für "Checkliste"-Arbeitsblätter.
@@ -34,6 +35,7 @@ export default function ChecklisteTemplate({
   encouragementMidText = "Weiter so! Du machst großartige Fortschritte!",
   encouragementCompleteText = "Perfekt! Alle Punkte bearbeitet!",
   completeButtonLabel = "Selbsteinschätzung abschließen",
+  worksheetId,
 }) {
   const totalItems = checklistData.reduce(
     (sum, category) => sum + category.items.length,
@@ -41,13 +43,24 @@ export default function ChecklisteTemplate({
   );
   const midPoint = Math.round(totalItems / 2);
 
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId);
+
   const [checkedItems, setCheckedItems] = useState(new Array(totalItems).fill(false));
   const [showEncouragement, setShowEncouragement] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      setCheckedItems(initialAnswers?.checkedItems ?? new Array(totalItems).fill(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers]);
 
   const handleCheck = (globalIndex) => {
     const newChecked = [...checkedItems];
     newChecked[globalIndex] = !newChecked[globalIndex];
     setCheckedItems(newChecked);
+    saveAnswers({ checkedItems: newChecked });
 
     const checkedCountNow = newChecked.filter(Boolean).length;
 
@@ -57,13 +70,21 @@ export default function ChecklisteTemplate({
     }
   };
 
+  const handleComplete = () => {
+    submitAnswers({ checkedItems });
+  };
+
+  if (loading) {
+    return null;
+  }
+
   const checkedCount = checkedItems.filter(Boolean).length;
   const progress = (checkedCount / checkedItems.length) * 100;
 
   let globalIndex = 0;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6">
+    <div className="mx-auto max-w-4xl space-y-4 p-4 md:space-y-8 md:p-6">
       <Card className="rounded-2xl border-lime-300/30 bg-gradient-to-r from-lime-300/10 to-blue-600/10 shadow-sm">
         <CardHeader>
           <div className="mb-2 flex items-center gap-3">
@@ -184,11 +205,17 @@ export default function ChecklisteTemplate({
       <div className="flex justify-center pt-4">
         <Button
           size="lg"
-          disabled={checkedCount < checkedItems.length}
-          className="rounded-xl px-8 py-4 text-base font-bold"
+          disabled={checkedCount < checkedItems.length || submitted}
+          onClick={handleComplete}
+          className="rounded-xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-4 text-base font-bold text-white hover:brightness-110"
         >
           {checkedCount < checkedItems.length ? (
             <>Noch {checkedItems.length - checkedCount} Punkte offen</>
+          ) : submitted ? (
+            <>
+              <CheckSquare className="mr-2 h-5 w-5" />
+              Abgeschlossen
+            </>
           ) : (
             <>
               <CheckSquare className="mr-2 h-5 w-5" />

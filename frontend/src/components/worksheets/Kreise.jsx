@@ -1,10 +1,11 @@
-﻿import { useMemo, useState } from "react"
+﻿import { useEffect, useMemo, useState } from "react"
 import { Circle, X, CheckCircle2, Sparkles } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
 /**
  * Shablon für "Interaktive Kreise"-Arbeitsblätter.
@@ -27,12 +28,30 @@ export default function KreiseTemplate({
   instructionText,
   circles: initialCircleData,
   celebrationText = "Alle Kreise beantwortet!",
+  worksheetId,
 }) {
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId)
+
   const [circles, setCircles] = useState(() =>
     initialCircleData.map((circle) => ({ ...circle, answer: "", completed: false }))
   )
   const [selectedCircle, setSelectedCircle] = useState(null)
   const [showCelebration, setShowCelebration] = useState(false)
+
+  useEffect(() => {
+    if (!loading) {
+      const savedById = new Map((initialAnswers?.circles ?? []).map((c) => [c.id, c]))
+      setCircles(
+        initialCircleData.map((circle) => ({
+          ...circle,
+          answer: savedById.get(circle.id)?.answer ?? "",
+          completed: savedById.get(circle.id)?.completed ?? false,
+        }))
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers])
 
   const completedCount = useMemo(
     () => circles.filter((circle) => circle.completed).length,
@@ -56,6 +75,9 @@ export default function KreiseTemplate({
     )
 
     setCircles(updatedCircles)
+    saveAnswers({
+      circles: updatedCircles.map((c) => ({ id: c.id, answer: c.answer, completed: c.completed })),
+    })
 
     if (answer.trim().length > 10) {
       const allCompleted = updatedCircles.every((circle) => circle.completed)
@@ -68,6 +90,16 @@ export default function KreiseTemplate({
 
   const handleClose = () => {
     setSelectedCircle(null)
+  }
+
+  const handleComplete = () => {
+    submitAnswers({
+      circles: circles.map((c) => ({ id: c.id, answer: c.answer, completed: c.completed })),
+    })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
@@ -111,7 +143,7 @@ export default function KreiseTemplate({
           </CardContent>
         </Card>
 
-        <div className="relative aspect-[16/10] rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm md:p-12">
+        <div className="relative aspect-square rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 shadow-sm sm:aspect-[16/10] sm:p-6 md:p-12">
           {circles.map((circle) => (
             <motion.button
               key={circle.id}
@@ -127,7 +159,7 @@ export default function KreiseTemplate({
               }}
             >
               <div
-                className={`flex h-24 w-24 flex-col items-center justify-center rounded-full px-2 text-center shadow-lg transition-all md:h-32 md:w-32 ${
+                className={`flex h-14 w-14 flex-col items-center justify-center rounded-full px-2 text-center shadow-lg transition-all sm:h-24 sm:w-24 md:h-32 md:w-32 ${
                   circle.completed
                     ? "ring-4 ring-lime-400"
                     : "hover:ring-4 hover:ring-slate-300"
@@ -164,6 +196,21 @@ export default function KreiseTemplate({
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        <div className="flex justify-center pt-2">
+          <Button
+            size="lg"
+            disabled={completedCount < circles.length || submitted}
+            onClick={handleComplete}
+            className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
+          >
+            {completedCount < circles.length
+              ? `Noch ${circles.length - completedCount} Kreise offen`
+              : submitted
+              ? "Abgeschlossen"
+              : "Arbeitsblatt abschließen"}
+          </Button>
         </div>
 
         <AnimatePresence>

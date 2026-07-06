@@ -61,6 +61,18 @@ async function apiRequest(path, options = {}) {
   return text ? JSON.parse(text) : null
 }
 
+export async function registerStudent(firstName, lastName, emailAddress, joinCode) {
+  return apiRequest("/register", {
+    method: "POST",
+    body: JSON.stringify({
+      FirstName: firstName,
+      LastName: lastName,
+      Email: emailAddress,
+      JoinCode: joinCode,
+    }),
+  })
+}
+
 export async function requestStudentLoginCode(emailAddress) {
   return apiRequest("/login/request-code", {
     method: "POST",
@@ -101,4 +113,32 @@ export async function getStudentProfile() {
 
 export function logoutStudent() {
   removeStudentToken()
+}
+
+export async function getEnabledWorksheets() {
+  return apiRequest("/enabled-worksheets", {
+    method: "GET",
+  })
+}
+
+export async function getAllWorksheetResults() {
+  return apiRequest("/results", {
+    method: "GET",
+  })
+}
+
+export async function getWorksheetResult(slug) {
+  return apiRequest(`/results/${slug}`, {
+    method: "GET",
+  })
+}
+
+export async function saveWorksheetResult(slug, answersJson, submit = false) {
+  return apiRequest(`/results/${slug}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      AnswersJson: answersJson,
+      Submit: submit,
+    }),
+  })
 }

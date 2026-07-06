@@ -1,4 +1,4 @@
-﻿import React from "react"
+﻿import React, { useEffect, useState } from "react"
 import {
   Mail,
   Users,
@@ -9,17 +9,52 @@ import {
   FileText,
 } from "lucide-react"
 
+import { modules } from "@/data/modules"
+import { getAllWorksheetResults } from "@/api/studentApi"
+
+// WorkingStatus enum from the backend, serialized as its name (Draft/InProgress/Submitted/Cancelled)
+function mapStatus(workingStatus) {
+  if (workingStatus === "Submitted") return "completed"
+  if (workingStatus === "InProgress") return "in-progress"
+  return "not-started"
+}
+
 export const ProfileView = ({user}) => {
-  const worksheets = [
-    { name: "Modul 1: Arbeitsblatt 1", status: "completed" },
-    { name: "Modul 1: Arbeitsblatt 2", status: "completed" },
-    { name: "Modul 1: Arbeitsblatt 3", status: "in-progress" },
-    { name: "Modul 1: Arbeitsblatt 4", status: "not-started" },
-    { name: "Modul 2: Arbeitsblatt 1", status: "completed" },
-    { name: "Modul 2: Arbeitsblatt 2", status: "not-started" },
-    { name: "Modul 2: Arbeitsblatt 3", status: "not-started" },
-    { name: "Modul 3: Arbeitsblatt 1", status: "not-started" },
-  ]
+  const [worksheets, setWorksheets] = useState(() =>
+    modules.flatMap((module) =>
+      module.sheets.map((sheet) => ({ name: sheet.title, status: "not-started" }))
+    )
+  )
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadResults() {
+      try {
+        const results = await getAllWorksheetResults()
+        if (cancelled) return
+
+        const statusBySlug = new Map(results.map((r) => [r.slug, mapStatus(r.status)]))
+
+        setWorksheets(
+          modules.flatMap((module) =>
+            module.sheets.map((sheet) => ({
+              name: sheet.title,
+              status: statusBySlug.get(sheet.id) ?? "not-started",
+            }))
+          )
+        )
+      } catch (error) {
+        console.error("Failed to load worksheet progress", error)
+      }
+    }
+
+    loadResults()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const completedCount = worksheets.filter(
     (w) => w.status === "completed"

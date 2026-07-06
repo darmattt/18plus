@@ -9,7 +9,7 @@ export default function TeacherView() {
   return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b-2 border-gray-200 px-6 py-6">
+        <div className="bg-white border-b-2 border-gray-200 px-4 py-4 md:px-6 md:py-6">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl font-extrabold text-gray-900">Betreuer:innen-Bereich</h1>
             <p className="text-gray-600 mt-1">
@@ -19,7 +19,7 @@ export default function TeacherView() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-6 pb-24">
+        <div className="flex-1 p-4 pb-24 md:p-6">
           <div className="max-w-7xl mx-auto">
             {activeTab === "groups" ? <TeacherGroupManagement /> : <StudentResults />}
           </div>

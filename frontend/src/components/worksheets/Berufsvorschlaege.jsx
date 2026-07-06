@@ -1,10 +1,12 @@
-﻿import { useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { CheckCircle2, ListChecks } from "lucide-react"
 import { motion } from "framer-motion"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
 /**
  * Shablon für "Berufsvorschläge"-Arbeitsblätter: offene Fragen (optional mit
@@ -29,26 +31,52 @@ export default function BerufsvorschlaegeTemplate({
   openQuestions,
   rankingLabel,
   rankingCount,
+  worksheetId,
 }) {
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId)
+
   const [openAnswers, setOpenAnswers] = useState(() => openQuestions.map(() => ""))
   const [rankingAnswers, setRankingAnswers] = useState(() =>
     new Array(rankingCount).fill("")
   )
 
+  useEffect(() => {
+    if (!loading) {
+      setOpenAnswers(initialAnswers?.openAnswers ?? openQuestions.map(() => ""))
+      setRankingAnswers(initialAnswers?.rankingAnswers ?? new Array(rankingCount).fill(""))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers])
+
   const updateOpenAnswer = (index, value) => {
     const next = [...openAnswers]
     next[index] = value
     setOpenAnswers(next)
+    saveAnswers({ openAnswers: next, rankingAnswers })
   }
 
   const updateRankingAnswer = (index, value) => {
     const next = [...rankingAnswers]
     next[index] = value
     setRankingAnswers(next)
+    saveAnswers({ openAnswers, rankingAnswers: next })
+  }
+
+  const isComplete =
+    openAnswers.every((answer) => answer.trim().length > 10) &&
+    rankingAnswers.every((answer) => answer.trim().length > 0)
+
+  const handleComplete = () => {
+    submitAnswers({ openAnswers, rankingAnswers })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-8 p-6">
+    <div className="mx-auto flex max-w-5xl flex-col gap-4 p-4 md:gap-8 md:p-6">
       {/* HEADER */}
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
@@ -126,6 +154,21 @@ export default function BerufsvorschlaegeTemplate({
           </div>
         </CardContent>
       </Card>
+
+      <div className="flex justify-center pt-2">
+        <Button
+          size="lg"
+          disabled={!isComplete || submitted}
+          onClick={handleComplete}
+          className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
+        >
+          {!isComplete
+            ? "Bitte alle Felder ausfüllen"
+            : submitted
+            ? "Abgeschlossen"
+            : "Arbeitsblatt abschließen"}
+        </Button>
+      </div>
     </div>
   )
 }

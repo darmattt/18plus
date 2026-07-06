@@ -1,17 +1,30 @@
 ﻿import React, { useState, useEffect } from "react"
 import { UserPlus, Mail, User, X, Key, Send, CheckCircle } from "lucide-react"
 
+import {
+  registerStudent,
+  requestStudentLoginCode,
+  verifyStudentLoginCode,
+} from "@/api/studentApi"
+
 export const RegistrationBox = ({
   onClose,
   onRegisterSuccess,
   onBackToLogin,
+  initialJoinCode = "",
 }) => {
   const [step, setStep] = useState("info")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
+  const [joinCode, setJoinCode] = useState(initialJoinCode)
   const [verificationCode, setVerificationCode] = useState("")
   const [countdown, setCountdown] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    setJoinCode(initialJoinCode)
+  }, [initialJoinCode])
 
   useEffect(() => {
     if (countdown > 0) {
@@ -20,32 +33,45 @@ export const RegistrationBox = ({
     }
   }, [countdown])
 
-  const handleSubmitInfo = (e) => {
-    e.preventDefault()
-    console.log("Registration info submitted:", { firstName, lastName, email })
-    setStep("verify")
-    setCountdown(60)
-  }
-
-  const handleResendCode = () => {
-    console.log("Resending verification code to:", email)
-    setCountdown(60)
-  }
-
-  const handleVerifyCode = (e) => {
+  const handleSubmitInfo = async (e) => {
     e.preventDefault()
 
-    if (verificationCode === "676767") {
-      console.log("Registration successful!")
+    try {
+      setSubmitting(true)
+      await registerStudent(firstName, lastName, email, joinCode)
+      await requestStudentLoginCode(email)
+      setStep("verify")
+      setCountdown(60)
+    } catch (error) {
+      alert(error.message || "Registrierung fehlgeschlagen")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleResendCode = async () => {
+    try {
+      await requestStudentLoginCode(email)
+      setCountdown(60)
+    } catch (error) {
+      alert(error.message || "Code konnte nicht erneut gesendet werden")
+    }
+  }
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault()
+
+    try {
+      await verifyStudentLoginCode(email, verificationCode)
       onRegisterSuccess()
-    } else {
+    } catch {
       alert("Ungültiger Code. Bitte versuche es erneut.")
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden my-8">
         <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
 
         <button
@@ -55,7 +81,7 @@ export const RegistrationBox = ({
           <X className="w-6 h-6" />
         </button>
 
-        <div className="p-8">
+        <div className="p-6 sm:p-8">
           {step === "info" ? (
             <>
               <div className="text-center mb-6">
@@ -144,32 +170,34 @@ export const RegistrationBox = ({
 
                 <div>
                   <label
-                    htmlFor="LernGruppeCode"
+                    htmlFor="joinCode"
                     className="block text-sm font-bold text-gray-700 mb-2"
                   >
                     Code für deine Lerngruppe
                   </label>
 
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
 
                     <input
-                      id="lgCode"
-                      type="lgCode"
-                      value={email}
-                      //onChange={(e) => setEmail(e.target.value)}
+                      id="joinCode"
+                      type="text"
+                      value={joinCode}
+                      onChange={(e) => setJoinCode(e.target.value)}
                       placeholder="123456"
+                      maxLength={6}
                       required
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20 transition-all"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#00a7e7] focus:outline-none focus:ring-2 focus:ring-[#00a7e7]/20 transition-all text-center text-xl tracking-widest"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-[#c7d300] text-black rounded-xl font-bold hover:bg-[#b0ba00] transition-colors shadow-lg shadow-[#c7d300]/20 flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full py-4 bg-[#c7d300] text-black rounded-xl font-bold hover:bg-[#b0ba00] transition-colors shadow-lg shadow-[#c7d300]/20 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  Weiter <Send className="w-5 h-5" />
+                  {submitting ? "Wird registriert..." : "Weiter"} <Send className="w-5 h-5" />
                 </button>
               </form>
 

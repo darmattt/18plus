@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { Table, Plus, Trash2, Sparkles, CheckCircle2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
 /**
  * Shablon für "Tabelle"-Vergleichs-Arbeitsblätter.
@@ -41,6 +42,7 @@ export default function TabelleTemplate({
   progressLabel = "Zeilen analysiert",
   submitLabelIncomplete = "Mindestens eine Zeile vollständig ausfüllen",
   submitLabelComplete = "Analyse abschließen",
+  worksheetId,
 }) {
   const makeEmptyRow = () => {
     const row = { id: Date.now() + Math.random() }
@@ -50,17 +52,31 @@ export default function TabelleTemplate({
     return row
   }
 
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId)
+
   const [rows, setRows] = useState([makeEmptyRow()])
   const [showTip, setShowTip] = useState(false)
   const [highlightedRow, setHighlightedRow] = useState(null)
 
+  useEffect(() => {
+    if (!loading) {
+      setRows(initialAnswers?.rows ?? [makeEmptyRow()])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers])
+
   const addRow = () => {
-    setRows([...rows, makeEmptyRow()])
+    const next = [...rows, makeEmptyRow()]
+    setRows(next)
+    saveAnswers({ rows: next })
   }
 
   const removeRow = (id) => {
     if (rows.length > 1) {
-      setRows(rows.filter((row) => row.id !== id))
+      const next = rows.filter((row) => row.id !== id)
+      setRows(next)
+      saveAnswers({ rows: next })
     }
   }
 
@@ -74,6 +90,7 @@ export default function TabelleTemplate({
     )
 
     setRows(updatedRows)
+    saveAnswers({ rows: updatedRows })
 
     const currentRow = updatedRows.find((r) => r.id === id)
 
@@ -91,8 +108,16 @@ export default function TabelleTemplate({
   const completedRows = rows.filter(isRowComplete).length
   const [mainColumn, ...restColumns] = columns
 
+  const handleComplete = () => {
+    submitAnswers({ rows })
+  }
+
+  if (loading) {
+    return null
+  }
+
   return (
-    <div className="mx-auto max-w-6xl space-y-8 px-6 py-10">
+    <div className="mx-auto max-w-6xl space-y-4 px-4 py-6 md:space-y-8 md:px-6 md:py-10">
       {/* HEADER */}
       <Card className="rounded-3xl border border-sky-200 bg-sky-50 shadow-sm">
         <CardHeader className="flex items-center gap-3 px-8 py-6">
@@ -138,7 +163,56 @@ export default function TabelleTemplate({
           )}
         </AnimatePresence>
 
-        <div className="rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        {/* MOBILE: stacked cards, avoids horizontal scrolling with several text columns */}
+        <div className="space-y-4 sm:hidden">
+          {rows.map((row) => (
+            <div
+              key={row.id}
+              className={`rounded-2xl border p-4 space-y-3 transition-all ${
+                highlightedRow === row.id
+                  ? "border-lime-300 bg-lime-200/30"
+                  : "border-slate-200 bg-white"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Input
+                  value={row[mainColumn.key]}
+                  onChange={(e) => updateCell(row.id, mainColumn.key, e.target.value)}
+                  placeholder={mainColumn.placeholder}
+                  className="flex-1"
+                />
+                {isRowComplete(row) && (
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-lime-400" />
+                )}
+                {rows.length > 1 && (
+                  <button
+                    onClick={() => removeRow(row.id)}
+                    className="shrink-0 p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+
+              {restColumns.map((col) => (
+                <div key={col.key}>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500">
+                    {col.label}
+                  </label>
+                  <Textarea
+                    rows={2}
+                    value={row[col.key]}
+                    onChange={(e) => updateCell(row.id, col.key, e.target.value)}
+                    placeholder={col.placeholder}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* DESKTOP/TABLET: full table */}
+        <div className="hidden rounded-3xl border border-slate-200 shadow-sm overflow-hidden sm:block">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -225,8 +299,12 @@ export default function TabelleTemplate({
 
       {/* SUBMIT */}
       <div className="flex justify-center pt-4">
-        <Button disabled={completedRows < 1} className="px-8 py-6 rounded-2xl font-bold">
-          {completedRows < 1 ? submitLabelIncomplete : submitLabelComplete}
+        <Button
+          disabled={completedRows < 1 || submitted}
+          onClick={handleComplete}
+          className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 font-bold text-white hover:brightness-110"
+        >
+          {completedRows < 1 ? submitLabelIncomplete : submitted ? "Abgeschlossen" : submitLabelComplete}
         </Button>
       </div>
     </div>

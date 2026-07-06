@@ -76,8 +76,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-            Die moderne Lernplattform, die dir hilft, deinen Fortschritt zu verfolgen
-            und in deinem Studium zu glänzen.
+            Die Matura naht mit raschen Schritten. Wissen Sie schon, was Sie danach machen werden? Das Berufs- und Studienorientierungsprogramm 18plus begleitet Sie auf dem Weg zu Ihrer Entscheidung.
           </p>
 
           <div className="mt-10">
@@ -108,7 +107,7 @@ export default function LandingPage() {
               </div>
               <div className="leading-tight">
                 <div className="text-xs text-slate-500">Level Up</div>
-                <div className="font-semibold text-slate-900">Fortgeschritten</div>
+                <div className="font-semibold text-slate-900">Weiterbildung?</div>
               </div>
             </CardContent>
           </Card>
@@ -119,9 +118,9 @@ export default function LandingPage() {
                 <Trophy className="h-5 w-5" />
               </div>
               <div className="leading-tight">
-                <div className="text-xs text-slate-500">Letztes Ergebnis</div>
+                <div className="text-xs text-slate-500">Letztes Meilstein</div>
                 <div className="font-semibold text-slate-900">
-                  Mathematik: <span className="font-extrabold">98%</span>
+                  Matura - done! Was jetzt?..
                 </div>
               </div>
             </CardContent>
@@ -145,7 +144,7 @@ export default function LandingPage() {
                 onClose={() => setShowRegistration(false)}
                 onRegisterSuccess={() => {
                   setShowRegistration(false)
-                  setShowLogin(true)
+                  navigate("/arbeitsblaetter")
                 }}
                 onBackToLogin={() => {
                   setShowRegistration(false)

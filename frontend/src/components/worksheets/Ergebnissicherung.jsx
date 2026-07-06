@@ -1,9 +1,11 @@
-﻿import { useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { ClipboardList } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
 /**
  * Shablon für "Ergebnissicherung"-Arbeitsblätter: eine Reflexionsfrage
@@ -32,13 +34,31 @@ export default function ErgebnissicherungTemplate({
   comparisonVariants,
   comparisonRowLabels,
   comparisonSections,
+  worksheetId,
 }) {
-  const [reflectionAnswer, setReflectionAnswer] = useState("")
-  const [comparisonData, setComparisonData] = useState(() =>
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId)
+
+  const makeEmptyComparisonData = () =>
     comparisonSections.map(() =>
       comparisonRowLabels.map(() => comparisonVariants.map(() => ""))
     )
-  )
+
+  const [reflectionAnswer, setReflectionAnswer] = useState("")
+  const [comparisonData, setComparisonData] = useState(makeEmptyComparisonData)
+
+  useEffect(() => {
+    if (!loading) {
+      setReflectionAnswer(initialAnswers?.reflectionAnswer ?? "")
+      setComparisonData(initialAnswers?.comparisonData ?? makeEmptyComparisonData())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers])
+
+  const handleReflectionChange = (value) => {
+    setReflectionAnswer(value)
+    saveAnswers({ reflectionAnswer: value, comparisonData })
+  }
 
   const updateComparisonCell = (sectionIdx, rowIdx, colIdx, value) => {
     const next = comparisonData.map((section, sIdx) =>
@@ -51,10 +71,21 @@ export default function ErgebnissicherungTemplate({
         : section
     )
     setComparisonData(next)
+    saveAnswers({ reflectionAnswer, comparisonData: next })
+  }
+
+  const isComplete = reflectionAnswer.trim().length > 0
+
+  const handleComplete = () => {
+    submitAnswers({ reflectionAnswer, comparisonData })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-8 p-6">
+    <div className="mx-auto flex max-w-5xl flex-col gap-4 p-4 md:gap-8 md:p-6">
       {/* HEADER */}
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
@@ -77,7 +108,7 @@ export default function ErgebnissicherungTemplate({
           </h3>
           <Textarea
             value={reflectionAnswer}
-            onChange={(e) => setReflectionAnswer(e.target.value)}
+            onChange={(e) => handleReflectionChange(e.target.value)}
             placeholder="Deine Gedanken schlagwortartig..."
             rows={4}
             className="min-h-[110px] resize-none rounded-2xl border-slate-200 focus-visible:ring-sky-400"
@@ -144,6 +175,21 @@ export default function ErgebnissicherungTemplate({
           ))}
         </CardContent>
       </Card>
+
+      <div className="flex justify-center pt-2">
+        <Button
+          size="lg"
+          disabled={!isComplete || submitted}
+          onClick={handleComplete}
+          className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
+        >
+          {!isComplete
+            ? "Bitte Reflexionsfrage beantworten"
+            : submitted
+            ? "Abgeschlossen"
+            : "Arbeitsblatt abschließen"}
+        </Button>
+      </div>
     </div>
   )
 }

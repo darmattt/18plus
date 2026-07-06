@@ -11,6 +11,7 @@ import { ChatBot } from "@/pages/ChatBot"
 import { LoginBox } from "@/pages/LoginPage.jsx"
 import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
 import {
+  getEnabledWorksheets,
   getStudentProfile,
   getStudentToken,
   logoutStudent,
@@ -60,7 +61,17 @@ export default function AppShell() {
   const [chatOpen, setChatOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState(() => readStudentSession())
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getStudentToken()))
+  const [enabledSlugs, setEnabledSlugs] = useState(null)
   const navigate = useNavigate()
+
+  const loadEnabledWorksheets = async () => {
+    try {
+      const slugs = await getEnabledWorksheets()
+      setEnabledSlugs(new Set(Array.isArray(slugs) ? slugs : []))
+    } catch (error) {
+      console.error("Failed to load enabled worksheets", error)
+    }
+  }
 
   useEffect(() => {
     if (currentUser) {
@@ -89,6 +100,7 @@ export default function AppShell() {
         if (!cancelled) {
           setCurrentUser(mapStudentProfile(profile))
           setIsLoggedIn(true)
+          loadEnabledWorksheets()
         }
       } catch (error) {
         if (!cancelled) {
@@ -146,6 +158,7 @@ export default function AppShell() {
 
         setCurrentUser(mapStudentProfile(profile))
         setIsLoggedIn(true)
+        loadEnabledWorksheets()
         setShowLogin(false)
         navigate("/arbeitsblaetter")
       }
@@ -180,6 +193,7 @@ export default function AppShell() {
         toggleModule={toggleModule}
         activeWorksheetId={activeWorksheetId}
         onSelectWorksheet={handleSelectWorksheet}
+        enabledSlugs={enabledSlugs}
       />
 
       <main className="flex-1 overflow-y-auto px-4 pb-32 pt-6 md:px-8 md:pt-10">
@@ -237,9 +251,19 @@ export default function AppShell() {
       {showRegistration && (
         <RegistrationBox
           onClose={() => setShowRegistration(false)}
-          onRegisterSuccess={() => {
+          onRegisterSuccess={async () => {
             setShowRegistration(false)
-            setShowLogin(true)
+
+            try {
+              const profile = await getStudentProfile()
+              setCurrentUser(mapStudentProfile(profile))
+              setIsLoggedIn(true)
+              loadEnabledWorksheets()
+              navigate("/arbeitsblaetter")
+            } catch (error) {
+              console.error("Failed to load profile after registration", error)
+              setShowLogin(true)
+            }
           }}
           onBackToLogin={() => {
             setShowRegistration(false)

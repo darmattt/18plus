@@ -1,15 +1,31 @@
 ﻿import React, { useEffect, useMemo, useState } from "react"
-import { Search, Plus, Edit2, Trash2, X, Users, User, UserPlus, QrCode } from "lucide-react"
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  Users,
+  User,
+  UserPlus,
+  QrCode,
+  BookOpen,
+  Lock,
+  Unlock,
+} from "lucide-react"
 import { QRCodeSVG } from "qrcode.react"
 
 import {
   addStudentToGroup,
   createTeacherGroup,
   deleteTeacherGroup,
+  getGroupEnabledWorksheets,
   getTeacherGroups,
   removeStudentFromMyGroup,
+  setGroupWorksheets,
   updateTeacherGroup,
 } from "@/api/teacherApi"
+import { modules } from "@/data/modules"
 
 export default function TeacherGroupManagement() {
   const [groups, setGroups] = useState([])
@@ -21,12 +37,16 @@ export default function TeacherGroupManagement() {
   const [showEditGroupModal, setShowEditGroupModal] = useState(false)
   const [showAddStudentModal, setShowAddStudentModal] = useState(false)
   const [showQRCodeModal, setShowQRCodeModal] = useState(false)
+  const [showModulesModal, setShowModulesModal] = useState(false)
 
   const [selectedGroup, setSelectedGroup] = useState(null)
   const [expandedGroups, setExpandedGroups] = useState(new Set())
 
   const [groupFormData, setGroupFormData] = useState({ name: "" })
   const [studentFormData, setStudentFormData] = useState({ email: "" })
+
+  const [enabledSlugs, setEnabledSlugs] = useState(new Set())
+  const [modulesLoading, setModulesLoading] = useState(false)
 
   const loadGroups = async () => {
     try {
@@ -46,6 +66,7 @@ export default function TeacherGroupManagement() {
       const normalizedGroups = rawGroups.map((group, groupIndex) => ({
         id: group.id ?? group.groupId ?? groupIndex + 1,
         name: group.name ?? group.classNumber ?? "Unbenannte Gruppe",
+        joinCode: group.joinCode ?? "",
         students: Array.isArray(group.students)
           ? group.students.map((student, studentIndex) => ({
               id: student.id ?? student.studentId ?? studentIndex + 1,
@@ -173,6 +194,38 @@ export default function TeacherGroupManagement() {
     setShowQRCodeModal(true)
   }
 
+  const loadEnabledSlugs = async (groupId) => {
+    try {
+      setModulesLoading(true)
+      const slugs = await getGroupEnabledWorksheets(groupId)
+      setEnabledSlugs(new Set(Array.isArray(slugs) ? slugs : []))
+    } catch (err) {
+      alert(err.message || "Freigaben konnten nicht geladen werden")
+    } finally {
+      setModulesLoading(false)
+    }
+  }
+
+  const openModulesModal = (group) => {
+    setSelectedGroup(group)
+    setShowModulesModal(true)
+    loadEnabledSlugs(group.id)
+  }
+
+  const handleToggleModule = async (module) => {
+    if (!selectedGroup) return
+
+    const slugs = module.sheets.map((sheet) => sheet.id)
+    const isFullyEnabled = slugs.every((slug) => enabledSlugs.has(slug))
+
+    try {
+      await setGroupWorksheets(selectedGroup.id, slugs, !isFullyEnabled)
+      await loadEnabledSlugs(selectedGroup.id)
+    } catch (err) {
+      alert(err.message || "Modul konnte nicht aktualisiert werden")
+    }
+  }
+
   if (loading) return <div className="p-6">Lädt Gruppen...</div>
 
   if (error) return <div className="p-6 text-red-600 font-bold">Fehler: {error}</div>
@@ -229,6 +282,14 @@ export default function TeacherGroupManagement() {
                 </button>
 
                 <div className="flex gap-2">
+                  <button
+                    onClick={() => openModulesModal(group)}
+                    className="p-2 text-[#006dd6] hover:bg-[#006dd6]/10 rounded-lg transition-colors"
+                    title="Module verwalten"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                  </button>
+
                   <button
                     onClick={() => openQRCodeModal(group)}
                     className="p-2 text-[#c7d300] hover:bg-[#c7d300]/10 rounded-lg transition-colors"
@@ -310,8 +371,8 @@ export default function TeacherGroupManagement() {
       </div>
 
       {showCreateGroupModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-8">
             <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -348,8 +409,8 @@ export default function TeacherGroupManagement() {
       )}
 
       {showEditGroupModal && selectedGroup && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-8">
             <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -392,8 +453,8 @@ export default function TeacherGroupManagement() {
       )}
 
       {showQRCodeModal && selectedGroup && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-8">
             <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -414,7 +475,7 @@ export default function TeacherGroupManagement() {
               <div className="flex flex-col items-center space-y-4">
                 <div className="p-6 bg-white border-4 border-gray-200 rounded-2xl">
                   <QRCodeSVG
-                    value={`group:${selectedGroup.id}`}
+                    value={`${window.location.origin}/registrieren?code=${selectedGroup.joinCode}`}
                     size={200}
                     level="H"
                     includeMargin={false}
@@ -427,8 +488,7 @@ export default function TeacherGroupManagement() {
 
                 <div className="w-full px-6 py-4 bg-gradient-to-r from-[#00a7e7]/10 to-[#c7d300]/10 rounded-xl border-2 border-dashed border-[#006dd6]">
                   <p className="text-3xl font-extrabold text-center text-gray-900 tracking-wider">
-                    {String(selectedGroup.id).padStart(6, "0")}-
-                    {selectedGroup.name.substring(0, 3).toUpperCase()}
+                    {selectedGroup.joinCode}
                   </p>
                 </div>
               </div>
@@ -437,9 +497,80 @@ export default function TeacherGroupManagement() {
         </div>
       )}
 
+      {showModulesModal && selectedGroup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-8">
+            <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-extrabold text-gray-900">
+                  Module für {selectedGroup.name}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowModulesModal(false)
+                    setSelectedGroup(null)
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {modulesLoading ? (
+                <p className="text-center text-gray-500 py-8">Lädt Module...</p>
+              ) : (
+                <div className="space-y-3">
+                  {modules.map((module) => {
+                    const slugs = module.sheets.map((sheet) => sheet.id)
+                    const enabledCount = slugs.filter((slug) => enabledSlugs.has(slug)).length
+                    const isFullyEnabled = enabledCount === slugs.length
+
+                    return (
+                      <div
+                        key={module.title}
+                        className="flex items-center justify-between gap-4 rounded-xl border-2 border-gray-200 p-4"
+                      >
+                        <div>
+                          <p className="font-bold text-gray-900">{module.title.trim()}</p>
+                          <p className="text-xs text-gray-600">
+                            {enabledCount} von {slugs.length} Arbeitsblättern freigeschaltet
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => handleToggleModule(module)}
+                          className={`flex shrink-0 items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
+                            isFullyEnabled
+                              ? "bg-green-100 text-green-700 hover:bg-green-200"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          }`}
+                        >
+                          {isFullyEnabled ? (
+                            <>
+                              <Unlock className="w-4 h-4" />
+                              Freigeschaltet
+                            </>
+                          ) : (
+                            <>
+                              <Lock className="w-4 h-4" />
+                              Freischalten
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {showAddStudentModal && selectedGroup && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-8">
             <div className="h-2 bg-gradient-to-r from-[#c7d300] via-[#00a7e7] to-[#006dd6]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">

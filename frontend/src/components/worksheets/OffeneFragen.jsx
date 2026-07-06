@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Sparkles } from "lucide-react";
 
@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress";
 
 /**
  * Shablon für "Offene Fragen"-Arbeitsblätter.
@@ -25,26 +26,52 @@ export default function OffeneFragenTemplate({
   questions,
   motivationMessages,
   completeLabel = "Arbeitsblatt abschließen",
+  worksheetId,
 }) {
+  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
+    useWorksheetProgress(worksheetId);
+
   const [answers, setAnswers] = useState(() => questions.map(() => ""));
   const [showMotivation, setShowMotivation] = useState(null);
   const [completed, setCompleted] = useState([]);
+
+  useEffect(() => {
+    if (!loading) {
+      setAnswers(initialAnswers?.answers ?? questions.map(() => ""));
+      setCompleted(initialAnswers?.completed ?? []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, initialAnswers]);
 
   const handleAnswerChange = (index, value) => {
     const newAnswers = [...answers];
     newAnswers[index] = value;
     setAnswers(newAnswers);
 
+    let newCompleted = completed;
+
     if (value.trim().length > 20 && !completed.includes(index)) {
-      setCompleted((prev) => [...prev, index]);
+      newCompleted = [...completed, index];
+      setCompleted(newCompleted);
       setShowMotivation(index);
       setTimeout(() => setShowMotivation(null), 3000);
     }
 
     if (value.trim().length <= 20 && completed.includes(index)) {
-      setCompleted((prev) => prev.filter((item) => item !== index));
+      newCompleted = completed.filter((item) => item !== index);
+      setCompleted(newCompleted);
     }
+
+    saveAnswers({ answers: newAnswers, completed: newCompleted });
   };
+
+  const handleComplete = () => {
+    submitAnswers({ answers, completed });
+  };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-6 md:px-6 md:py-10">
@@ -120,11 +147,14 @@ export default function OffeneFragenTemplate({
         <div className="flex justify-center pt-2">
           <Button
             size="lg"
-            disabled={completed.length < questions.length}
-            className="rounded-2xl px-8 py-6 text-base font-bold"
+            disabled={completed.length < questions.length || submitted}
+            onClick={handleComplete}
+            className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
           >
             {completed.length < questions.length
               ? `Noch ${questions.length - completed.length} Fragen offen`
+              : submitted
+              ? "Abgeschlossen"
               : completeLabel}
           </Button>
         </div>
