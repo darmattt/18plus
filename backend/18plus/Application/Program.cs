@@ -122,6 +122,7 @@ public class Program
             var db = scope.ServiceProvider.GetRequiredService<EighteenplusDbContext>();
             var passwordHasher = scope.ServiceProvider.GetRequiredService<PasswordHasher<UserBase>>();
             var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
+           // db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
             DatabaseSeeder.Seed(db, passwordHasher, passwordService);
         }
