@@ -49,7 +49,9 @@ async function apiRequest(path, options = {}) {
       }
     }
 
-    throw new Error(errorMessage || "Request fehlgeschlagen")
+    const error = new Error(errorMessage || "Request fehlgeschlagen")
+    error.status = response.status
+    throw error
   }
 
   if (response.status === 204) {

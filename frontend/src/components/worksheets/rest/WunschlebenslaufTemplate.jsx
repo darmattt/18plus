@@ -1,32 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Table2 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
-/**
- * Shablon für Arbeitsblätter mit einem festen Raster (feste Zeilen x feste Spalten),
- * z.B. "Mein Wunschlebenslauf".
- *
- * Props:
- * {
- *   headerTitle:    string,
- *   headerSubtitle: string,
- *   rowGroupLabel:  string,   // z.B. "SO MÖCHTE ICH LEBEN…"
- *   rowLabels:      string[], // z.B. ["… mit 18 Jahren", "… mit 21 Jahren", ...]
- *   columnLabels:   string[], // z.B. ["Partnerschaft", "Kinder", "Wohnen", ...]
- * }
- */
 export default function WunschlebenslaufTemplate({
   headerTitle,
   headerSubtitle,
   rowGroupLabel,
   rowLabels,
   columnLabels,
+  worksheetId,
 }) {
-  const [data, setData] = useState(() =>
-    rowLabels.map(() => columnLabels.map(() => ""))
-  )
+  const {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  } = useWorksheetProgress(worksheetId)
+
+  const makeEmptyData = () => rowLabels.map(() => columnLabels.map(() => ""))
+  const [data, setData] = useState(makeEmptyData)
+
+  useEffect(() => {
+    if (!loading) {
+      setData(initialAnswers?.data ?? makeEmptyData())
+    }
+  }, [initialAnswers, loading, rowLabels, columnLabels])
 
   const updateCell = (rowIdx, colIdx, value) => {
     const next = data.map((row, rIdx) =>
@@ -35,11 +40,21 @@ export default function WunschlebenslaufTemplate({
         : row
     )
     setData(next)
+    saveAnswers({ data: next })
+  }
+
+  const isComplete = data.every((row) => row.every((cell) => cell.trim().length > 0))
+
+  const handleSubmit = async () => {
+    await submitAnswers({ data })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 p-6">
-      {/* HEADER */}
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -56,7 +71,6 @@ export default function WunschlebenslaufTemplate({
         </CardHeader>
       </Card>
 
-      {/* GRID */}
       <Card className="rounded-3xl border border-slate-200 shadow-sm">
         <CardContent className="p-4 md:p-6">
           <div className="overflow-x-auto rounded-2xl border border-slate-200">
@@ -99,6 +113,29 @@ export default function WunschlebenslaufTemplate({
           </div>
         </CardContent>
       </Card>
+
+      <div className="flex flex-col items-center gap-3 pt-2">
+        <Button
+          size="lg"
+          disabled={!isComplete || submitted || submitting}
+          onClick={handleSubmit}
+          className="rounded-2xl px-8 py-6 font-bold"
+        >
+          {!isComplete
+            ? "Bitte alles ausfuellen"
+            : submitting
+            ? "Wird abgeschlossen..."
+            : submitted
+            ? "Abgeschlossen"
+            : "Arbeitsblatt abschliessen"}
+        </Button>
+
+        {submitError && (
+          <p className="text-center text-sm font-medium text-rose-600">
+            {submitError}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

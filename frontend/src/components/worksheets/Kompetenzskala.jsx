@@ -6,21 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
-/**
- * Shablon für "Kompetenz-Skala"-Arbeitsblätter (z.B. Selbstbild, Fremdbild).
- *
- * Props:
- * {
- *   headerTitle:        string,
- *   description:        string,
- *   extraInfoText?:     string,   // optionaler fett hervorgehobener Zusatzhinweis
- *   stepNumber?:        string,   // Standard "2"
- *   scaleQuestionText:  string,
- *   scaleLabels:        string[],  // Länge = Anzahl Bewertungsstufen (hier 4)
- *   skills:             string[],
- *   columnLabel?:       string,   // Spaltenüberschrift der ersten Spalte, Standard "STÄRKEN"
- * }
- */
 export default function KompetenzskalaTemplate({
   headerTitle,
   description,
@@ -29,11 +14,18 @@ export default function KompetenzskalaTemplate({
   scaleQuestionText,
   scaleLabels,
   skills: initialSkillNames,
-  columnLabel = "STÄRKEN",
+  columnLabel = "STAERKEN",
   worksheetId,
 }) {
-  const { initialAnswers, loading, saveAnswers, submitAnswers, submitted } =
-    useWorksheetProgress(worksheetId)
+  const {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  } = useWorksheetProgress(worksheetId)
 
   const [skills, setSkills] = useState(() =>
     initialSkillNames.map((name) => ({ name, level: 0 }))
@@ -60,8 +52,8 @@ export default function KompetenzskalaTemplate({
 
   const isComplete = skills.every((skill) => skill.level > 0)
 
-  const handleComplete = () => {
-    submitAnswers({ skills })
+  const handleComplete = async () => {
+    await submitAnswers({ skills })
   }
 
   if (loading) {
@@ -176,18 +168,28 @@ export default function KompetenzskalaTemplate({
       </Card>
 
       <div className="flex justify-center pt-2">
-        <Button
-          size="lg"
-          disabled={!isComplete || submitted}
-          onClick={handleComplete}
-          className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
-        >
-          {!isComplete
-            ? "Bitte alle Stärken bewerten"
-            : submitted
-            ? "Abgeschlossen"
-            : "Arbeitsblatt abschließen"}
-        </Button>
+        <div className="flex flex-col items-center gap-3">
+          <Button
+            size="lg"
+            disabled={!isComplete || submitted || submitting}
+            onClick={handleComplete}
+            className="rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-bold text-white hover:brightness-110"
+          >
+            {!isComplete
+              ? "Bitte alle Staerken bewerten"
+              : submitting
+              ? "Wird abgeschlossen..."
+              : submitted
+              ? "Abgeschlossen"
+              : "Arbeitsblatt abschliessen"}
+          </Button>
+
+          {submitError && (
+            <p className="text-center text-sm font-medium text-rose-600">
+              {submitError}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   )

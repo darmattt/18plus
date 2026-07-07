@@ -1,50 +1,78 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FileSignature } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
-/**
- * Shablon für "Vertrag mit mir selbst"-Arbeitsblätter: offene Fragen
- * gefolgt von Unterschriftsfeldern.
- *
- * Props:
- * {
- *   headerTitle:     string,
- *   headerSubtitle:  string,
- *   contractLabel?:  string,   // z.B. "VERTRAG MIT MIR SELBST"
- *   questions:       string[],
- *   signatureFields: string[], // z.B. ["Ort, Datum", "Unterschrift", "Unterschrift Vertragspartner/in"]
- * }
- */
 export default function VertragMitMirSelbstTemplate({
   headerTitle,
   headerSubtitle,
   contractLabel,
   questions,
   signatureFields,
+  worksheetId,
 }) {
+  const {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  } = useWorksheetProgress(worksheetId)
+
   const [answers, setAnswers] = useState(() => questions.map(() => ""))
-  const [signatures, setSignatures] = useState(() =>
-    signatureFields.map(() => "")
-  )
+  const [signatures, setSignatures] = useState(() => signatureFields.map(() => ""))
+
+  useEffect(() => {
+    if (!loading) {
+      setAnswers(initialAnswers?.answers ?? questions.map(() => ""))
+      setSignatures(initialAnswers?.signatures ?? signatureFields.map(() => ""))
+    }
+  }, [initialAnswers, loading, questions, signatureFields])
+
+  const persist = (nextAnswers, nextSignatures) => {
+    saveAnswers({
+      answers: nextAnswers,
+      signatures: nextSignatures,
+    })
+  }
 
   const updateAnswer = (index, value) => {
     const next = [...answers]
     next[index] = value
     setAnswers(next)
+    persist(next, signatures)
   }
 
   const updateSignature = (index, value) => {
     const next = [...signatures]
     next[index] = value
     setSignatures(next)
+    persist(answers, next)
+  }
+
+  const isComplete =
+    answers.every((item) => item.trim().length > 0) &&
+    signatures.every((item) => item.trim().length > 0)
+
+  const handleSubmit = async () => {
+    await submitAnswers({
+      answers,
+      signatures,
+    })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 p-6">
-      {/* HEADER */}
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -67,7 +95,6 @@ export default function VertragMitMirSelbstTemplate({
         </div>
       )}
 
-      {/* QUESTIONS */}
       <div className="space-y-5">
         {questions.map((question, index) => (
           <Card key={index} className="rounded-3xl border border-slate-200 shadow-sm">
@@ -87,7 +114,6 @@ export default function VertragMitMirSelbstTemplate({
         ))}
       </div>
 
-      {/* SIGNATURES */}
       <Card className="rounded-3xl border border-slate-200 shadow-sm">
         <CardContent className="grid gap-4 p-6 md:grid-cols-3 md:p-8">
           {signatureFields.map((label, index) => (
@@ -103,6 +129,29 @@ export default function VertragMitMirSelbstTemplate({
           ))}
         </CardContent>
       </Card>
+
+      <div className="flex flex-col items-center gap-3 pt-2">
+        <Button
+          size="lg"
+          disabled={!isComplete || submitted || submitting}
+          onClick={handleSubmit}
+          className="rounded-2xl px-8 py-6 font-bold"
+        >
+          {!isComplete
+            ? "Bitte alles ausfuellen"
+            : submitting
+            ? "Wird abgeschlossen..."
+            : submitted
+            ? "Abgeschlossen"
+            : "Arbeitsblatt abschliessen"}
+        </Button>
+
+        {submitError && (
+          <p className="text-center text-sm font-medium text-rose-600">
+            {submitError}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

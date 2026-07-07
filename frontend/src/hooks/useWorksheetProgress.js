@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { getWorksheetResult, saveWorksheetResult } from "@/api/studentApi"
+import { WorksheetFlowContext } from "@/context/WorksheetFlowContext"
 
 const SAVE_DEBOUNCE_MS = 800
 
@@ -8,9 +9,12 @@ const SAVE_DEBOUNCE_MS = 800
 const SUBMITTED_STATUS = "Submitted"
 
 export function useWorksheetProgress(worksheetId) {
+  const { onWorksheetSubmitted } = useContext(WorksheetFlowContext)
   const [initialAnswers, setInitialAnswers] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
   const debounceRef = useRef(null)
 
   useEffect(() => {
@@ -18,6 +22,8 @@ export function useWorksheetProgress(worksheetId) {
     setLoading(true)
     setInitialAnswers(null)
     setSubmitted(false)
+    setSubmitting(false)
+    setSubmitError(null)
 
     async function loadResult() {
       try {
@@ -47,6 +53,7 @@ export function useWorksheetProgress(worksheetId) {
       if (debounceRef.current) clearTimeout(debounceRef.current)
 
       debounceRef.current = setTimeout(() => {
+        setSubmitError(null)
         saveWorksheetResult(worksheetId, JSON.stringify(answers), submit).catch((error) => {
           console.error("Failed to save worksheet progress", error)
         })
@@ -58,18 +65,35 @@ export function useWorksheetProgress(worksheetId) {
   const submitAnswers = useCallback(
     async (answers) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
+      setSubmitError(null)
+      setSubmitting(true)
 
       try {
-        await saveWorksheetResult(worksheetId, JSON.stringify(answers), true)
-        setSubmitted(true)
+        const result = await saveWorksheetResult(worksheetId, JSON.stringify(answers), true)
+        setSubmitted(result?.status ? result.status === SUBMITTED_STATUS : true)
+        onWorksheetSubmitted?.(worksheetId)
         return true
       } catch (error) {
         console.error("Failed to submit worksheet", error)
+        const message =
+          error?.message || "Das Arbeitsblatt konnte nicht abgeschlossen werden."
+        setSubmitError(message)
+        window.alert(message)
         return false
+      } finally {
+        setSubmitting(false)
       }
     },
-    [worksheetId]
+    [onWorksheetSubmitted, worksheetId]
   )
 
-  return { initialAnswers, loading, saveAnswers, submitAnswers, submitted }
+  return {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  }
 }

@@ -317,6 +317,7 @@ public async Task<TeacherResponse> CreateGroupAsync(CreateGroupDto dto)
         var results = await db.Results
             .AsNoTracking()
             .Where(r => r.Student.Group != null && r.Student.Group.Teacher.PublicId == teacherGuid)
+            .Where(r => r.Worksheet.Slug.StartsWith("ws-"))
             .Select(r => new ResultResponse(
                 r.Student.FirstName,
                 r.Student.LastName,

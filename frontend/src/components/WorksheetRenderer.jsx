@@ -140,67 +140,67 @@ export default function WorksheetRenderer({ worksheetId }) {
 
     //restliche ABs:
     case "ws-a1-blick-in-die-zukunft":
-          return <OffeneFragenTemplate {...a1BlickInDieZukunft} />
+          return <OffeneFragenTemplate {...a1BlickInDieZukunft} worksheetId={worksheetId} />
 
         case "ws-a2-persoenliche-zukunft":
-          return <OffeneFragenTemplate {...a2PersoenlicheZukunft} />
+          return <OffeneFragenTemplate {...a2PersoenlicheZukunft} worksheetId={worksheetId} />
 
         case "ws-a3-zukunftsbilder-checkliste":
-          return <ChecklisteTemplate {...a3ZukunftsbilderChecklist} />
+          return <ChecklisteTemplate {...a3ZukunftsbilderChecklist} worksheetId={worksheetId} />
 
         case "ws-a3-zukunftsbilder-reflexion":
-          return <OffeneFragenTemplate {...a3ZukunftsbilderReflexion} />
+          return <OffeneFragenTemplate {...a3ZukunftsbilderReflexion} worksheetId={worksheetId} />
 
         case "ws-b1-berufs-studienwahlpartner":
-          return <PartnerKreiseTemplate {...b1BerufsStudienwahlpartner} />
+          return <PartnerKreiseTemplate {...b1BerufsStudienwahlpartner} worksheetId={worksheetId} />
 
         case "ws-b2-blitzlicht-interview":
-          return <InterviewLeitfadenTemplate {...b2BlitzlichtInterview} />
+          return <InterviewLeitfadenTemplate {...b2BlitzlichtInterview} worksheetId={worksheetId} />
 
         case "ws-b3-planungsaktivitaeten":
-          return <TabelleTemplate2 {...b3Planungsaktivitaeten} />
+          return <TabelleTemplate2 {...b3Planungsaktivitaeten} worksheetId={worksheetId} />
 
         case "ws-c1a-berufshitliste":
-          return <TabelleTemplate2 {...c1aBerufshitliste} />
+          return <TabelleTemplate2 {...c1aBerufshitliste} worksheetId={worksheetId} />
 
         case "ws-c1b-studienhitliste":
-          return <TabelleTemplate2 {...c1bStudienhitliste} />
+          return <TabelleTemplate2 {...c1bStudienhitliste} worksheetId={worksheetId} />
 
         case "ws-c2-berufe-interview":
-          return <InterviewLeitfadenTemplate {...c2BerufeInterview} />
+          return <InterviewLeitfadenTemplate {...c2BerufeInterview} worksheetId={worksheetId} />
 
         case "ws-c3-interviewregeln":
-          return <InformationstextTemplate {...c3Interviewregeln} />
+          return <InformationstextTemplate {...c3Interviewregeln} worksheetId={worksheetId} />
 
         case "ws-c4-praxiskontakte":
-          return <OffeneFragenTemplate {...c4Praxiskontakte} />
+          return <OffeneFragenTemplate {...c4Praxiskontakte} worksheetId={worksheetId} />
 
         case "ws-d1a-realitaetscheck-beruf":
-          return <TabelleTemplate2 {...d1aRealitaetscheckBeruf} />
+          return <TabelleTemplate2 {...d1aRealitaetscheckBeruf} worksheetId={worksheetId} />
 
         case "ws-d1b-realitaetscheck-studium":
-          return <TabelleTemplate2 {...d1bRealitaetscheckStudium} />
+          return <TabelleTemplate2 {...d1bRealitaetscheckStudium} worksheetId={worksheetId} />
 
         case "ws-d2-informationsangebote":
-          return <PartnerKreiseTemplate {...d2Informationsangebote} />
+          return <PartnerKreiseTemplate {...d2Informationsangebote} worksheetId={worksheetId} />
 
         case "ws-d3-entscheidungspartner":
-          return <PartnerKreiseTemplate {...d3Entscheidungspartner} />
+          return <PartnerKreiseTemplate {...d3Entscheidungspartner} worksheetId={worksheetId} />
 
         case "ws-e1-mein-portfolio":
-          return <OffeneFragenTemplate {...e1MeinPortfolio} />
+          return <OffeneFragenTemplate {...e1MeinPortfolio} worksheetId={worksheetId} />
 
         case "ws-e2-vertrag-mit-mir-selbst":
-          return <VertragMitMirSelbstTemplate {...e2VertragMitMirSelbst} />
+          return <VertragMitMirSelbstTemplate {...e2VertragMitMirSelbst} worksheetId={worksheetId} />
 
         case "ws-e3-wunschlebenslauf":
-          return <WunschlebenslaufTemplate {...e3Wunschlebenslauf} />
+          return <WunschlebenslaufTemplate {...e3Wunschlebenslauf} worksheetId={worksheetId} />
 
         case "ws-e4a-experten-interview-beruf":
-          return <InterviewLeitfadenTemplate {...e4aExpertenInterviewBeruf} />
+          return <InterviewLeitfadenTemplate {...e4aExpertenInterviewBeruf} worksheetId={worksheetId} />
 
         case "ws-e4b-experten-interview-studium":
-          return <InterviewLeitfadenTemplate {...e4bExpertenInterviewStudium} />
+          return <InterviewLeitfadenTemplate {...e4bExpertenInterviewStudium} worksheetId={worksheetId} />
 
 
     default:

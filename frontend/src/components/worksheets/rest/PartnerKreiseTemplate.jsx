@@ -1,56 +1,65 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Users2 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
-/**
- * Shablon für Arbeitsblätter mit einer statischen Kreise-Übersicht
- * (z.B. Entscheidungspartner/innen, Infoquellen) plus optionalen
- * Reflexionsfragen und einer optionalen festen Tabelle.
- *
- * Props:
- * {
- *   headerTitle:    string,
- *   headerSubtitle: string,
- *   centerLabel?:   string,     // z.B. "SIE" - optionaler Mittelpunkt-Kreis
- *   circles:        string[],   // Beschriftungen der (statischen) Kreise
- *
- *   reflectionTitle?:     string,  // z.B. "Überlegen sie:"
- *   reflectionQuestions?: string[],
- *
- *   table?: {
- *     rowGroupLabel?: string,
- *     columns: [{ key: string, label: string, placeholder?: string }],
- *     rowCount: number,
- *   },
- * }
- */
 export default function PartnerKreiseTemplate({
   headerTitle,
   headerSubtitle,
   centerLabel,
   circles,
-  reflectionTitle = "Überlegen sie:",
+  reflectionTitle = "Ueberlegen sie:",
   reflectionQuestions,
   table,
+  worksheetId,
 }) {
-  const [reflectionAnswers, setReflectionAnswers] = useState(() =>
-    (reflectionQuestions || []).map(() => "")
-  )
-  const [tableData, setTableData] = useState(() =>
+  const {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  } = useWorksheetProgress(worksheetId)
+
+  const makeEmptyTableData = () =>
     table
       ? Array.from({ length: table.rowCount }).map(() =>
           table.columns.map(() => "")
         )
       : []
+
+  const [reflectionAnswers, setReflectionAnswers] = useState(() =>
+    (reflectionQuestions || []).map(() => "")
   )
+  const [tableData, setTableData] = useState(makeEmptyTableData)
+
+  useEffect(() => {
+    if (!loading) {
+      setReflectionAnswers(
+        initialAnswers?.reflectionAnswers ?? (reflectionQuestions || []).map(() => "")
+      )
+      setTableData(initialAnswers?.tableData ?? makeEmptyTableData())
+    }
+  }, [initialAnswers, loading, reflectionQuestions])
+
+  const persist = (nextReflectionAnswers, nextTableData) => {
+    saveAnswers({
+      reflectionAnswers: nextReflectionAnswers,
+      tableData: nextTableData,
+    })
+  }
 
   const updateReflection = (index, value) => {
     const next = [...reflectionAnswers]
     next[index] = value
     setReflectionAnswers(next)
+    persist(next, tableData)
   }
 
   const updateTableCell = (rowIdx, colIdx, value) => {
@@ -60,11 +69,28 @@ export default function PartnerKreiseTemplate({
         : row
     )
     setTableData(next)
+    persist(reflectionAnswers, next)
+  }
+
+  const reflectionsComplete =
+    !reflectionQuestions || reflectionAnswers.every((item) => item.trim().length > 0)
+  const tableComplete =
+    !table || tableData.every((row) => row.every((cell) => cell.trim().length > 0))
+  const isComplete = reflectionsComplete && tableComplete
+
+  const handleSubmit = async () => {
+    await submitAnswers({
+      reflectionAnswers,
+      tableData,
+    })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 p-6">
-      {/* HEADER */}
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -81,7 +107,6 @@ export default function PartnerKreiseTemplate({
         </CardHeader>
       </Card>
 
-      {/* CIRCLES */}
       <Card className="rounded-3xl border border-slate-200 bg-white shadow-sm">
         <CardContent className="flex flex-wrap items-center justify-center gap-4 p-8 md:p-10">
           {centerLabel && (
@@ -100,14 +125,13 @@ export default function PartnerKreiseTemplate({
         </CardContent>
       </Card>
 
-      {/* REFLECTION QUESTIONS */}
       {reflectionQuestions && reflectionQuestions.length > 0 && (
         <Card className="rounded-3xl border border-slate-200 shadow-sm">
           <CardContent className="space-y-5 p-6 md:p-8">
             <h3 className="text-lg font-bold text-slate-900">{reflectionTitle}</h3>
             {reflectionQuestions.map((q, index) => (
               <div key={index} className="space-y-2">
-                <p className="text-sm font-medium text-slate-700">» {q}</p>
+                <p className="text-sm font-medium text-slate-700">{q}</p>
                 <Textarea
                   value={reflectionAnswers[index]}
                   onChange={(e) => updateReflection(index, e.target.value)}
@@ -121,7 +145,6 @@ export default function PartnerKreiseTemplate({
         </Card>
       )}
 
-      {/* OPTIONAL FIXED TABLE */}
       {table && (
         <Card className="rounded-3xl border border-slate-200 shadow-sm">
           <CardContent className="space-y-3 p-6 md:p-8">
@@ -166,6 +189,29 @@ export default function PartnerKreiseTemplate({
           </CardContent>
         </Card>
       )}
+
+      <div className="flex flex-col items-center gap-3 pt-2">
+        <Button
+          size="lg"
+          disabled={!isComplete || submitted || submitting}
+          onClick={handleSubmit}
+          className="rounded-2xl px-8 py-6 font-bold"
+        >
+          {!isComplete
+            ? "Bitte alles ausfuellen"
+            : submitting
+            ? "Wird abgeschlossen..."
+            : submitted
+            ? "Abgeschlossen"
+            : "Arbeitsblatt abschliessen"}
+        </Button>
+
+        {submitError && (
+          <p className="text-center text-sm font-medium text-rose-600">
+            {submitError}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

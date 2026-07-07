@@ -274,7 +274,7 @@ export default function FragenTabellenTemplate({
           disabled={!isComplete || submitted}
           onClick={handleComplete}
           size="lg"
-          className="min-w-[320px] rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-8 py-6 text-base font-semibold text-white hover:brightness-110"
+          className="h-auto w-full max-w-[30rem] whitespace-normal rounded-2xl bg-gradient-to-r from-[#006dd6] to-[#c7d300] px-6 py-4 text-center text-base font-semibold leading-snug text-white hover:brightness-110 sm:px-8 sm:py-6"
         >
           {!isComplete ? submitLabelIncomplete : submitted ? "Abgeschlossen" : submitLabelComplete}
         </Button>

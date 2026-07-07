@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Table, Plus, Trash2, Sparkles, CheckCircle2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -6,46 +6,33 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
-/**
- * Shablon für "Tabelle"-Vergleichs-Arbeitsblätter.
- *
- * Props:
- * {
- *   headerTitle:    string,
- *   headerSubtitle: string,
- *   columns: [
- *     { key: string, label: string, placeholder: string,
- *       minLength: number, multiline?: boolean }
- *   ],
- *   addButtonLabel?:       string,
- *   tipTitle?:             string,
- *   tipText?:              string,
- *   celebrationText?:      string,
- *   progressLabel?:        string,
- *   submitLabelIncomplete?: string,
- *   submitLabelComplete?:  string,
- *   showRank?:             boolean,  // zeigt eine nicht editierbare Rang-Spalte (1,2,3,...)
- *   rankLabel?:            string,   // Standard "Mein Rang"
- * }
- *
- * Der erste Column-Eintrag wird als "Haupt"-Spalte behandelt (Input + Checkmark),
- * alle weiteren werden als Textarea gerendert.
- */
 export default function TabelleTemplate({
   headerTitle,
   headerSubtitle,
   columns,
-  addButtonLabel = "Zeile hinzufügen",
-  tipTitle = "Tipp zum Ausfüllen",
-  tipText = "Recherchiere gründlich. Je detaillierter deine Angaben, desto besser kannst du die Optionen miteinander vergleichen!",
+  addButtonLabel = "Zeile hinzufuegen",
+  tipTitle = "Tipp zum Ausfuellen",
+  tipText = "Recherchiere gruendlich. Je detaillierter deine Angaben, desto besser kannst du die Optionen miteinander vergleichen!",
   celebrationText = "Hervorragend! Alle Zeilen analysiert!",
   progressLabel = "Zeilen analysiert",
-  submitLabelIncomplete = "Mindestens eine Zeile vollständig ausfüllen",
-  submitLabelComplete = "Analyse abschließen",
+  submitLabelIncomplete = "Mindestens eine Zeile vollstaendig ausfuellen",
+  submitLabelComplete = "Analyse abschliessen",
   showRank = false,
   rankLabel = "Mein Rang",
+  worksheetId,
 }) {
+  const {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  } = useWorksheetProgress(worksheetId)
+
   const makeEmptyRow = () => {
     const row = { id: Date.now() + Math.random() }
     columns.forEach((col) => {
@@ -58,18 +45,32 @@ export default function TabelleTemplate({
   const [showTip, setShowTip] = useState(false)
   const [highlightedRow, setHighlightedRow] = useState(null)
 
+  useEffect(() => {
+    if (!loading) {
+      setRows(initialAnswers?.rows?.length ? initialAnswers.rows : [makeEmptyRow()])
+    }
+  }, [initialAnswers, loading])
+
+  const persist = (nextRows) => {
+    saveAnswers({ rows: nextRows })
+  }
+
   const addRow = () => {
-    setRows([...rows, makeEmptyRow()])
+    const next = [...rows, makeEmptyRow()]
+    setRows(next)
+    persist(next)
   }
 
   const removeRow = (id) => {
     if (rows.length > 1) {
-      setRows(rows.filter((row) => row.id !== id))
+      const next = rows.filter((row) => row.id !== id)
+      setRows(next)
+      persist(next)
     }
   }
 
   const isRowComplete = (row) => {
-    return columns.every((col) => row[col.key].length > col.minLength)
+    return columns.every((col) => row[col.key].trim().length > col.minLength)
   }
 
   const updateCell = (id, key, value) => {
@@ -78,6 +79,7 @@ export default function TabelleTemplate({
     )
 
     setRows(updatedRows)
+    persist(updatedRows)
 
     const currentRow = updatedRows.find((r) => r.id === id)
 
@@ -95,9 +97,16 @@ export default function TabelleTemplate({
   const completedRows = rows.filter(isRowComplete).length
   const [mainColumn, ...restColumns] = columns
 
+  const handleSubmit = async () => {
+    await submitAnswers({ rows })
+  }
+
+  if (loading) {
+    return null
+  }
+
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-6 py-10">
-      {/* HEADER */}
       <Card className="rounded-3xl border border-sky-200 bg-sky-50 shadow-sm">
         <CardHeader className="flex items-center gap-3 px-8 py-6">
           <Table className="h-8 w-8 text-blue-600" />
@@ -108,7 +117,6 @@ export default function TabelleTemplate({
         </CardHeader>
       </Card>
 
-      {/* PROGRESS */}
       <Card className="rounded-3xl border border-slate-200 shadow-sm">
         <CardContent className="flex items-center justify-between px-8 py-6">
           <span className="font-semibold text-slate-600">{progressLabel}</span>
@@ -126,7 +134,6 @@ export default function TabelleTemplate({
         </CardContent>
       </Card>
 
-      {/* TABLE */}
       <div className="relative">
         <AnimatePresence>
           {showTip && (
@@ -134,7 +141,7 @@ export default function TabelleTemplate({
               initial={{ opacity: 0, y: -20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="absolute -top-6 left-1/2 -translate-x-1/2 bg-lime-400 text-slate-900 px-6 py-3 rounded-xl shadow-lg flex items-center gap-2"
+              className="absolute -top-6 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-xl bg-lime-400 px-6 py-3 text-slate-900 shadow-lg"
             >
               <Sparkles className="h-5 w-5" />
               <span className="font-bold">{celebrationText}</span>
@@ -142,7 +149,7 @@ export default function TabelleTemplate({
           )}
         </AnimatePresence>
 
-        <div className="rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -150,13 +157,13 @@ export default function TabelleTemplate({
                   {showRank && (
                     <th className="w-20 px-6 py-4 text-left">{rankLabel}</th>
                   )}
-                  <th className="px-6 py-4 text-left w-48">{mainColumn.label}</th>
+                  <th className="w-48 px-6 py-4 text-left">{mainColumn.label}</th>
                   {restColumns.map((col) => (
                     <th key={col.key} className="px-6 py-4 text-left">
                       {col.label}
                     </th>
                   ))}
-                  <th className="px-6 py-4 text-center w-24">Aktion</th>
+                  <th className="w-24 px-6 py-4 text-center">Aktion</th>
                 </tr>
               </thead>
 
@@ -209,8 +216,9 @@ export default function TabelleTemplate({
                     <td className="px-6 py-4 text-center">
                       {rows.length > 1 && (
                         <button
+                          type="button"
                           onClick={() => removeRow(row.id)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                          className="rounded-lg p-2 text-red-500 hover:bg-red-50"
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
@@ -224,22 +232,36 @@ export default function TabelleTemplate({
         </div>
       </div>
 
-      {/* INFO BOX */}
       <Card className="rounded-3xl border border-sky-200 bg-sky-50">
         <CardContent className="flex items-start gap-3 px-8 py-6">
-          <Sparkles className="h-6 w-6 text-sky-500 mt-1" />
+          <Sparkles className="mt-1 h-6 w-6 text-sky-500" />
           <div>
-            <p className="font-bold text-slate-900 mb-1">{tipTitle}</p>
+            <p className="mb-1 font-bold text-slate-900">{tipTitle}</p>
             <p className="text-sm text-slate-700">{tipText}</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* SUBMIT */}
-      <div className="flex justify-center pt-4">
-        <Button disabled={completedRows < 1} className="px-8 py-6 rounded-2xl font-bold">
-          {completedRows < 1 ? submitLabelIncomplete : submitLabelComplete}
+      <div className="flex flex-col items-center gap-3 pt-4">
+        <Button
+          disabled={completedRows < 1 || submitted || submitting}
+          onClick={handleSubmit}
+          className="rounded-2xl px-8 py-6 font-bold"
+        >
+          {completedRows < 1
+            ? submitLabelIncomplete
+            : submitting
+            ? "Wird abgeschlossen..."
+            : submitted
+            ? "Abgeschlossen"
+            : submitLabelComplete}
         </Button>
+
+        {submitError && (
+          <p className="text-center text-sm font-medium text-rose-600">
+            {submitError}
+          </p>
+        )}
       </div>
     </div>
   )

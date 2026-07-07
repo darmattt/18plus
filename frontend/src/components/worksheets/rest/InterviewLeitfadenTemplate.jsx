@@ -1,47 +1,81 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Mic } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useWorksheetProgress } from "@/hooks/useWorksheetProgress"
 
-/**
- * Shablon für "Interview-Leitfaden"-Arbeitsblätter: ein Zielfeld (z.B. "zum Beruf:"),
- * gefolgt von einer festen Liste an Fragen, zu denen jeweils eine Antwort aus dem
- * Interview UND eigene Anmerkungen notiert werden.
- *
- * Props:
- * {
- *   headerTitle:     string,
- *   headerSubtitle?: string,   // Tipp-/Hinweistext
- *   targetLabel?:    string,   // z.B. "zum Beruf:" oder "zum Studium:"
- *   questions: [
- *     { question: string }
- *   ],
- *   closingText?: string,      // z.B. "Herzlichen Dank! Darf ich Sie ... kontaktieren?"
- * }
- */
 export default function InterviewLeitfadenTemplate({
   headerTitle,
   headerSubtitle,
   targetLabel,
   questions,
   closingText,
+  worksheetId,
 }) {
+  const {
+    initialAnswers,
+    loading,
+    saveAnswers,
+    submitAnswers,
+    submitted,
+    submitting,
+    submitError,
+  } = useWorksheetProgress(worksheetId)
+
   const [target, setTarget] = useState("")
   const [answers, setAnswers] = useState(() =>
     questions.map(() => ({ antwort: "", anmerkungen: "" }))
   )
 
+  useEffect(() => {
+    if (!loading) {
+      setTarget(initialAnswers?.target ?? "")
+      setAnswers(
+        initialAnswers?.answers ??
+          questions.map(() => ({ antwort: "", anmerkungen: "" }))
+      )
+    }
+  }, [initialAnswers, loading, questions])
+
+  const persist = (nextTarget, nextAnswers) => {
+    saveAnswers({
+      target: nextTarget,
+      answers: nextAnswers,
+    })
+  }
+
+  const updateTarget = (value) => {
+    setTarget(value)
+    persist(value, answers)
+  }
+
   const updateAnswer = (index, field, value) => {
     const next = [...answers]
     next[index] = { ...next[index], [field]: value }
     setAnswers(next)
+    persist(target, next)
+  }
+
+  const isComplete =
+    (!targetLabel || target.trim().length > 0) &&
+    answers.every((item) => item.antwort.trim().length > 0)
+
+  const handleSubmit = async () => {
+    await submitAnswers({
+      target,
+      answers,
+    })
+  }
+
+  if (loading) {
+    return null
   }
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-8 p-6">
-      {/* HEADER */}
       <Card className="overflow-hidden rounded-3xl border border-blue-200/40 bg-gradient-to-r from-blue-100/40 to-sky-100/40 shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -60,14 +94,13 @@ export default function InterviewLeitfadenTemplate({
         </CardHeader>
       </Card>
 
-      {/* TARGET FIELD */}
       {targetLabel && (
         <Card className="rounded-3xl border border-slate-200 shadow-sm">
           <CardContent className="flex flex-wrap items-center gap-3 p-6">
             <span className="font-semibold text-slate-900">{targetLabel}</span>
             <Input
               value={target}
-              onChange={(e) => setTarget(e.target.value)}
+              onChange={(e) => updateTarget(e.target.value)}
               placeholder="..."
               className="max-w-sm"
             />
@@ -75,7 +108,6 @@ export default function InterviewLeitfadenTemplate({
         </Card>
       )}
 
-      {/* QUESTIONS */}
       <div className="space-y-6">
         {questions.map((q, index) => (
           <Card key={index} className="rounded-3xl border border-slate-200 shadow-sm">
@@ -89,7 +121,7 @@ export default function InterviewLeitfadenTemplate({
                 </h3>
               </div>
 
-              <div className="ml-13 space-y-3 pl-0 md:pl-13">
+              <div className="space-y-3 md:pl-13">
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-blue-600">
                     Antwort aus dem Interview
@@ -129,6 +161,29 @@ export default function InterviewLeitfadenTemplate({
           </CardContent>
         </Card>
       )}
+
+      <div className="flex flex-col items-center gap-3 pt-2">
+        <Button
+          size="lg"
+          disabled={!isComplete || submitted || submitting}
+          onClick={handleSubmit}
+          className="rounded-2xl px-8 py-6 font-bold"
+        >
+          {!isComplete
+            ? "Bitte alle Fragen beantworten"
+            : submitting
+            ? "Wird abgeschlossen..."
+            : submitted
+            ? "Abgeschlossen"
+            : "Arbeitsblatt abschliessen"}
+        </Button>
+
+        {submitError && (
+          <p className="text-center text-sm font-medium text-rose-600">
+            {submitError}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

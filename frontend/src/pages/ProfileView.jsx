@@ -19,10 +19,14 @@ function mapStatus(workingStatus) {
   return "not-started"
 }
 
-export const ProfileView = ({user}) => {
+export const ProfileView = ({ user, onSelectWorksheet }) => {
   const [worksheets, setWorksheets] = useState(() =>
     modules.flatMap((module) =>
-      module.sheets.map((sheet) => ({ name: sheet.title, status: "not-started" }))
+      module.sheets.map((sheet) => ({
+        id: sheet.id,
+        name: sheet.title,
+        status: "not-started",
+      }))
     )
   )
 
@@ -39,6 +43,7 @@ export const ProfileView = ({user}) => {
         setWorksheets(
           modules.flatMap((module) =>
             module.sheets.map((sheet) => ({
+              id: sheet.id,
               name: sheet.title,
               status: statusBySlug.get(sheet.id) ?? "not-started",
             }))
@@ -67,43 +72,27 @@ export const ProfileView = ({user}) => {
   )
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+    <div className="mx-auto max-w-4xl space-y-6 pb-12 sm:space-y-8">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-[#00a7e7] via-[#006dd6] to-[#c7d300]" />
+        <div className="h-24 bg-gradient-to-r from-[#00a7e7] via-[#006dd6] to-[#c7d300] sm:h-32" />
 
-        <div className="px-8 pb-8">
-          <div className="relative -mt-12 mb-6">
-            <div className="w-24 h-24 rounded-2xl border-4 border-white overflow-hidden shadow-lg">
-              <img
-                src="https://images-prod.dazeddigital.com/355/azure/dazed-prod/1060/8/1068776.jpg"
-                alt="Profil"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="px-4 pb-6 pt-5 sm:px-8 sm:pb-8 sm:pt-6">
+          <div className="flex flex-col gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                 {user?.firstName} {user?.lastName}
               </h1>
 
-              <p className="text-gray-500 flex items-center gap-2">
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-500 sm:text-base">
                 <Mail className="w-4 h-4" />
                 {user?.email}
               </p>
-            </div>
-
-            <div className="flex gap-2">
-              <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
-                Profil bearbeiten
-              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
           <div className="flex items-center gap-3 text-[#006dd6]">
             <Users className="w-5 h-5" />
@@ -211,11 +200,13 @@ export const ProfileView = ({user}) => {
             const StatusIcon = config.icon
 
             return (
-              <div
+              <button
                 key={i}
-                className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                type="button"
+                onClick={() => onSelectWorksheet?.(worksheet.id)}
+                className="flex w-full flex-col gap-4 p-4 text-left transition-colors hover:bg-gray-50 sm:flex-row sm:items-center sm:justify-between sm:p-6"
               >
-                <div className="flex items-center gap-4 flex-1">
+                <div className="flex flex-1 items-center gap-4">
                   <div
                     className={`w-12 h-12 rounded-xl flex items-center justify-center ${config.bg}`}
                   >
@@ -224,21 +215,21 @@ export const ProfileView = ({user}) => {
                     />
                   </div>
 
-                  <div>
+                  <div className="min-w-0">
                     <h4 className="font-bold text-gray-900">
                       {worksheet.name}
                     </h4>
                   </div>
                 </div>
 
-                <div className={`px-4 py-2 rounded-lg ${config.bg}`}>
+                <div className={`self-start rounded-lg px-4 py-2 sm:self-auto ${config.bg}`}>
                   <span
                     className={`text-sm font-bold ${config.color}`}
                   >
                     {config.label}
                   </span>
                 </div>
-              </div>
+              </button>
             )
           })}
         </div>

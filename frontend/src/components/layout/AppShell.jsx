@@ -5,6 +5,7 @@ import ContentSidebar from "@/components/layout/ContentSidebar"
 import BottomNav from "@/components/layout/BottomNav"
 import WorksheetRenderer from "@/components/WorksheetRenderer"
 import { modules } from "@/data/modules"
+import { WorksheetFlowContext } from "@/context/WorksheetFlowContext"
 import { ProfileView } from "@/pages/ProfileView"
 import { ChatBot } from "@/pages/ChatBot"
 
@@ -63,6 +64,9 @@ export default function AppShell() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getStudentToken()))
   const [enabledSlugs, setEnabledSlugs] = useState(null)
   const navigate = useNavigate()
+  const orderedWorksheetIds = modules.flatMap((module) =>
+    module.sheets.map((sheet) => sheet.id)
+  )
 
   const loadEnabledWorksheets = async () => {
     try {
@@ -104,9 +108,13 @@ export default function AppShell() {
         }
       } catch (error) {
         if (!cancelled) {
-          logoutStudent()
-          setCurrentUser(null)
-          setIsLoggedIn(false)
+          const isAuthError = error?.status === 401 || error?.status === 403
+
+          if (isAuthError) {
+            logoutStudent()
+            setCurrentUser(null)
+            setIsLoggedIn(false)
+          }
         }
 
         console.error("Student profile refresh failed", error)
@@ -133,6 +141,21 @@ export default function AppShell() {
     setActiveView("content")
     setSidebarOpen(false)
     setChatOpen(false)
+  }
+
+  const handleWorksheetSubmitted = (worksheetId) => {
+    const allowedWorksheetIds = orderedWorksheetIds.filter(
+      (id) => enabledSlugs === null || enabledSlugs.has(id)
+    )
+    const currentIndex = allowedWorksheetIds.indexOf(worksheetId)
+    const nextWorksheetId =
+      currentIndex >= 0 ? allowedWorksheetIds[currentIndex + 1] : null
+
+    if (nextWorksheetId) {
+      window.setTimeout(() => {
+        handleSelectWorksheet(nextWorksheetId)
+      }, 250)
+    }
   }
 
   const handleLogin = async (role, email, passwordOrCode) => {
@@ -203,11 +226,18 @@ export default function AppShell() {
           animate={{ opacity: 1, y: 0 }}
           className="mx-auto max-w-6xl"
         >
-          {activeView === "profile" ? (
-            <ProfileView user={currentUser} />
-          ) : (
-            <WorksheetRenderer worksheetId={activeWorksheetId} />
-          )}
+          <WorksheetFlowContext.Provider
+            value={{ onWorksheetSubmitted: handleWorksheetSubmitted }}
+          >
+            {activeView === "profile" ? (
+              <ProfileView
+                user={currentUser}
+                onSelectWorksheet={handleSelectWorksheet}
+              />
+            ) : (
+              <WorksheetRenderer worksheetId={activeWorksheetId} />
+            )}
+          </WorksheetFlowContext.Provider>
         </motion.div>
       </main>
 
