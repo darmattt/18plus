@@ -6,12 +6,22 @@ import { useNavigate } from "react-router-dom"
 import { LoginBox } from "./LoginPage.jsx"
 import { RegistrationBox } from "./RegistrationPage.jsx"
 import { loginTeacher, setTeacherToken } from "@/api/teacherApi"
-import { verifyStudentLoginCode } from "@/api/studentApi"
+import { logoutStudent, verifyStudentLoginCode } from "@/api/studentApi"
+
+const STUDENT_SESSION_KEY = "studentSession"
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegistration, setShowRegistration] = useState(false)
   const navigate = useNavigate()
+
+  const openFreshLogin = () => {
+    logoutStudent()
+    localStorage.removeItem(STUDENT_SESSION_KEY)
+    setShowRegistration(false)
+    setShowLogin(false)
+    navigate("/arbeitsblaetter")
+  }
 
   const handleLogin = async (role, email, passwordOrCode) => {
     try {
@@ -44,7 +54,11 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white">
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex items-center gap-3">
-          <img src="/18plus_Logo_RGB.png" alt="18 Plus logo" className="w-28 sm:w-36 md:w-40" />
+          <img
+            src="/18plus_Logo_RGB.png"
+            alt="18 Plus logo"
+            className="w-28 sm:w-36 md:w-40"
+          />
         </div>
 
         <Button
@@ -74,7 +88,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full rounded-2xl bg-lime-300 px-7 py-6 text-slate-900 hover:bg-lime-400 sm:w-auto"
-              onClick={() => navigate("/arbeitsblaetter")}
+              onClick={openFreshLogin}
             >
               Jetzt starten
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -82,52 +96,40 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="order-1 lg:order-2">
-          <div className="grid gap-4 sm:gap-5">
-            <Card className="rounded-[28px] border-slate-200/60 bg-gradient-to-br from-sky-50 via-white to-lime-50 shadow-sm">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-sky-100 text-sky-600">
-                    <GraduationCap className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold uppercase tracking-wide text-sky-600">
-                      Orientierung
-                    </div>
-                    <div className="mt-1 text-xl font-bold text-slate-900">
-                      Finde heraus, was zu dir passt
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">
-                      Arbeitsblaetter, Reflexionen und naechste Schritte helfen dir
-                      dabei, eigene Staerken und Interessen sichtbar zu machen.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-[28px] border-slate-200/60 bg-white shadow-sm">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-lime-100 text-lime-700">
-                    <Trophy className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold uppercase tracking-wide text-lime-700">
-                      Nächster Schritt
-                    </div>
-                    <div className="mt-1 text-xl font-bold text-slate-900">
-                      Bleib dran bis zur Entscheidung
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">
-                      Von der ersten Standortbestimmung bis zu konkreten
-                      Berufsvorschlaegen bleibt alles an einem Ort gesammelt.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="relative order-1 lg:order-2">
+          <div className="relative overflow-hidden rounded-[32px] bg-slate-100 shadow-sm">
+            <img
+              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80"
+              alt="Students studying"
+              className="h-[320px] w-full object-cover sm:h-[420px] lg:h-[520px]"
+            />
           </div>
+
+          <Card className="absolute right-3 top-3 w-[220px] rounded-2xl border-slate-200/60 bg-white/95 shadow-lg sm:right-4 sm:top-4 sm:w-[240px]">
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-sky-50 text-sky-600">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+              <div className="leading-tight">
+                <div className="text-xs text-slate-500">Level Up</div>
+                <div className="font-semibold text-slate-900">Weiterbildung?</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="absolute bottom-4 left-4 w-[260px] rounded-2xl border-slate-200/60 bg-white shadow-lg sm:bottom-6 sm:left-6 sm:w-[300px]">
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-lime-50 text-lime-700">
+                <Trophy className="h-5 w-5" />
+              </div>
+              <div className="leading-tight">
+                <div className="text-xs text-slate-500">Letztes Meilstein</div>
+                <div className="font-semibold text-slate-900">
+                  Matura - done! Was jetzt?..
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
 
