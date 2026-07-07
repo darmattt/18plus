@@ -5,3 +5,6 @@
 # .NET
 bin/
 obj/
+
+# Local dev database (contains real user data, never commit)
+*.db

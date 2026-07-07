@@ -83,27 +83,29 @@ public static class DatabaseSeeder
             new Student(
                 firstName: "Mansour",
                 lastName: "Khawari",
-                email: new EMailAddress("MansourKhawari14@gmail.com")
+                email: new EMailAddress("Mansour.Khawari@18plus.local")
             ),
             new Student(
                 firstName: "Darya",
                 lastName: "Martysiuk",
-                email: new EMailAddress("darmaralk@gmail.com")
+                email: new EMailAddress("Darya.Martysiuk@18plus.local")
             ),
             new Student(
                 firstName: "Maryam",
-                lastName: "Hukic-Dzavo",
-                email: new EMailAddress("HUK231042@spengergasse.at")
+                lastName: "Hukic-Dzafo",
+                email: new EMailAddress("Maryam.Hukic-Dzafo@18plus.local")
             ),
             new Student(
                 firstName: "Beshr",
+                
+                
                 lastName: "Alkhabour",
                 email: new EMailAddress("Beshr.Alkhabour@18plus.local")
             ),
             new Student(
                 firstName: "Dana",
                 lastName: "Alawad",
-                email: new EMailAddress("ala230463@spengergasse.at")
+                email: new EMailAddress("Dana.Alawad@8plus.local")
             ),
             new Student(
                 firstName: "Michael",
